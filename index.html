@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ev Portal</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="header">
+        <img src="logo.png" alt="Portal Logo">
+    </div>
+    <ul id="menu">
+        <!-- Les pages par défaut seront chargées ici -->
+    </ul>
+    
+    <!-- Nouveau conteneur pour centrer les boutons et formulaires -->
+    <div id="controlsContainer">
+        <button id="editModeToggle">Activer le Mode Édition</button>
+        <button id="addPageButton" style="display: none;">Ajouter une Page</button>
+        <button id="addShortcutButton" style="display: none;">Ajouter un Raccourci</button>
+        <button id="exportConfigButton" style="display: none;">Exporter la Configuration</button>
+        <button id="importConfigButton" style="display: none;">Importer la Configuration</button>
+        <button id="resetButton" style="display: none;">Réinitialiser</button>
+
+        <input type="text" id="importConfigURL" placeholder="Lien Dpaste" style="display: none;">
+        
+        <div id="importConfigContainer" style="display: none; text-align: center; margin-top: 10px;">
+            <div style="display: inline-flex; align-items: center;">
+                <span style="color: white; margin-right: 5px;">https://dpaste.com/</span>
+                <input type="text" id="importConfigID" placeholder="Identifiant Dpaste" style="margin: 0 auto;">
+            </div>
+            <button id="confirmImportButton">Importer</button>
+        </div>
+
+        <div id="exportedLinkContainer" style="display: none; margin-top: 10px; text-align: center; width: 100%;">
+            <p>Lien de la configuration exportée : <a id="exportedLink" href="#" target="_blank"></a></p>
+        </div>
+
+        <div id="addPageForm" style="display: none;">
+            <input type="text" id="newPageName" placeholder="Nom de la nouvelle page" maxlength="16">
+            <button onclick="addNewPage()">Ajouter la Page</button>
+        </div>
+        
+        <div id="addShortcutForm" style="display: none;">
+            <input type="text" id="shortcutName" placeholder="Nom du raccourci" maxlength="10">
+            <input type="url" id="shortcutURL" placeholder="URL du raccourci">
+            <button onclick="addShortcutToCurrentPage()">Ajouter le Raccourci</button>
+        </div>
+    </div>
+
+    <div id="content">
+        <!-- Les sections de page seront chargées ici -->
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

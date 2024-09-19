@@ -1,0 +1,406 @@
+body {
+    background-color: #111;
+    color: white;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+#header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #222;
+    padding: 20px;
+    border-bottom: 1px solid #333;
+}
+
+#header img {
+    max-width: 100%;  /* L'image ne sera jamais plus large que 100% de la largeur de l'écran */
+    height: auto;     /* La hauteur s'ajustera automatiquement pour maintenir les proportions */
+    display: block;   /* Optionnel, pour enlever les petits espaces blancs sous l'image */
+    margin: 0 auto;   /* Centrer l'image horizontalement */
+}
+
+
+#header h1 {
+    margin: 0;
+}
+
+/* Style commun pour les boutons */
+button {
+    margin: 10px;
+    padding: 10px 20px;
+    background-color: #444; /* Couleur de fond standard */
+    color: white; /* Couleur du texte */
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+#menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    background-color: #222;
+    overflow-x: auto; /* Permet le défilement horizontal */
+    white-space: nowrap; /* Empêche les éléments de se casser à la ligne */
+}
+
+#menu li {
+    position: relative; /* Nécessaire pour le positionnement absolu de la croix */
+    margin: 10px;
+    display: inline-block; /* S'assurer que chaque élément est en ligne */
+}
+
+/* Assurez-vous que les boutons de suppression sont visibles uniquement en mode édition */
+#menu li .delete-page {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: transparent;
+    color: red;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#menu li.is-edit-mode .delete-page {
+    display: block; /* Afficher en mode édition */
+}
+
+#menu a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    background-color: #333;
+    border-radius: 5px;
+    display: block;
+}
+
+#menu a.active {
+    background-color: #555;
+}
+
+/* Style pour les petits écrans */
+@media screen and (max-width: 768px) {
+    #menu {
+        justify-content: flex-start; /* Aligne les éléments du menu sur la gauche */
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    #menu a {
+        padding: 10px 15px; /* Réduit un peu le padding pour mieux s'adapter à l'écran */
+    }
+
+    #menu::-webkit-scrollbar {
+        display: none; /* Cache la scrollbar sur Webkit (Chrome, Safari, etc.) */
+    }
+}
+
+#content {
+    padding: 20px;
+    margin: 0 auto;
+    max-width: 1600px; /* Par exemple, une largeur maximale pour contrôler la largeur du contenu */
+}
+
+.page-section {
+    display: none;
+}
+
+.page-section.active {
+    display: block;
+}
+
+/* Style pour le bouton de suppression de la page */
+.delete-page {
+    position: absolute;
+    top: 0; /* Ajuste la position verticale */
+    right: 0; /* Ajuste la position horizontale */
+    background: transparent; /* Pas de fond */
+    color: red; /* Couleur de la croix */
+    border: none; /* Pas de bordure */
+    border-radius: 50%; /* Forme ronde */
+    cursor: pointer; /* Curseur cliquable */
+    width: 20px; /* Largeur du bouton */
+    height: 20px; /* Hauteur du bouton */
+    display: flex; /* Pour centrer le contenu */
+    align-items: center; /* Pour centrer le contenu verticalement */
+    justify-content: center; /* Pour centrer le contenu horizontalement */
+    font-size: 14px; /* Taille de la croix */
+    padding: 0; /* Pas de padding */
+    margin: 0; /* Pas de marge */
+}
+
+.shortcuts-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.shortcut {
+    background-color: #333;
+    width: 160px;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 16px;
+    position: relative;
+    display: flex;
+    flex-direction: column; /* Organise le contenu en colonne */
+    align-items: center;
+    justify-content: flex-start; /* Place le contenu en haut, sauf le texte */
+    height: 160px;
+    cursor: pointer;
+    overflow: hidden; /* Assurez-vous que tout débordement est caché */
+    outline: 2px solid #424242;
+}
+
+/* Tesla Model 3/Y ou grands écrans (15 pouces, 1920px et plus) */
+@media (max-width: 1920px) {
+    .shortcut {
+        width: 180px;
+        height: 180px;
+    }
+    .shortcut span {
+        font-size: 20px; /* Augmente encore la taille du texte */
+    }
+}
+
+/* Pour les écrans moyens (tablettes et petits laptops) */
+@media (max-width: 1024px) {
+    .shortcut {
+        width: 140px;
+        height: 140px;
+    }
+    .shortcut span {
+        font-size: 18px; /* Texte toujours bien visible */
+    }
+}
+
+/* Pour les petits écrans (mobiles comme l'iPhone 11/12/13/14) */
+@media (max-width: 768px) {
+    .shortcut {
+        width: 120px;
+        height: 120px;
+    }
+    .shortcut span {
+        font-size: 16px; /* Texte encore lisible sur les mobiles */
+    }
+}
+
+/* Pour les très petits écrans (iPhone SE et autres petits smartphones) */
+@media (max-width: 480px) {
+    .shortcut {
+        width: 100px;
+        height: 100px;
+    }
+    .shortcut span {
+        font-size: 14px; /* Texte ajusté mais encore confortable */
+    }
+}
+
+/* iPhone SE ou très petits écrans (jusqu'à 320px) */
+@media (max-width: 320px) {
+    .shortcut {
+        width: 80px;
+        height: 80px;
+    }
+    .shortcut span {
+        font-size: 12px; /* Taille encore lisible pour les petits écrans */
+    }
+}
+
+.shortcut span {
+    color: #ccc; /* Change la couleur du texte en gris clair */
+    margin-top: auto; /* Pousse le texte vers le bas de la div */
+}
+
+.shortcut img {
+    width: 75%; /* L'image prendra 100% de la largeur du conteneur */
+    height: 75%; /* L'image prendra 100% de la hauteur du conteneur */
+    object-fit: contain; /* L'image sera contenue dans le conteneur en gardant ses proportions */
+    margin-bottom: auto; /* Optionnel, garde cet aspect si nécessaire */
+
+
+}
+
+
+.shortcut a {
+    text-decoration: none; /* Supprimer la décoration de texte des liens */
+    color: inherit; /* Inhériter la couleur du texte */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%; /* Assurez-vous que le lien prend toute la hauteur du raccourci */
+    width: 100%; /* Assurez-vous que le lien prend toute la largeur du raccourci */
+}
+
+.shortcut button.delete-shortcut {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: transparent; /* Fond transparent pour éviter le rouge */
+    color: red;  /* Couleur de la croix en rouge */
+    border: none;  /* Supprime la bordure par défaut */
+    border-radius: 50%; /* Garde la forme ronde */
+    cursor: pointer;  /* Change le curseur pour indiquer que c'est cliquable */
+    font-size: 16px;  /* Taille de la croix */
+    padding: 0;  /* Supprime le padding par défaut */
+}
+
+.shortcut .move-up,
+.shortcut .move-down {
+    position: absolute;
+    background: transparent;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    z-index: 10; /* S'assurer que les flèches sont au-dessus des autres éléments */
+}
+
+.shortcut .move-up {
+    top: 5px;      /* Positionne en haut */
+    left: -30px;    /* Positionne à gauche */
+}
+
+.shortcut .move-down {
+    bottom: 5px;   /* Positionne en bas */
+    left: -30px;    /* Positionne à droite */
+}
+
+
+#editModeToggle {
+    margin: 20px 10px 20px 20px;
+    padding: 10px 10px;
+    background-color: #444;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+/* Style pour le bouton "Désactiver le Mode Édition" quand le mode édition est actif */
+#editModeToggle.active {
+    background-color: #FF8C00; /* Orange foncé */
+    color: white; /* Couleur du texte */
+}
+
+/* Style pour le bouton "Réinitialiser" */
+#resetButton {
+    background-color: #800000; /* Rouge bordeaux */
+    color: white; /* Couleur du texte */
+    border: none; /* Pas de bordure */
+    border-radius: 5px; /* Coins arrondis */
+    cursor: pointer; /* Curseur pointeur pour le bouton */
+    padding: 10px 20px; /* Taille du bouton */
+    margin: 10px; /* Espace autour du bouton */
+}
+
+#exportConfigButton, #importConfigButton {
+    margin: 10px;
+    padding: 10px 20px;
+    background-color: #444;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+#addPageButton, #addShortcutButton {
+    margin: 10px;
+    padding: 10px 20px;
+    background-color: #444;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    display: none; /* Initialement masqués, seront affichés en mode édition */
+}
+
+#addShortcutForm, #addPageForm {
+    display: none;
+    margin-top: 20px;
+    background-color: #222;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+#addShortcutForm input, #addPageForm input {
+    margin-right: 10px;
+    padding: 5px;
+    border-radius: 5px;
+    border: none;
+}
+
+#exportedLinkContainer {
+    display: none; /* Par défaut, caché */
+    text-align: center; /* Centrer le texte */
+    width: 100%; /* Prendre toute la largeur */
+    margin-top: 20px;
+    background-color: #222;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+/* Style pour le lien du conteneur */
+#exportedLinkContainer a {
+    color: white; /* Couleur du lien en blanc */
+    text-decoration: none; /* Pas de soulignement par défaut */
+}
+
+/* Style pour le lien lorsqu'il est visité */
+#exportedLinkContainer a:visited {
+    color: white; /* Garde le lien en blanc même après avoir été visité */
+}
+
+/* Style pour le lien lors du survol */
+#exportedLinkContainer a:hover {
+    text-decoration: underline; /* Soulignement lors du survol pour l'accessibilité */
+}
+
+/* Centrer le conteneur d'importation */
+#importConfigContainer {
+    text-align: center; /* Centre le texte */
+    margin-top: 20px; /* Ajoute un espacement en haut */
+    margin-top: 20px;
+    background-color: #222;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+/* Style pour le champ d'entrée */
+#importConfigID {
+    margin: 0 auto; /* Centre horizontalement */
+    display: block; /* Bloc pour le centrer */
+    padding: 5px; /* Ajouter un peu de padding */
+    width: 200px; /* Largeur du champ d'entrée */
+    margin-bottom: 10px; /* Espace entre l'entrée et le bouton */
+}
+
+/* Style pour le bouton d'importation */
+#confirmImportButton {
+    padding: 5px 15px; /* Taille du bouton */
+    cursor: pointer; /* Curseur pointeur pour le bouton */
+    background-color: #444; /* Couleur de fond */
+    color: white; /* Couleur du texte */
+    border: none; /* Pas de bordure */
+    border-radius: 5px; /* Coins arrondis */
+}
+
+/* Styles pour centrer tous les éléments du conteneur */
+#controlsContainer {
+    margin: 0 auto;
+    max-width: 1200px;
+}
+
+#controlsContainer button,
+#controlsContainer input {
+    margin: 10px; /* Ajoute un espacement entre les éléments */
+}
