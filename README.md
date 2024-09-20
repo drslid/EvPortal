@@ -1,30 +1,31 @@
 # ⚡ EvPortal 🚗🔋
 
-**EvPortal** est une interface web pratique et personnalisable, conçue pour les écrans Tesla et autres véhicules électriques. Avec EvPortal, accédez rapidement à vos liens favoris comme les services de streaming, la musique, la navigation, et bien plus encore grâce à de grandes tuiles faciles à utiliser ! 🎬🎵🗺️
+**EvPortal** is a customizable web interface designed for Tesla screens and other electric vehicles. With EvPortal, quickly access your favorite links like streaming services, music, navigation, and more through easy-to-use, large tile-style buttons! 🎬🎵🗺️
 
-## 🚀 Caractéristiques principales
+## 🚀 Key Features
 
-- **🎛️ Mode Édition** : Activez le mode édition pour ajouter ou réorganiser vos raccourcis. Simple et intuitif, même en déplacement !
-- **🌐 Raccourcis Personnalisés** : Ajoutez vos propres pages et raccourcis pour accéder à **Netflix**, **Spotify**, **Google Maps**, ou n’importe quel lien.
-- **📲 Sauvegarde Locale** : Vos paramètres sont sauvegardés localement sur l’appareil, prêts à être utilisés dès que vous démarrez.
-- **💾 Export/Import** : Exportez ou importez votre configuration via [Dpaste](https://dpaste.com/) pour la partager avec d'autres utilisateurs de Tesla.
+- **🎛️ Edit Mode**: Enable edit mode to add or rearrange your shortcuts, even while on the move!
+- **🌐 Custom Shortcuts**: Add your own pages and shortcuts for quick access to **Netflix**, **Spotify**, **Google Maps**, and more.
+- **📲 Local Save**: Your settings are saved locally and are ready every time you start your vehicle.
+- **💾 Export/Import**: Share or restore your configuration using [Dpaste](https://dpaste.com/).
 
-## 📋 Comment utiliser
+## 📋 How to Use
 
-1. **Mode Édition** : Appuyez sur le bouton "Activer le Mode Édition" pour personnaliser vos pages.
-2. **Ajout de Pages** : Créez des pages pour différents usages (cinéma, navigation, musique, etc.) en toute simplicité.
-3. **Ajout de Raccourcis** : Ajoutez des raccourcis en un clic et accédez instantanément à vos sites préférés pendant vos trajets.
-4. **Reordonner** : Organisez vos raccourcis avec des flèches pour un accès plus rapide.
-5. **Partagez vos favoris** : Exportez et partagez vos raccourcis personnalisés avec d’autres conducteurs via un lien Dpaste !
+1. **Edit Mode**: Tap the "Activate Edit Mode" button to start customizing your pages.
+2. **Add Pages**: Easily create pages for different uses (cinema, navigation, music, etc.).
+3. **Add Shortcuts**: Add shortcuts in one click and quickly access your favorite sites while driving.
+4. **Reorder**: Use the arrows to organize your shortcuts for quicker access.
+5. **Share Your Favorites**: Export and share your personalized shortcuts with other Tesla users via a Dpaste link!
 
-## 🎨 Optimisé pour
+## 🎨 Optimized for
 
 - **Tesla Model 3/Y/S/X** 🚗
-- **Grands écrans tactiles** 📺
-- **Tout autre véhicule électrique avec navigateur intégré** ⚡
+- **Large Touchscreens** 📺
+- **Any other EV with a built-in browser** ⚡
 
-## 🛠️ Technologies utilisées
+## 🛠️ Technologies Used
 
-- **HTML5/CSS3** pour une interface fluide et élégante
-- **JavaScript** pour la gestion des raccourcis et des pages
-- **LocalStorage** pour une sauvegarde instantanée et locale de vos préférences
+- **HTML5/CSS3** for a smooth and sleek interface
+- **JavaScript** for page and shortcut management
+- **LocalStorage** for instant, local preference saving
+- **Dpaste** for easy configuration sharing
