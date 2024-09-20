@@ -191,8 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
         section.id = pageName;
         section.classList.add('page-section');
         if (pageName === 'cinema') section.classList.add('active');
-        section.innerHTML = `<h1>${pageName.charAt(0).toUpperCase() + pageName.slice(1)}</h1>
-                             <div class="shortcuts-container"></div>`;
+        section.innerHTML = `<div class="shortcuts-container"></div>`;
         contentContainer.appendChild(section);
 
         const menuLink = document.createElement('li');
@@ -426,14 +425,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if (document.querySelector(`#${page} .shortcuts-container [data-order="${order}"]`)) {
             return;
         }
-    
+
         const shortcut = document.createElement('div');
         shortcut.classList.add('shortcut');
-    
-        const favicon = 'default-favicon.png'; // Utiliser le favicon par défaut au début
+
+        // Utiliser le chemin correct pour le favicon par défaut
+        const defaultFavicon = './img/default-favicon.png'; // Chemin correct du favicon par défaut
         shortcut.innerHTML = `
             <a href="${url}" target="_blank">
-                <img src="${favicon}" alt="${name} logo">
+                <img src="${defaultFavicon}" alt="${name} logo">
                 <span>${name}</span>
             </a>
             ${isEditMode ? `
@@ -441,9 +441,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 <button class="move-up">⬆️</button>
                 <button class="move-down">⬇️</button>` : ''}
         `;
-    
+
         shortcut.dataset.order = order; // Attribuer l'ordre
-    
+
         // Ajouter l'événement de suppression en mode édition
         if (isEditMode) {
             const deleteButton = shortcut.querySelector('.delete-shortcut');
@@ -454,22 +454,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 saveToLocalStorage();
             });
         }
-    
+
         container.appendChild(shortcut);
-    
+
         // Charger le favicon réel après l'affichage initial
-        const realFavicon = await getBestFaviconUrl(new URL(url).hostname) || 'default-favicon.png';
+        const realFavicon = await getBestFaviconUrl(new URL(url).hostname) || defaultFavicon;
         shortcut.querySelector('img').src = realFavicon;  // Mettre à jour le favicon réel
     }
-    
-    
-    
-
 
     
-
-    
-
 
     // Définir la section active
     function setActiveSection(pageName) {

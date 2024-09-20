@@ -103,7 +103,7 @@ button {
 }
 
 #content {
-    padding: 20px;
+    padding: 0px 20px 20px 20px;
     margin: 0 auto;
     max-width: 1600px; /* Par exemple, une largeur maximale pour contrôler la largeur du contenu */
 }
@@ -140,7 +140,10 @@ button {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
+    justify-content: center; /* Centre horizontalement */
+    align-items: center; /* Centre verticalement si nécessaire */
 }
+
 
 .shortcut {
     background-color: #333;
@@ -261,7 +264,7 @@ button {
     color: white;
     border: none;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 30px;
     z-index: 10; /* S'assurer que les flèches sont au-dessus des autres éléments */
 }
 
@@ -396,11 +399,17 @@ button {
 
 /* Styles pour centrer tous les éléments du conteneur */
 #controlsContainer {
+    padding: 10px 20px 10px 20px;
     margin: 0 auto;
-    max-width: 1200px;
+    max-width: 1600px;
+    text-align: center;
 }
 
 #controlsContainer button,
 #controlsContainer input {
     margin: 10px; /* Ajoute un espacement entre les éléments */
+}
+
+section h1 {
+    text-align: center;
 }
