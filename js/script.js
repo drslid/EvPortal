@@ -538,21 +538,36 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('https://dpaste.com/api/v2/', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded' // Changer le type de contenu
+                    'Content-Type': 'application/x-www-form-urlencoded'
                 },
-                body: formData.toString() // Convertir en chaîne de caractères encodée
+                body: formData.toString()
             });
 
             if (response.ok) {
                 const result = await response.text();
 
-                // Mettre à jour le lien dans l'interface utilisateur
+                // Afficher l'URL originale de Dpaste dans l'interface
+                const dpasteUrl = result.trim();  // URL complète de Dpaste
+                console.log('URL Dpaste originale :', dpasteUrl);
+
+                // Extraire l'identifiant Dpaste (les 10 derniers caractères de l'URL)
+                const dpasteIdentifier = dpasteUrl.split('/').pop();
+                console.log('Identifiant Dpaste extrait :', dpasteIdentifier);
+
+                // Générer l'URL de ton site avec l'identifiant Dpaste
+                const customLink = `https://drslid.github.io/EvPortal/?code=${dpasteIdentifier}`;
+                console.log('Lien personnalisé pour le QR code :', customLink);
+
+                // Mettre à jour l'interface avec l'URL Dpaste (originale)
                 const exportedLinkContainer = document.getElementById('exportedLinkContainer');
-                const exportedLink = document.getElementById('exportedLink');
-                
-                exportedLink.href = result;
-                exportedLink.textContent = result;
+                const exportedLinkElement = document.getElementById('exportedLink');
+                exportedLinkElement.href = dpasteUrl;  // Lien Dpaste original
+                exportedLinkElement.textContent = dpasteUrl;
                 exportedLinkContainer.style.display = 'block';
+
+                // Générer et afficher le QR code avec le lien personnalisé
+                generateQRCode(customLink);
+
             } else {
                 const errorData = await response.json();
                 console.error('Erreur:', errorData);
@@ -565,6 +580,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
+    // Fonction pour générer et afficher un QR code
+    function generateQRCode(url) {
+        const qrCodeContainer = document.getElementById('qrCode');
+        qrCodeContainer.innerHTML = ''; // Vider le contenu avant de générer un nouveau QR code
+        new QRCode(qrCodeContainer, {
+            text: url,
+            width: 128,
+            height: 128
+        });
+    }    
 
     // Fonction pour importer la configuration depuis dpaste
     async function importConfig() {
@@ -647,56 +672,65 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem(page, JSON.stringify(shortcuts));
     }
 
-    // Fonction pour extraire les paramètres de l'URL
+    // Fonction pour récupérer le paramètre de l'URL
     function getQueryParam(param) {
+        console.log(`Récupération du paramètre ${param}`);
         const urlParams = new URLSearchParams(window.location.search);
         return urlParams.get(param);
     }
 
-    // Fonction pour importer la configuration depuis Dpaste avec le code dans l'URL
-    async function importFromDpasteWithCode() {
-        const dpasteCode = getQueryParam('code'); // Récupère le code à partir de l'URL
+    // Récupérer le code depuis l'URL
+    const dpasteCode = getQueryParam('code');
+    console.log('Paramètre code récupéré :', dpasteCode);
 
-        if (dpasteCode) {
-            const dpasteURL = `https://dpaste.com/${dpasteCode}.txt`; // Construire l'URL à partir du code
-
-            try {
-                const response = await fetch(dpasteURL); // Faire la requête vers dpaste
-                if (response.ok) {
-                    const data = await response.json(); // Récupérer les données JSON
-
-                    if (typeof data === 'object') {
-                        // Vérifier que le format des données est correct
-                        if (Object.keys(data).every(page => Array.isArray(data[page]))) {
-                            // Écraser le localStorage avec les nouvelles données
-                            localStorage.setItem('pages', JSON.stringify(Object.keys(data)));
-                            Object.keys(data).forEach(page => {
-                                localStorage.setItem(page, JSON.stringify(data[page]));
-                            });
-
-                            alert('Configuration importée avec succès !');
-                            loadFromLocalStorage(); // Recharger l'interface avec les nouvelles données
-                        } else {
-                            alert('Le format des données importées est incorrect.');
-                        }
-                    } else {
-                        alert('Le format des données importées est incorrect.');
-                    }
-                } else {
-                    alert('Erreur lors de la récupération des données depuis dpaste.');
-                }
-            } catch (error) {
-                console.error('Erreur lors de la requête dpaste:', error);
-                alert('Erreur lors de la connexion à dpaste.');
-            }
-        }
+    // Si un code est récupéré, lancer l'importation
+    if (dpasteCode) {
+        console.log(`Code trouvé dans l'URL : ${dpasteCode}`);
+        importFromDpaste(dpasteCode); // Lancer l'importation
     }
 
-    // Appeler la fonction pour importer depuis dpaste si le paramètre "code" est présent
-    document.addEventListener('DOMContentLoaded', () => {
-        importFromDpasteWithCode(); // Tenter l'importation dès que la page est chargée
-    });
+    // Fonction pour importer les données depuis Dpaste
+    async function importFromDpaste(code) {
+        const dpasteURL = `https://dpaste.com/${code}.txt`; // URL du fichier Dpaste
 
+        try {
+            const response = await fetch(dpasteURL);
+            if (!response.ok) {
+                throw new Error('Erreur lors de la requête vers Dpaste : ' + response.status);
+            }
+            
+            const data = await response.text(); // Utilise text() au lieu de json() pour lire le fichier brut
+            console.log('Données brutes récupérées :', data);
+
+            // Si les données sont au format JSON, les stocker dans le localStorage
+            try {
+                const jsonData = JSON.parse(data); // Vérifie que le contenu est bien du JSON
+                console.log('Données JSON parsées avec succès :', jsonData);
+
+                // Liste des pages : clés de l'objet
+                const pages = Object.keys(jsonData);
+                console.log('Pages trouvées :', pages);
+                
+                // Sauvegarde la liste des pages dans localStorage
+                localStorage.setItem('pages', JSON.stringify(pages));
+                
+                // Sauvegarde les raccourcis de chaque page dans le localStorage
+                pages.forEach(page => {
+                    localStorage.setItem(page, JSON.stringify(jsonData[page]));
+                });
+
+                alert('Données importées avec succès depuis Dpaste !');
+                // Recharger l'interface ou les pages avec les nouvelles données si nécessaire
+                loadFromLocalStorage();
+                history.replaceState(null, '', window.location.pathname);
+            } catch (parseError) {
+                console.error('Erreur lors du parsing des données JSON :', parseError);
+            }
+        } catch (error) {
+            console.error('Erreur lors de l\'importation depuis Dpaste :', error);
+            alert('Impossible de récupérer les données depuis Dpaste.');
+        }
+    }
 
     loadFromLocalStorage();
 });
