@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,51 +21,56 @@
         <img src="./img/logo.png" alt="Portal Logo">
     </div>
     <ul id="menu">
-        <!-- Les pages par défaut seront chargées ici -->
+        <!-- Default pages will be loaded here -->
     </ul>
     
-    <!-- Nouveau conteneur pour centrer les boutons et formulaires -->
+    <!-- New container to center buttons and forms -->
     <div id="controlsContainer">
-        <button id="editModeToggle">Activer le Mode Édition</button>
-        <button id="addPageButton" style="display: none;">Ajouter une Page</button>
-        <button id="addShortcutButton" style="display: none;">Ajouter un Raccourci</button>
-        <button id="exportConfigButton" style="display: none;">Exporter la Configuration</button>
-        <button id="importConfigButton" style="display: none;">Importer la Configuration</button>
-        <button id="resetButton" style="display: none;">Réinitialiser</button>
+        <button id="editModeToggle">Activate Edit Mode</button>
+        <button id="addPageButton" style="display: none;">Add Page</button>
+        <button id="addShortcutButton" style="display: none;">Add Shortcut</button>
+        <button id="exportConfigButton" style="display: none;">Export Configuration</button>
+        <button id="importConfigButton" style="display: none;">Import Configuration</button>
+        <button id="resetButton" style="display: none;">Reset</button>
 
-        <input type="text" id="importConfigURL" placeholder="Lien Dpaste" style="display: none;">
+        <input type="text" id="importConfigURL" placeholder="Dpaste Link" style="display: none;">
         
         <div id="importConfigContainer" style="display: none; text-align: center; margin-top: 10px;">
             <div style="display: inline-flex; align-items: center;">
                 <span style="color: white; margin-right: 5px;">https://dpaste.com/</span>
-                <input type="text" id="importConfigID" placeholder="Identifiant Dpaste" style="margin: 0 auto;">
+                <input type="text" id="importConfigID" placeholder="Dpaste ID" style="margin: 0 auto;">
             </div>
-            <button id="confirmImportButton">Importer</button>
+            <button id="confirmImportButton">Import</button>
         </div>
 
         <div id="exportedLinkContainer" style="display: none; margin-top: 10px; text-align: center; width: 100%;">
-            <p>Lien de la configuration exportée : <a id="exportedLink" href="#" target="_blank"></a></p>
+            <p>Exported configuration link: <a id="exportedLink" href="#" target="_blank"></a></p>
             <div id="qrCode" style="margin: 0 auto; display: block; width: fit-content; margin-top: 20px;"></div>
         </div>
 
         <div id="addPageForm" style="display: none;">
-            <input type="text" id="newPageName" placeholder="Nom de la nouvelle page" maxlength="16">
-            <button onclick="addNewPage()">Ajouter la Page</button>
+            <input type="text" id="newPageName" placeholder="New page name" maxlength="16">
+            <button onclick="addNewPage()">Add Page</button>
         </div>
         
         <div id="addShortcutForm" style="display: none;">
-            <input type="text" id="shortcutName" placeholder="Nom du raccourci" maxlength="10">
-            <input type="url" id="shortcutURL" placeholder="URL du raccourci">
-            <button onclick="addShortcutToCurrentPage()">Ajouter le Raccourci</button>
+            <input type="text" id="shortcutName" placeholder="Shortcut name" maxlength="10">
+            <input type="url" id="shortcutURL" placeholder="Shortcut URL">
+            <button onclick="addShortcutToCurrentPage()">Add Shortcut</button>
         </div>
     </div>
 
     <div id="content">
-        <!-- Les sections de page seront chargées ici -->
+        <!-- Page sections will be loaded here -->
     </div>
     <script src="./js/script.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
+    <!-- Site footer -->
+    <footer style="background-color: #222; color: white; text-align: center; padding: 20px; margin-top: 40px;">
+        <p>© 2024 Ev Portal - All rights reserved</p>
+        <p>Version: <span id="version">1.0.0</span></p>
+        <p>Developed by <a href="https://drslid.github.io/" target="_blank" style="color: #1E90FF;">Ev Portal Team</a></p>
+    </footer>
 </body>
-
 </html>
