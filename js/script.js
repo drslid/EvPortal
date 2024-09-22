@@ -249,7 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (deleteButton) {
             deleteButton.addEventListener('click', (event) => {
                 event.stopPropagation();
-                if (confirm(`Voulez-vous vraiment supprimer la page "${pageName}" ?`)) {
+                if (confirm(`Do you really want to delete the page "${pageName}" ?`)) {
                     contentContainer.removeChild(section);
                     menuLinks.removeChild(menuLink);
                     removePageFromLocalStorage(pageName);
@@ -263,7 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Fonction pour réinitialiser le localStorage et rafraîchir la page
     function resetConfig() {
-        if (confirm("Êtes-vous sûr de vouloir réinitialiser la configuration ? Cette action supprimera toutes les données enregistrées.")) {
+        if (confirm("Are you sure you want to reset the configuration? This action will delete all saved data.")) {
             localStorage.clear(); // Supprime toutes les données du localStorage
             location.reload(); // Rafraîchit la page
         }
@@ -409,7 +409,7 @@ document.addEventListener('DOMContentLoaded', () => {
             newPageInput.value = '';
             addPageForm.style.display = 'none';
         } else {
-            alert('Le nom de la page est vide ou existe déjà.');
+            alert('The page name is empty or already exists.');
         }
     }
     
@@ -427,7 +427,7 @@ document.addEventListener('DOMContentLoaded', () => {
             shortcutURLInput.value = '';
             addShortcutForm.style.display = 'none';
         } else {
-            alert('Le nom ou l\'URL du raccourci est vide.');
+            alert('The shortcut name or URL is empty.');
         }
     }
 
@@ -552,7 +552,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Extraire l'identifiant Dpaste (les 10 derniers caractères de l'URL)
                 const dpasteIdentifier = dpasteUrl.split('/').pop();
-                console.log('Identifiant Dpaste extrait :', dpasteIdentifier);
+                console.log('Dpaste identifier extracted:', dpasteIdentifier);
 
                 // Générer l'URL de ton site avec l'identifiant Dpaste
                 const customLink = `https://drslid.github.io/EvPortal/?code=${dpasteIdentifier}`;
@@ -571,11 +571,11 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 const errorData = await response.json();
                 console.error('Erreur:', errorData);
-                alert('Erreur lors de l\'exportation vers dpaste.');
+                alert('Error exporting to dpaste.');
             }
         } catch (error) {
             console.error('Erreur lors de la requête dpaste:', error);
-            alert('Erreur lors de la connexion à dpaste.');
+            alert('Error connecting to dpaste.');
         }
     }
 
@@ -595,7 +595,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function importConfig() {
         const dpasteID = document.getElementById('importConfigID').value.trim();
         if (!dpasteID) {
-            alert('Veuillez entrer un identifiant Dpaste.');
+            alert('Please enter a Dpaste ID.');
             return;
         }
 
@@ -615,16 +615,16 @@ document.addEventListener('DOMContentLoaded', () => {
                             localStorage.setItem(page, JSON.stringify(data[page]));
                         });
 
-                        alert('Configuration importée avec succès !');
+                        alert('Configuration successfully imported!');
                         loadFromLocalStorage(); // Recharger l'interface avec les nouvelles données
                     } else {
-                        alert('Le format des données importées est incorrect.');
+                        alert('The format of the imported data is incorrect.');
                     }
                 } else {
-                    alert('Le format des données importées est incorrect.');
+                    alert('The format of the imported data is incorrect.');
                 }
             } else {
-                alert('Erreur lors de la récupération des données depuis dpaste.');
+                alert('Error retrieving data from dpaste.');
             }
         } catch (error) {
             console.error('Erreur lors de la requête dpaste:', error);
@@ -681,7 +681,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Récupérer le code depuis l'URL
     const dpasteCode = getQueryParam('code');
-    console.log('Paramètre code récupéré :', dpasteCode);
+    console.log('Retrieved code parameter:', dpasteCode);
 
     // Si un code est récupéré, lancer l'importation
     if (dpasteCode) {
@@ -719,7 +719,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     localStorage.setItem(page, JSON.stringify(jsonData[page]));
                 });
 
-                alert('Données importées avec succès depuis Dpaste !');
+                alert('Data successfully imported from Dpaste!');
                 // Recharger l'interface ou les pages avec les nouvelles données si nécessaire
                 loadFromLocalStorage();
                 history.replaceState(null, '', window.location.pathname);
@@ -728,7 +728,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             console.error('Erreur lors de l\'importation depuis Dpaste :', error);
-            alert('Impossible de récupérer les données depuis Dpaste.');
+            alert('Unable to retrieve data from Dpaste.');
         }
     }
 
