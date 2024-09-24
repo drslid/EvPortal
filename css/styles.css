@@ -107,7 +107,7 @@ button {
 
 #content {
     flex-grow: 1;
-    padding: 0px 20px 20px 20px;
+    padding: 0px 20px 35px 20px;
     margin: 0 auto;
     max-width: 1600px; /* Par exemple, une largeur maximale pour contrôler la largeur du contenu */
 }
@@ -146,6 +146,7 @@ button {
     gap: 20px;
     justify-content: center; /* Centre horizontalement */
     align-items: center; /* Centre verticalement si nécessaire */
+    padding-bottom: 35px;
 }
 
 
@@ -422,9 +423,30 @@ footer {
     background-color: #222;
     color: white;
     text-align: center;
-    padding: 20px;
+    padding: 5px;
     width: 100%;
     position: fixed;
-    bottom: 0;
+    bottom: 0px; /* Décale légèrement vers le bas */
     z-index: 10;
+    font-size: 12px; /* Taille des caractères */
+    margin-top: 5px; /* Marges supplémentaires */
+}
+
+#youtubeRedirectButtonContainer {
+    position: fixed;
+    bottom: 45px; /* Juste au-dessus du footer */
+    width: 100%;
+    text-align: center;
+    z-index: 9;
+}
+
+#youtubeRedirectButton {
+    margin: 10px;
+    padding: 10px 20px;
+    background-color: #444; /* Couleur de fond comme les autres boutons */
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 12px; /* Taille du texte similaire aux autres boutons */
 }

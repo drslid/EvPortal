@@ -29,8 +29,8 @@
         <button id="editModeToggle">Activate Edit Mode</button>
         <button id="addPageButton" style="display: none;">Add Page</button>
         <button id="addShortcutButton" style="display: none;">Add Shortcut</button>
-        <button id="exportConfigButton" style="display: none;">Export Configuration</button>
-        <button id="importConfigButton" style="display: none;">Import Configuration</button>
+        <button id="exportConfigButton" style="display: none;">Export Config</button>
+        <button id="importConfigButton" style="display: none;">Import Config</button>
         <button id="resetButton" style="display: none;">Reset</button>
 
         <input type="text" id="importConfigURL" placeholder="Dpaste Link" style="display: none;">
@@ -44,7 +44,7 @@
         </div>
 
         <div id="exportedLinkContainer" style="display: none; margin-top: 10px; text-align: center; width: 100%;">
-            <p>Exported configuration link: <a id="exportedLink" href="#" target="_blank"></a></p>
+            <p>Exported config link: <a id="exportedLink" href="#" target="_blank"></a></p>
             <div id="qrCode" style="margin: 0 auto; display: block; width: fit-content; margin-top: 20px;"></div>
         </div>
 
@@ -65,11 +65,15 @@
     </div>
     <script src="./js/script.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-    <!-- Site footer -->
-    <footer style="background-color: #222; color: white; text-align: center; padding: 20px; margin-top: 40px;">
-        <p>© 2024 Ev Portal - All rights reserved</p>
-        <p>Version: <span id="version">1.0.0</span></p>
+
+    <div id="youtubeRedirectButtonContainer" style="display: none;">
+        <button id="youtubeRedirectButton">⛶ Fullscreen</button>
+    </div>
+
+    <footer>
+        <p>© 2024 Ev Portal - Version: <span id="version">1.0.0</span> - All rights reserved</p>
     </footer>
 </body>
 </html>

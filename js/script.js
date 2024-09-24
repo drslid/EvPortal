@@ -285,10 +285,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Ajouter ou retirer la classe active pour le bouton de désactivation du mode édition
         if (isEditMode) {
-            editModeToggle.textContent = 'Désactiver le Mode Édition';
+            editModeToggle.textContent = 'Disable Edit Mode';
             editModeToggle.classList.add('active'); // Ajoute la classe active pour le style rouge bordeaux
         } else {
-            editModeToggle.textContent = 'Activer le Mode Édition';
+            editModeToggle.textContent = 'Enable Edit Mode';
             editModeToggle.classList.remove('active'); // Retire la classe active
         }
 
@@ -379,7 +379,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        editModeToggle.textContent = isEditMode ? 'Désactiver le Mode Édition' : 'Activer le Mode Édition';
+        editModeToggle.textContent = isEditMode ? 'Disable Edit Mode' : 'Enable Edit Mode';
         addPageForm.style.display = 'none';
         addShortcutForm.style.display = 'none';
     });
@@ -431,27 +431,53 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Fonction pour obtenir le meilleur favicon disponible
-    function getBestFaviconUrl(domain) {
-        const sizes = [256, 128, 64, 32, 16];
-        return new Promise((resolve) => {
-            let index = 0;
-            function tryNext() {
-                if (index >= sizes.length) {
-                    resolve(null); // Aucun favicon trouvé
-                    return;
+    // Fonction pour obtenir le favicon à partir de Google ou utiliser un favicon par défaut en cas de 404
+    async function getBestFaviconUrl(domain) {
+        const sizes = [256, 128, 64, 32, 16];  // Différentes tailles de favicon à tester
+        let faviconUrl = null;
+
+        // Fonction pour vérifier si une URL renvoie un 404 ou non
+        async function checkFaviconUrl(url) {
+            try {
+                const response = await axios.get(url);
+                if (response.status === 200) {
+                    return true; // L'URL est valide et ne renvoie pas de 404
                 }
-                const size = sizes[index];
-                const faviconUrl = `https://www.google.com/s2/favicons?sz=${size}&domain=https://${domain}`;
-                const img = new Image();
-                img.onload = function() {
-                    resolve(faviconUrl);
+            } catch (error) {
+                if (error.response && error.response.status === 404) {
+                    console.warn(`Favicon not found at: ${url}`);
+                } else {
+                    console.error(`Error fetching favicon from: ${url}`, error);
                 }
-                img.src = faviconUrl;
             }
-            tryNext();
-        });
+            return false;
+        }
+
+        // Boucle pour essayer différentes tailles de favicons
+        for (let size of sizes) {
+            // Essayer d'abord avec HTTPS
+            const httpsFaviconUrl = `https://www.google.com/s2/favicons?sz=${size}&domain=https://${domain}`;
+            if (await checkFaviconUrl(httpsFaviconUrl)) {
+                faviconUrl = httpsFaviconUrl;
+                break;
+            }
+
+            // Si HTTPS échoue, essayer avec HTTP
+            const httpFaviconUrl = `https://www.google.com/s2/favicons?sz=${size}&domain=http://${domain}`;
+            if (await checkFaviconUrl(httpFaviconUrl)) {
+                faviconUrl = httpFaviconUrl;
+                break;
+            }
+        }
+
+        // Si aucun favicon valide n'est trouvé, utiliser le favicon par défaut
+        if (!faviconUrl) {
+            faviconUrl = './img/default-favicon.png';
+        }
+
+        return faviconUrl;
     }
+
 
 
     // Ajouter un nouveau raccourci avec le meilleur favicon disponible
@@ -734,4 +760,34 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     loadFromLocalStorage();
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const youtubeRedirectButton = document.getElementById('youtubeRedirectButton');
+    
+    // Récupérer l'URL actuelle et l'ajouter à l'URL YouTube
+    const currentUrl = window.location.href;
+    const youtubeRedirectUrl = `https://www.youtube.com/redirect?q=${encodeURIComponent(currentUrl)}`;
+    
+    // Rediriger vers l'URL YouTube au clic sur le bouton
+    youtubeRedirectButton.addEventListener('click', () => {
+        window.location.href = youtubeRedirectUrl;
+    });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const youtubeRedirectButtonContainer = document.getElementById('youtubeRedirectButtonContainer');
+
+    // Vérifier si le mot "Chrome" est présent dans le User Agent (pour tester)
+    const isChrome = navigator.userAgent.includes('tesla');
+
+    // Si c'est Chrome, on affiche le bouton, sinon on le cache
+    if (isChrome) {
+        youtubeRedirectButtonContainer.style.display = 'block';
+    } else {
+        youtubeRedirectButtonContainer.style.display = 'none';
+    }
+
+    // Log du user agent pour vérifier lors du test
+    console.log('User Agent:', navigator.userAgent);
 });
