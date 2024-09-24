@@ -166,6 +166,18 @@ button {
     cursor: pointer;
     overflow: hidden; /* Assurez-vous que tout débordement est caché */
     outline: 2px solid #424242;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.shortcut:hover {
+    transform: scale(1.05); /* Agrandir légèrement au survol */
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3); /* Ajouter une ombre */
+}
+
+/* Animation lors du clic (active) */
+.shortcut:active {
+    transform: scale(0.80); /* Réduire légèrement lorsqu'on clique */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Réduire l'ombre */
 }
 
 /* Tesla Model 3/Y ou grands écrans (15 pouces, 1920px et plus) */
