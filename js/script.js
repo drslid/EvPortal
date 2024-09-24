@@ -551,11 +551,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Extraire l'identifiant Dpaste (les 10 derniers caractères de l'URL)
                 const dpasteIdentifier = dpasteUrl.split('/').pop();
-                console.log('Dpaste identifier extracted:', dpasteIdentifier);
+
 
                 // Générer l'URL de ton site avec l'identifiant Dpaste
                 const customLink = `https://drslid.github.io/EvPortal/?code=${dpasteIdentifier}`;
-                console.log('Lien personnalisé pour le QR code :', customLink);
+
 
                 // Mettre à jour l'interface avec l'URL Dpaste (originale)
                 const exportedLinkContainer = document.getElementById('exportedLinkContainer');
@@ -675,18 +675,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Fonction pour récupérer le paramètre de l'URL
     function getQueryParam(param) {
-        console.log(`Récupération du paramètre ${param}`);
         const urlParams = new URLSearchParams(window.location.search);
         return urlParams.get(param);
     }
 
     // Récupérer le code depuis l'URL
     const dpasteCode = getQueryParam('code');
-    console.log('Retrieved code parameter:', dpasteCode);
 
     // Si un code est récupéré, lancer l'importation
     if (dpasteCode) {
-        console.log(`Code trouvé dans l'URL : ${dpasteCode}`);
         importFromDpaste(dpasteCode); // Lancer l'importation
     }
 
@@ -701,16 +698,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             const data = await response.text(); // Utilise text() au lieu de json() pour lire le fichier brut
-            console.log('Données brutes récupérées :', data);
 
             // Si les données sont au format JSON, les stocker dans le localStorage
             try {
                 const jsonData = JSON.parse(data); // Vérifie que le contenu est bien du JSON
-                console.log('Données JSON parsées avec succès :', jsonData);
 
                 // Liste des pages : clés de l'objet
                 const pages = Object.keys(jsonData);
-                console.log('Pages trouvées :', pages);
+
                 
                 // Sauvegarde la liste des pages dans localStorage
                 localStorage.setItem('pages', JSON.stringify(pages));
@@ -762,6 +757,4 @@ document.addEventListener('DOMContentLoaded', () => {
         youtubeRedirectButtonContainer.style.display = 'none';
     }
 
-    // Log du user agent pour vérifier lors du test
-    console.log('User Agent:', navigator.userAgent);
 });
