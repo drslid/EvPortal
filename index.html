@@ -3,19 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ev Portal</title>
-    <link rel="stylesheet" href="./css/styles.css">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <!-- Title and Description for SEO -->
+    <title>Ev Portal - Your Personalized Tesla Link Manager</title>
+    <meta name="description" content="EvPortal allows you to create customizable pages and shortcuts for quick access to your favorite sites from your Tesla screen.">
+
+    <!-- Open Graph for Social Sharing (Facebook, LinkedIn, etc.) -->
+    <meta property="og:title" content="Ev Portal - Personalized Link Manager for Tesla" />
+    <meta property="og:description" content="Quickly access your favorite websites, streaming services, music, navigation, and more from your Tesla screen." />
+    <meta property="og:image" content="./img/social-preview.png" />
+    <meta property="og:url" content="https://drslid.github.io/EvPortal/" />
+    <meta property="og:type" content="website" />
+
+    <!-- Twitter Card for Social Sharing -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Ev Portal - Tesla Personalized Link Manager">
+    <meta name="twitter:description" content="Customize and manage your favorite links on your Tesla screen with EvPortal.">
+
+    <!-- Favicon and Icons -->
     <link rel="apple-touch-icon" sizes="180x180" href="./img/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="./img/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="./img/favicon-16x16.png">
-    <link rel="manifest" href="./img/site.webmanifest">
     <link rel="mask-icon" href="./img/safari-pinned-tab.svg" color="#4a4a4a">
     <link rel="shortcut icon" href="./img/favicon.ico">
-    <link rel="preload" href="./img/logo.webp" as="image">
+    <link rel="manifest" href="./img/site.webmanifest">
+
+    <!-- Theme Color for Mobile Browsers -->
+    <meta name="theme-color" content="#ffffff">
     <meta name="msapplication-TileColor" content="#909090">
     <meta name="msapplication-config" content="./img/browserconfig.xml">
-    <meta name="theme-color" content="#ffffff">
-    <link rel="manifest" href="./site.webmanifest">
+    
+    <!-- Preload important assets for performance -->
+    <link rel="preload" href="./img/logo.webp" as="image">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="./css/styles.css">
 </head>
 <body>
     <div id="header">
@@ -68,7 +91,6 @@
     </div>
     <script src="./js/script.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
 
     <div id="youtubeRedirectButtonContainer" style="display: none;">
         <button id="youtubeRedirectButton">⛶ Fullscreen</button>
