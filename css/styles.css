@@ -442,7 +442,7 @@ footer {
     bottom: 45px; /* Juste au-dessus du footer */
     width: 100%;
     text-align: center;
-    z-index: 9;
+    z-index: 10;
 }
 
 #youtubeRedirectButton {
