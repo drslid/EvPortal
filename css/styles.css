@@ -107,7 +107,7 @@ button {
 
 #content {
     flex-grow: 1;
-    padding: 0px 20px 35px 20px;
+    padding: 0px 20px 100px 20px;
     margin: 0 auto;
     max-width: 1600px; /* Par exemple, une largeur maximale pour contrôler la largeur du contenu */
 }
@@ -423,13 +423,18 @@ footer {
     background-color: #222;
     color: white;
     text-align: center;
-    padding: 5px;
+    padding: 2px;
     width: 100%;
     position: fixed;
-    bottom: 0px; /* Décale légèrement vers le bas */
+    bottom: 0px; /* Fixé en bas de la page */
     z-index: 10;
     font-size: 12px; /* Taille des caractères */
-    margin-top: 5px; /* Marges supplémentaires */
+}
+
+#privacyNotice {
+    font-size: 10px; /* Taille réduite pour le texte de la mention légale */
+    color: #888; /* Gris clair pour être discret */
+    margin-top: 5px; /* Espace entre le copyright et la mention légale */
 }
 
 #youtubeRedirectButtonContainer {
@@ -441,7 +446,7 @@ footer {
 }
 
 #youtubeRedirectButton {
-    margin: 10px;
+    margin: 35px;
     padding: 10px 20px;
     background-color: #444; /* Couleur de fond comme les autres boutons */
     color: white;
