@@ -423,9 +423,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (shortcutName && shortcutURL) {
             addNewShortcut(currentSection, shortcutName, shortcutURL);
             saveToLocalStorage();
-            shortcutNameInput.value = '';
-            shortcutURLInput.value = '';
-            addShortcutForm.style.display = 'none';
+            // shortcutNameInput.value = '';
+            // shortcutURLInput.value = '';
+            // addShortcutForm.style.display = 'none';
+            history.replaceState(null, '', '/');  // Redirige vers la racine
+            location.reload();  // Rafraîchit la page
         } else {
             alert('The shortcut name or URL is empty.');
         }
