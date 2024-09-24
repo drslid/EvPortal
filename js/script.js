@@ -15,139 +15,610 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Pages par défaut et leurs raccourcis
     const defaultPages = {
-        'cinema': [
-            { name: 'Prime Video', url: 'https://www.primevideo.com', order: 1 },
-            { name: 'Disney', url: 'https://www.disneyplus.com', order: 2 },
-            { name: 'Hulu', url: 'https://www.hulu.com', order: 3 },
-            { name: 'HBOMax', url: 'https://www.hbomax.com', order: 4 },
-            { name: 'Plex', url: 'https://app.plex.tv', order: 5 },
-            { name: 'Paramount', url: 'https://www.paramountplus.com/fr/', order: 6 },
-            { name: 'PlutoTV', url: 'https://pluto.tv/fr/', order: 7 },
-            { name: 'Crave', url: 'https://www.crave.ca/fr', order: 8 },
-            { name: 'Starz', url: 'https://www.starz.com', order: 9 },
-            { name: 'Canal', url: 'https://www.canalplus.com/', order: 10 },
-            { name: 'AppleTV', url: 'https://tv.apple.com/fr', order: 11 },
-            { name: 'CinePrime', url: 'https://www.youtube.com/@CINE_PRIME', order: 12 },
-            { name: 'CineMovies', url: 'https://www.youtube.com/channel/UCwIdNiqZoMq8rS4EFMuMPFQ', order: 13 },
-            { name: 'CineNanar', url: 'https://www.youtube.com/channel/UCQck1eAT_665Vn31P7qSzXQ', order: 14 },
-            { name: 'Gulli', url: 'https://replay.gulli.fr/Direct', order: 15 },
-            { name: 'AnimeSama', url: 'https://anime-sama.fr/', order: 16 }
+        "cinema": [
+          {
+            "name": "CrunchyRoll",
+            "url": "https://www.crunchyroll.com/",
+            "order": 0
+          },
+          {
+            "name": "Plex",
+            "url": "https://app.plex.tv/",
+            "order": 1
+          },
+          {
+            "name": "Prime Video",
+            "url": "https://www.primevideo.com/",
+            "order": 2
+          },
+          {
+            "name": "Disney",
+            "url": "https://www.disneyplus.com/",
+            "order": 3
+          },
+          {
+            "name": "Hulu",
+            "url": "https://www.hulu.com/",
+            "order": 4
+          },
+          {
+            "name": "HBOMax",
+            "url": "https://www.hbomax.com/",
+            "order": 5
+          },
+          {
+            "name": "Paramount",
+            "url": "https://www.paramountplus.com/fr/",
+            "order": 6
+          },
+          {
+            "name": "PlutoTV",
+            "url": "https://pluto.tv/fr/",
+            "order": 7
+          },
+          {
+            "name": "Crave",
+            "url": "https://www.crave.ca/fr",
+            "order": 8
+          },
+          {
+            "name": "Starz",
+            "url": "https://www.starz.com/",
+            "order": 9
+          },
+          {
+            "name": "DAZN",
+            "url": "https://www.dazn.com/",
+            "order": 10
+          },
+          {
+            "name": "Canal",
+            "url": "https://www.canalplus.com/",
+            "order": 11
+          },
+          {
+            "name": "AppleTV",
+            "url": "https://tv.apple.com/fr",
+            "order": 12
+          },
+          {
+            "name": "CinePrime",
+            "url": "https://www.youtube.com/@CINE_PRIME",
+            "order": 13
+          },
+          {
+            "name": "CineMovies",
+            "url": "https://www.youtube.com/channel/UCwIdNiqZoMq8rS4EFMuMPFQ",
+            "order": 14
+          },
+          {
+            "name": "CineNanar",
+            "url": "https://www.youtube.com/channel/UCQck1eAT_665Vn31P7qSzXQ",
+            "order": 15
+          },
+          {
+            "name": "Gulli",
+            "url": "https://replay.gulli.fr/Direct",
+            "order": 16
+          },
+          {
+            "name": "AnimeSama",
+            "url": "https://anime-sama.fr/",
+            "order": 17
+          }
         ],
-        'music': [
-            { name: 'Apple Music', url: 'https://music.apple.com', order: 1 },
-            { name: 'Deezer', url: 'https://www.deezer.com/en/channels/explore/', order: 2 },
-            { name: 'SoundCloud', url: 'https://www.soundcloud.com', order: 3 },
-            { name: 'Tidal', url: 'https://www.tidal.com', order: 4 },
-            { name: 'Spotify', url: 'https://open.spotify.com/', order: 5 },
-            { name: 'Qobuz', url: 'https://www.qobuz.com', order: 6 },
-            { name: 'ZeffyrMusic', url: 'https://www.zeffyrmusic.com/', order: 7 },
-            { name: 'AllForMusic', url: 'https://www.allformusic.fr/', order: 8 },
-            { name: 'AccuRadio', url: 'https://www.accuradio.com', order: 9 },
-            { name: 'iHeartRadio', url: 'https://www.iheart.com', order: 10 },
-            { name: 'MixCloud', url: 'https://www.mixcloud.com', order: 11 },
-            { name: 'Pandora', url: 'https://www.pandora.com', order: 12 },
-            { name: 'LiveOne', url: 'https://www.liveone.com', order: 13 },
-            { name: 'Idagio', url: 'https://www.idagio.com', order: 14 },
-            { name: 'TuneIn', url: 'https://tunein.com', order: 15 }
+        "music": [
+          {
+            "name": "Apple Music",
+            "url": "https://music.apple.com/",
+            "order": 1
+          },
+          {
+            "name": "Deezer",
+            "url": "https://www.deezer.com/en/channels/explore/",
+            "order": 2
+          },
+          {
+            "name": "SoundCloud",
+            "url": "https://www.soundcloud.com/",
+            "order": 3
+          },
+          {
+            "name": "Tidal",
+            "url": "https://www.tidal.com/",
+            "order": 4
+          },
+          {
+            "name": "Spotify",
+            "url": "https://open.spotify.com/",
+            "order": 5
+          },
+          {
+            "name": "Qobuz",
+            "url": "https://www.qobuz.com/",
+            "order": 6
+          },
+          {
+            "name": "ZeffyrMusic",
+            "url": "https://www.zeffyrmusic.com/",
+            "order": 7
+          },
+          {
+            "name": "AllForMusic",
+            "url": "https://www.allformusic.fr/",
+            "order": 8
+          },
+          {
+            "name": "AccuRadio",
+            "url": "https://www.accuradio.com/",
+            "order": 9
+          },
+          {
+            "name": "iHeartRadio",
+            "url": "https://www.iheart.com/",
+            "order": 10
+          },
+          {
+            "name": "MixCloud",
+            "url": "https://www.mixcloud.com/",
+            "order": 11
+          },
+          {
+            "name": "Pandora",
+            "url": "https://www.pandora.com/",
+            "order": 12
+          },
+          {
+            "name": "LiveOne",
+            "url": "https://www.liveone.com/",
+            "order": 13
+          },
+          {
+            "name": "Idagio",
+            "url": "https://www.idagio.com/",
+            "order": 14
+          },
+          {
+            "name": "TuneIn",
+            "url": "https://tunein.com/",
+            "order": 15
+          }
         ],
-        'jeux': [
-            { name: '2048', url: 'https://jeu2048.fr', order: 1 },
-            { name: 'Solitaire', url: 'https://solitaire.com', order: 2 },
-            { name: 'Tetris', url: 'https://tetris.com', order: 3 },
-            { name: 'Minesweeper', url: 'https://minesweeperonline.com', order: 4 },
-            { name: 'Snake', url: 'https://playsnake.org', order: 5 },
-            { name: 'Chess', url: 'https://www.chess.com', order: 6 },
-            { name: 'Checkers', url: 'https://www.checkers.com', order: 7 },
-            { name: 'Crazy Games', url: 'https://www.crazygames.fr/', order: 8 },
-            { name: 'Jeux.fr', url: 'https://www.jeux.fr/', order: 9 },
-            { name: '1001 Jeux', url: 'https://www.1001jeux.fr/', order: 10 },
-            { name: 'Poki', url: 'https://poki.com/fr', order: 11 },
-            { name: 'Jeux-Gratuits.com', url: 'https://www.jeux-gratuits.com/', order: 12 },
-            { name: 'PlayHop', url: 'https://playhop.com/fr', order: 13 }
+        "games": [
+          {
+            "name": "Twitch",
+            "url": "https://www.twitch.tv/",
+            "order": 1
+          },
+          {
+            "name": "Kick",
+            "url": "https://kick.com/",
+            "order": 2
+          },
+          {
+            "name": "AirConsole",
+            "url": "https://www.airconsole.com/",
+            "order": 3
+          },
+          {
+            "name": "2048",
+            "url": "https://jeu2048.fr/",
+            "order": 4
+          },
+          {
+            "name": "Solitaire",
+            "url": "https://solitaire.com/",
+            "order": 5
+          },
+          {
+            "name": "Tetris",
+            "url": "https://tetris.com/",
+            "order": 6
+          },
+          {
+            "name": "Minesweeper",
+            "url": "https://minesweeperonline.com/",
+            "order": 7
+          },
+          {
+            "name": "Snake",
+            "url": "https://playsnake.org/",
+            "order": 8
+          },
+          {
+            "name": "Chess",
+            "url": "https://www.chess.com/",
+            "order": 9
+          },
+          {
+            "name": "Checkers",
+            "url": "https://www.checkers.com/",
+            "order": 10
+          },
+          {
+            "name": "Crazy Games",
+            "url": "https://www.crazygames.fr/",
+            "order": 11
+          },
+          {
+            "name": "Jeux.fr",
+            "url": "https://www.jeux.fr/",
+            "order": 12
+          },
+          {
+            "name": "1001 Jeux",
+            "url": "https://www.1001jeux.fr/",
+            "order": 13
+          },
+          {
+            "name": "Poki",
+            "url": "https://poki.com/fr",
+            "order": 14
+          },
+          {
+            "name": "Jeux-Gratuits.com",
+            "url": "https://www.jeux-gratuits.com/",
+            "order": 15
+          },
+          {
+            "name": "PlayHop",
+            "url": "https://playhop.com/fr",
+            "order": 16
+          }
         ],
-        'meteo': [
-            { name: 'Windy', url: 'https://www.windy.com/', order: 1 },
-            { name: 'Weather.com', url: 'https://weather.com', order: 2 },
-            { name: 'LaChaineMeteo', url: 'https://www.lachainemeteo.com', order: 3 },
-            { name: 'Météo France', url: 'https://meteofrance.com', order: 4 }
+        "weather": [
+          {
+            "name": "Ventusky",
+            "url": "https://www.ventusky.com/",
+            "order": 0
+          },
+          {
+            "name": "Windy",
+            "url": "https://www.windy.com/",
+            "order": 1
+          },
+          {
+            "name": "Weather.com",
+            "url": "https://weather.com/",
+            "order": 2
+          },
+          {
+            "name": "LaChaineMeteo",
+            "url": "https://www.lachainemeteo.com/",
+            "order": 3
+          },
+          {
+            "name": "Météo France",
+            "url": "https://meteofrance.com/",
+            "order": 4
+          }
         ],
-        'navigation': [
-            { name: 'GoogleMaps', url: 'https://maps.google.com', order: 1 },
-            { name: 'Waze', url: 'https://www.waze.com', order: 2 },
-            { name: 'Apple Maps', url: 'https://maps.apple.com', order: 3 },
-            { name: 'Here WeGo', url: 'https://wego.here.com', order: 4 },
-            { name: 'OpenStreetMap', url: 'https://www.openstreetmap.org', order: 5 },
-            { name: 'MapQuest', url: 'https://www.mapquest.com', order: 6 },
-            { name: 'BingMaps', url: 'https://www.bing.com/maps', order: 7 },
-            { name: 'A Better Route Planner', url: 'https://abetterrouteplanner.com', order: 8 },
-            { name: 'Infotraffic', url: 'https://www.infotrafic.com/', order: 9 }
+        "navigation": [
+          {
+            "name": "GoogleMaps",
+            "url": "https://maps.google.com/",
+            "order": 1
+          },
+          {
+            "name": "Waze",
+            "url": "https://www.waze.com/",
+            "order": 2
+          },
+          {
+            "name": "Tesla_Waze",
+            "url": "https://teslawaze.azurewebsites.net/",
+            "order": 3
+          },
+          {
+            "name": "Apple Maps",
+            "url": "https://maps.apple.com/",
+            "order": 4
+          },
+          {
+            "name": "Here WeGo",
+            "url": "https://wego.here.com/",
+            "order": 5
+          },
+          {
+            "name": "OpenStreetMap",
+            "url": "https://www.openstreetmap.org/",
+            "order": 6
+          },
+          {
+            "name": "MapQuest",
+            "url": "https://www.mapquest.com/",
+            "order": 7
+          },
+          {
+            "name": "BingMaps",
+            "url": "https://www.bing.com/maps",
+            "order": 8
+          },
+          {
+            "name": "A Better Route Planner",
+            "url": "https://abetterrouteplanner.com/",
+            "order": 9
+          },
+          {
+            "name": "Infotraffic",
+            "url": "https://www.infotrafic.com/",
+            "order": 10
+          }
         ],
-        'recharge': [
-            { name: 'ABetterRoutePlanner', url: 'https://abetterrouteplanner.com', order: 1 },
-            { name: 'PlugShare', url: 'https://www.plugshare.com', order: 2 },
-            { name: 'ChargePoint', url: 'https://www.chargepoint.com', order: 3 },
-            { name: 'Tesla Supercharger', url: 'https://www.tesla.com/trips', order: 4 },
-            { name: 'Electrify America', url: 'https://www.electrifyamerica.com', order: 5 },
-            { name: 'EVgo', url: 'https://www.evgo.com', order: 6 },
-            { name: 'ZapMap', url: 'https://www.zap-map.com', order: 7 },
-            { name: 'Ionity', url: 'https://www.ionity.eu', order: 8 },
-            { name: 'ChargeMap', url: 'https://fr.chargemap.com/map', order: 9 },
-            { name: 'ChargePrice', url: 'https://fr.chargeprice.app/', order: 10 }
+        "charging": [
+          {
+            "name": "ABetterRoutePlanner",
+            "url": "https://abetterrouteplanner.com/",
+            "order": 1
+          },
+          {
+            "name": "PlugShare",
+            "url": "https://www.plugshare.com/",
+            "order": 2
+          },
+          {
+            "name": "ChargePoint",
+            "url": "https://www.chargepoint.com/",
+            "order": 3
+          },
+          {
+            "name": "Tesla Supercharger",
+            "url": "https://www.tesla.com/trips",
+            "order": 4
+          },
+          {
+            "name": "Electrify America",
+            "url": "https://www.electrifyamerica.com/",
+            "order": 5
+          },
+          {
+            "name": "EVgo",
+            "url": "https://www.evgo.com/",
+            "order": 6
+          },
+          {
+            "name": "ZapMap",
+            "url": "https://www.zap-map.com/",
+            "order": 7
+          },
+          {
+            "name": "Ionity",
+            "url": "https://www.ionity.eu/",
+            "order": 8
+          },
+          {
+            "name": "ChargeMap",
+            "url": "https://fr.chargemap.com/map",
+            "order": 9
+          },
+          {
+            "name": "ChargePrice",
+            "url": "https://fr.chargeprice.app/",
+            "order": 10
+          }
         ],
-        'news': [
-            { name: 'Euronews', url: 'https://fr.euronews.com/live', order: 1 },
-            { name: 'AFP', url: 'https://www.afp.com', order: 2 },
-            { name: 'BFMTV', url: 'https://www.bfmtv.com', order: 3 },
-            { name: '20Minutes', url: 'https://www.20minutes.fr', order: 4 },
-            { name: 'LeMonde', url: 'https://www.lemonde.fr', order: 5 },
-            { name: 'LeFigaro', url: 'https://www.lefigaro.fr', order: 6 },
-            { name: 'France 24', url: 'https://www.france24.com', order: 7 },
-            { name: 'Reuters', url: 'https://www.reuters.com', order: 8 },
-            { name: 'BBC News', url: 'https://www.bbc.com/news', order: 9 },
-            { name: 'TheGuardian', url: 'https://www.theguardian.com', order: 10 },
-            { name: 'Libération', url: 'https://www.liberation.fr', order: 11 },
-            { name: 'Express', url: 'https://www.lexpress.fr', order: 12 },
-            { name: 'FranceInfo', url: 'https://www.francetvinfo.fr', order: 13 },
-            { name: 'NewYorkTimes', url: 'https://www.nytimes.com', order: 14 },
-            { name: 'TheWashingtonPost', url: 'https://www.washingtonpost.com', order: 15 },
-            { name: 'CNN', url: 'https://edition.cnn.com', order: 16 },
-            { name: 'AlJazeera', url: 'https://www.aljazeera.com', order: 17 },
-            { name: 'Mediapart', url: 'https://www.mediapart.fr', order: 18 },
-            { name: 'RTBFInfo', url: 'https://www.rtbf.be/info', order: 19 },
-            { name: 'RTNews', url: 'https://www.rt.com', order: 20 }
+        "news": [
+          {
+            "name": "CNews",
+            "url": "https://www.cnews.fr/le-direct",
+            "order": 0
+          },
+          {
+            "name": "Euronews",
+            "url": "https://fr.euronews.com/live",
+            "order": 1
+          },
+          {
+            "name": "AFP",
+            "url": "https://www.afp.com/",
+            "order": 2
+          },
+          {
+            "name": "BFMTV",
+            "url": "https://www.bfmtv.com/",
+            "order": 3
+          },
+          {
+            "name": "20Minutes",
+            "url": "https://www.20minutes.fr/",
+            "order": 4
+          },
+          {
+            "name": "LeMonde",
+            "url": "https://www.lemonde.fr/",
+            "order": 5
+          },
+          {
+            "name": "LeFigaro",
+            "url": "https://www.lefigaro.fr/",
+            "order": 6
+          },
+          {
+            "name": "France 24",
+            "url": "https://www.france24.com/",
+            "order": 7
+          },
+          {
+            "name": "Reuters",
+            "url": "https://www.reuters.com/",
+            "order": 8
+          },
+          {
+            "name": "BBC News",
+            "url": "https://www.bbc.com/news",
+            "order": 9
+          },
+          {
+            "name": "TheGuardian",
+            "url": "https://www.theguardian.com/",
+            "order": 10
+          },
+          {
+            "name": "Libération",
+            "url": "https://www.liberation.fr/",
+            "order": 11
+          },
+          {
+            "name": "Express",
+            "url": "https://www.lexpress.fr/",
+            "order": 12
+          },
+          {
+            "name": "FranceInfo",
+            "url": "https://www.francetvinfo.fr/",
+            "order": 13
+          },
+          {
+            "name": "NewYorkTimes",
+            "url": "https://www.nytimes.com/",
+            "order": 14
+          },
+          {
+            "name": "TheWashingtonPost",
+            "url": "https://www.washingtonpost.com/",
+            "order": 15
+          },
+          {
+            "name": "CNN",
+            "url": "https://edition.cnn.com/",
+            "order": 16
+          },
+          {
+            "name": "AlJazeera",
+            "url": "https://www.aljazeera.com/",
+            "order": 17
+          },
+          {
+            "name": "Mediapart",
+            "url": "https://www.mediapart.fr/",
+            "order": 18
+          },
+          {
+            "name": "RTBFInfo",
+            "url": "https://www.rtbf.be/info",
+            "order": 19
+          },
+          {
+            "name": "RTNews",
+            "url": "https://www.rt.com/",
+            "order": 20
+          }
         ],
-        'tv': [
-            { name: 'TNTenDirect', url: 'https://www.tntendirect.com', order: 1 },
-            { name: 'MolotovTV', url: 'https://www.molotov.tv', order: 2 },
-            { name: 'Francetv', url: 'https://www.france.tv', order: 3 },
-            { name: 'MyTF1', url: 'https://www.tf1.fr', order: 4 },
-            { name: '6play', url: 'https://www.6play.fr', order: 5 },
-            { name: 'Arte.tv', url: 'https://www.arte.tv/fr/', order: 6 },
-            { name: 'BFMTV', url: 'https://www.bfmtv.com/en-direct', order: 7 },
-            { name: 'CNEWS', url: 'https://www.cnews.fr/direct', order: 8 },
-            { name: 'France24', url: 'https://www.france24.com/fr/direct', order: 9 },
-            { name: 'LCP', url: 'https://lcp.fr/direct', order: 10 },
-            { name: 'TV5Monde', url: 'https://www.tv5monde.com', order: 11 },
-            { name: 'RTBFAuvio', url: 'https://www.rtbf.be/auvio/direct', order: 12 },
-            { name: 'Zattoo', url: 'https://zattoo.com', order: 13 },
-            { name: 'PlutoTV', url: 'https://pluto.tv/live-tv', order: 14 },
-            { name: 'StreemaTV', url: 'https://streema.com/tv', order: 15 }
+        "tv": [
+          {
+            "name": "MolotovTV",
+            "url": "https://www.molotov.tv/",
+            "order": 1
+          },
+          {
+            "name": "TNTenDirect",
+            "url": "https://www.tntendirect.com/",
+            "order": 2
+          },
+          {
+            "name": "Francetv",
+            "url": "https://www.france.tv/",
+            "order": 3
+          },
+          {
+            "name": "MyTF1",
+            "url": "https://www.tf1.fr/",
+            "order": 4
+          },
+          {
+            "name": "6play",
+            "url": "https://www.6play.fr/",
+            "order": 5
+          },
+          {
+            "name": "Arte.tv",
+            "url": "https://www.arte.tv/fr/",
+            "order": 6
+          },
+          {
+            "name": "TV5Monde",
+            "url": "https://www.tv5monde.com/",
+            "order": 13
+          },
+          {
+            "name": "RTBFAuvio",
+            "url": "https://www.rtbf.be/auvio/direct",
+            "order": 14
+          },
+          {
+            "name": "PlutoTV",
+            "url": "https://pluto.tv/live-tv",
+            "order": 16
+          },
+          {
+            "name": "StreemaTV",
+            "url": "https://streema.com/tv",
+            "order": 17
+          }
         ],
-        'social': [
-            { name: 'Facebook', url: 'https://www.facebook.com', order: 1 },
-            { name: 'X', url: 'https://www.x.com', order: 2 },
-            { name: 'Instagram', url: 'https://www.instagram.com', order: 3 },
-            { name: 'LinkedIn', url: 'https://www.linkedin.com', order: 4 },
-            { name: 'Snapchat', url: 'https://www.snapchat.com', order: 5 },
-            { name: 'TikTok', url: 'https://www.tiktok.com', order: 6 },
-            { name: 'Reddit', url: 'https://www.reddit.com', order: 7 },
-            { name: 'WhatsAppWeb', url: 'https://web.whatsapp.com', order: 8 },
-            { name: 'Pinterest', url: 'https://www.pinterest.com', order: 9 },
-            { name: 'Tumblr', url: 'https://www.tumblr.com', order: 10 },
-            { name: 'Discord', url: 'https://discord.com/channels/@me', order: 11 },
-            { name: 'TelegramWeb', url: 'https://web.telegram.org', order: 12 }
+        "social": [
+          {
+            "name": "Facebook",
+            "url": "https://www.facebook.com/",
+            "order": 1
+          },
+          {
+            "name": "X",
+            "url": "https://www.x.com/",
+            "order": 2
+          },
+          {
+            "name": "Instagram",
+            "url": "https://www.instagram.com/",
+            "order": 3
+          },
+          {
+            "name": "LinkedIn",
+            "url": "https://www.linkedin.com/",
+            "order": 4
+          },
+          {
+            "name": "Snapchat",
+            "url": "https://www.snapchat.com/",
+            "order": 5
+          },
+          {
+            "name": "TikTok",
+            "url": "https://www.tiktok.com/",
+            "order": 6
+          },
+          {
+            "name": "Reddit",
+            "url": "https://www.reddit.com/",
+            "order": 7
+          },
+          {
+            "name": "WhatsAppWeb",
+            "url": "https://web.whatsapp.com/",
+            "order": 8
+          },
+          {
+            "name": "Pinterest",
+            "url": "https://www.pinterest.com/",
+            "order": 9
+          },
+          {
+            "name": "Tumblr",
+            "url": "https://www.tumblr.com/",
+            "order": 10
+          },
+          {
+            "name": "Discord",
+            "url": "https://discord.com/channels/@me",
+            "order": 11
+          },
+          {
+            "name": "TelegramWeb",
+            "url": "https://web.telegram.org/",
+            "order": 12
+          }
         ]
-    };
+      };
 
 
     // Charger les pages et raccourcis depuis localStorage ou utiliser les pages par défaut
@@ -423,11 +894,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (shortcutName && shortcutURL) {
             addNewShortcut(currentSection, shortcutName, shortcutURL);
             saveToLocalStorage();
-            // shortcutNameInput.value = '';
-            // shortcutURLInput.value = '';
-            // addShortcutForm.style.display = 'none';
-            history.replaceState(null, '', '/');  // Redirige vers la racine
-            location.reload();  // Rafraîchit la page
+            shortcutNameInput.value = '';
+            shortcutURLInput.value = '';
+            addShortcutForm.style.display = 'none';
+            // history.replaceState(null, '', '/');  // Redirige vers la racine
+            // location.reload();  // Rafraîchit la page
         } else {
             alert('The shortcut name or URL is empty.');
         }
