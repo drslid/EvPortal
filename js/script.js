@@ -718,7 +718,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Data successfully imported from Dpaste!');
                 // Recharger l'interface ou les pages avec les nouvelles données si nécessaire
                 loadFromLocalStorage();
-                history.replaceState(null, '', window.location.pathname);
+                history.replaceState(null, '', '/');  // Redirige vers la racine
+                location.reload();  // Rafraîchit la page
             } catch (parseError) {
                 console.error('Erreur lors du parsing des données JSON :', parseError);
             }
