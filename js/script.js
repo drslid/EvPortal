@@ -548,7 +548,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Afficher l'URL originale de Dpaste dans l'interface
                 const dpasteUrl = result.trim();  // URL complète de Dpaste
-                console.log('URL Dpaste originale :', dpasteUrl);
 
                 // Extraire l'identifiant Dpaste (les 10 derniers caractères de l'URL)
                 const dpasteIdentifier = dpasteUrl.split('/').pop();
@@ -561,8 +560,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Mettre à jour l'interface avec l'URL Dpaste (originale)
                 const exportedLinkContainer = document.getElementById('exportedLinkContainer');
                 const exportedLinkElement = document.getElementById('exportedLink');
-                exportedLinkElement.href = dpasteUrl;  // Lien Dpaste original
-                exportedLinkElement.textContent = dpasteUrl;
+                exportedLinkElement.innerHTML = `
+                <a href="${dpasteUrl}" target="_blank">
+                    https://dpaste.com/<strong style="color: orange;">${dpasteIdentifier}</strong>
+                </a>`;
                 exportedLinkContainer.style.display = 'block';
 
                 // Générer et afficher le QR code avec le lien personnalisé
