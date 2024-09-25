@@ -402,6 +402,9 @@ button {
     padding: 5px; /* Ajouter un peu de padding */
     width: 200px; /* Largeur du champ d'entrée */
     margin-bottom: 10px; /* Espace entre l'entrée et le bouton */
+    text-transform: uppercase;
+    font-weight: bold; 
+    color: rgb(255, 115, 0);
 }
 
 /* Style pour le bouton d'importation */
