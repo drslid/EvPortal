@@ -1206,29 +1206,37 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-    const youtubeRedirectButton = document.getElementById('youtubeRedirectButton');
-    
-    // Récupérer l'URL actuelle et l'ajouter à l'URL YouTube
-    const currentUrl = window.location.href;
-    const youtubeRedirectUrl = `https://www.youtube.com/redirect?q=${encodeURIComponent(currentUrl)}`;
-    
-    // Rediriger vers l'URL YouTube au clic sur le bouton
-    youtubeRedirectButton.addEventListener('click', () => {
-        window.location.href = youtubeRedirectUrl;
-    });
-});
+  const youtubeRedirectButton = document.getElementById('youtubeRedirectButton');
+  
+  // Récupérer l'URL actuelle et l'ajouter à l'URL YouTube
+  const currentUrl = window.location.href;
+  const youtubeRedirectUrl = `https://www.youtube.com/redirect?q=${encodeURIComponent(currentUrl)}`;
+  
+  // Normaliser le User Agent en minuscule
+  const userAgent = navigator.userAgent.toLowerCase();
 
-document.addEventListener('DOMContentLoaded', () => {
-    const youtubeRedirectButtonContainer = document.getElementById('youtubeRedirectButtonContainer');
+  // Vérifier si le mot "tesla" est présent dans le User Agent
+  const isTesla = userAgent.includes('tesla');
 
-    // Vérifier si le mot "Chrome" est présent dans le User Agent (pour tester)
-    const isChrome = navigator.userAgent.includes('tesla');
-
-    // Si c'est Chrome, on affiche le bouton, sinon on le cache
-    if (isChrome) {
-        youtubeRedirectButtonContainer.style.display = 'block';
-    } else {
-        youtubeRedirectButtonContainer.style.display = 'none';
-    }
-
+  if (isTesla) {
+      // Si "tesla" est présent, on redirige vers l'URL YouTube au clic sur le bouton
+      youtubeRedirectButton.addEventListener('click', () => {
+          window.location.href = youtubeRedirectUrl;
+      });
+  } else {
+      // Si "tesla" n'est pas trouvé, on configure le bouton pour passer en plein écran
+      youtubeRedirectButton.addEventListener('click', () => {
+          if (document.documentElement.requestFullscreen) {
+              document.documentElement.requestFullscreen();
+          } else if (document.documentElement.webkitRequestFullscreen) { // Safari
+              document.documentElement.webkitRequestFullscreen();
+          } else if (document.documentElement.msRequestFullscreen) { // IE/Edge
+              document.documentElement.msRequestFullscreen();
+          }
+      });
+  }
+  
+  // Toujours afficher le bouton
+  const youtubeRedirectButtonContainer = document.getElementById('youtubeRedirectButtonContainer');
+  youtubeRedirectButtonContainer.style.display = 'block';
 });
