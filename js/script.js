@@ -1222,7 +1222,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const youtubeRedirectButtonContainer = document.getElementById('youtubeRedirectButtonContainer');
 
     // Vérifier si le mot "Chrome" est présent dans le User Agent (pour tester)
-    const isChrome = navigator.userAgent.includes('Chrome');
+    const isChrome = navigator.userAgent.includes('tesla');
 
     // Si c'est Chrome, on affiche le bouton, sinon on le cache
     if (isChrome) {

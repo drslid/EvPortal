@@ -36,7 +36,6 @@
 
 - **Cloud Backup**: Sync your configurations across different devices and browsers.
 - **Theming Options**: Customize the color and style of your EvPortal to match your vehicle or personal preferences.
-- **Voice Commands**: Hands-free interaction using voice commands to open apps or manage your shortcuts.
 
 ---
 
