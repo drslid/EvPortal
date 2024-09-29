@@ -1216,7 +1216,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const userAgent = navigator.userAgent.toLowerCase();
 
   // Vérifier si le mot "tesla" est présent dans le User Agent
-  const isTesla = userAgent.includes('tesla');
+  const isTesla = userAgent.includes('Chrome');
 
   if (isTesla) {
       // Si "tesla" est présent, on redirige vers l'URL YouTube au clic sur le bouton
