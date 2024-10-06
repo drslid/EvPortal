@@ -52,13 +52,15 @@
     
     <!-- New container to center buttons and forms -->
     <div id="controlsContainer">
-        <button id="editModeToggle">Activate Edit Mode</button>
+        <!-- Existing buttons -->
+        <button id="editModeToggle">Enable Edit Mode</button>
         <button id="addPageButton" style="display: none;">Add Page</button>
         <button id="addShortcutButton" style="display: none;">Add Shortcut</button>
         <button id="exportConfigButton" style="display: none;">Export Config</button>
         <button id="importConfigButton" style="display: none;">Import Config</button>
+        <button id="existingConfigButton" style="display: none;">Existing Config</button>
         <button id="resetButton" style="display: none;">Reset</button>
-
+    
         <input type="text" id="importConfigURL" placeholder="Telegraph Link" style="display: none;">
         
         <div id="importConfigContainer" style="display: none; text-align: center; margin-top: 10px;">
@@ -69,9 +71,9 @@
             <button id="confirmImportButton">Import</button>
         </div>        
 
-        <div id="exportedLinkContainer" style="display: none; margin-top: 10px; text-align: center; width: 100%;">
+        <div id="exportedLinkContainer" style="display: none">
             <p>Exported config link: <a id="exportedLink" href="#" target="_blank"></a></p>
-            <div id="qrCode" style="margin: 0 auto; display: block; width: fit-content; margin-top: 20px;"></div>
+            <div id="qrCode"></div>
         </div>
 
         <div id="addPageForm" style="display: none;">

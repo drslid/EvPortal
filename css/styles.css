@@ -360,13 +360,16 @@ button {
 }
 
 #exportedLinkContainer {
-    display: none; /* Par défaut, caché */
-    text-align: center; /* Centrer le texte */
+    display: flex;
+    flex-direction: column; /* Arrange le contenu verticalement */
+    align-items: center; /* Centre horizontalement tous les éléments */
+    justify-content: center; /* Centre verticalement */
     width: 100%; /* Prendre toute la largeur */
     margin-top: 20px;
     background-color: #222;
     padding: 20px;
     border-radius: 5px;
+    text-align: center; /* Assure que tout le texte est centré */
 }
 
 /* Style pour le lien du conteneur */
@@ -384,6 +387,15 @@ button {
 #exportedLinkContainer a:hover {
     text-decoration: underline; /* Soulignement lors du survol pour l'accessibilité */
 }
+
+#qrCode {
+    display: block; /* Assure que le QR code est en block pour le centrage */
+    margin: 0 auto; /* Centre horizontalement l'élément */
+    margin-top: 20px; /* Ajoute de l'espace en haut */
+    width: fit-content;
+    text-align: center;
+}
+
 
 /* Centrer le conteneur d'importation */
 #importConfigContainer {
@@ -469,4 +481,54 @@ footer {
     cursor: pointer;
     border-radius: 5px;
     font-size: 12px; /* Taille du texte similaire aux autres boutons */
+}
+
+#existingConfigContainer {
+    display: none;
+    background-color: #222;
+    padding: 20px;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+#existingConfigContainer ul {
+    list-style: none;
+    padding: 0;
+}
+
+#existingConfigContainer li {
+    margin: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#existingConfigContainer li a {
+    color: white;
+    text-decoration: none;
+}
+
+#existingConfigContainer li a:hover {
+    text-decoration: underline;
+}
+
+#existingConfigContainer li .delete-page {
+    background-color: red;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.deletePageButton {
+    background-color: red; /* Couleur de fond rouge */
+    color: white; /* Texte en blanc */
+    padding: 5px 10px; /* Padding : 5px en haut/bas, 10px à gauche/droite */
+    margin-bottom: 5px; /* Espace en bas du bouton */
+    border: none; /* Pas de bordure */
+    font-size: 12px; /* Taille de la police à 12px */
+    cursor: pointer; /* Curseur pointeur lors du survol */
+    border-radius: 5px; /* Coins légèrement arrondis */
+    transition: background-color 0.3s ease; /* Animation pour changer la couleur de fond */
 }

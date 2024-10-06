@@ -751,6 +751,7 @@ document.addEventListener('DOMContentLoaded', () => {
         addShortcutButton.style.display = isEditMode ? 'inline-block' : 'none';
         document.getElementById('exportConfigButton').style.display = isEditMode ? 'inline-block' : 'none';
         document.getElementById('importConfigButton').style.display = isEditMode ? 'inline-block' : 'none';
+        document.getElementById('existingConfigButton').style.display = isEditMode ? 'inline-block' : 'none';
         document.getElementById('resetButton').style.display = isEditMode ? 'inline-block' : 'none'; // Affiche le bouton Réinitialiser
         document.getElementById('importConfigURL').style.display = 'none'; // Toujours cacher l'input de l'importation au début
 
@@ -988,11 +989,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
+    // Fonction pour initialiser ou récupérer la configuration
+    function initConfig() {
+      let config = JSON.parse(localStorage.getItem('config'));
+      if (!config) {
+          config = { accesstoken: null };
+          localStorage.setItem('config', JSON.stringify(config));
+      }
+      return config;
+    }
+
+    // Fonction pour mettre à jour la configuration dans le localStorage
+    function updateConfig(newConfig) {
+      const config = initConfig(); // Récupère la config actuelle ou la crée si elle n'existe pas
+      const updatedConfig = { ...config, ...newConfig }; // Fusionne les nouvelles valeurs
+      localStorage.setItem('config', JSON.stringify(updatedConfig)); // Sauvegarde la nouvelle config
+    }
+
     // Fonction pour exporter la configuration vers Telegraph avec le même randomID pour l'auteur et la page, et avec vérification
     async function exportConfig() {
       try {
-          // Récupérer toutes les clés disponibles dans le localStorage
-          const keys = Object.keys(localStorage);
+          // Récupérer toutes les clés disponibles dans le localStorage, sauf "config"
+          const keys = Object.keys(localStorage).filter(key => key !== 'config');
           const dataToExport = {};
 
           // Boucle sur chaque clé pour récupérer les raccourcis associés
@@ -1012,16 +1030,35 @@ document.addEventListener('DOMContentLoaded', () => {
               throw new Error("Échec de la conversion des données en JSON.");
           }
 
-          // Générer un ID aléatoire pour l'exportation
-          const randomID = generateRandomID(); // Utilisé à la fois pour le titre et le nom de l'auteur
-
-          // Générer un access token pour Telegraph
-          const accessToken = await getTelegraphAccessToken();
-          if (!accessToken) {
-              throw new Error("Impossible de générer un access token pour Telegra.ph.");
+          // Initialiser ou récupérer la configuration
+          let config = JSON.parse(localStorage.getItem('config'));
+          if (!config) {
+              // Créer la configuration initiale si elle n'existe pas encore
+              config = { accesstoken: null, randomID: null };
+              localStorage.setItem('config', JSON.stringify(config));
           }
 
-          // Créer une page sur Telegraph avec les données JSON
+          // Récupérer ou créer un access token pour Telegraph
+          let accessToken = config.accesstoken;
+          if (!accessToken) {
+              accessToken = await getTelegraphAccessToken();
+              if (!accessToken) {
+                  throw new Error("Impossible de générer un access token pour Telegra.ph.");
+              }
+              // Sauvegarder l'access token dans la clé "config"
+              config.accesstoken = accessToken;
+              localStorage.setItem('config', JSON.stringify(config));
+          }
+
+          // Récupérer ou générer un randomID pour l'exportation
+          let randomID = config.randomID;
+          if (!randomID) {
+              randomID = generateRandomID(); // Générer un nouvel ID aléatoire s'il n'existe pas déjà
+              config.randomID = randomID;
+              localStorage.setItem('config', JSON.stringify(config)); // Sauvegarder le randomID dans la config
+          }
+
+          // Créer une page sur Telegraph avec les données JSON (sans la partie config)
           const response = await fetch('https://api.telegra.ph/createPage', {
               method: 'POST',
               headers: {
@@ -1040,38 +1077,53 @@ document.addEventListener('DOMContentLoaded', () => {
               if (data.ok) {
                   const telegraphUrl = `https://telegra.ph/${data.result.path}`;
 
-                  // Extraire l'ID complet de la page (incluant la date à la fin)
-                  const pageID = data.result.path;
-
                   // Afficher l'URL originale de Telegraph dans l'interface
                   const customLink = `https://drslid.github.io/EvPortal/?code=${data.result.path}`;
 
-                  // Mettre à jour l'interface avec l'URL et l'ID complet (avec la date à la fin)
+                  // Vérifier si l'élément 'exportedLinkContainer' existe et le rendre visible
                   const exportedLinkContainer = document.getElementById('exportedLinkContainer');
-                  const exportedLinkElement = document.getElementById('exportedLink');
-                  exportedLinkElement.innerHTML = `
-                  <a href="${telegraphUrl}" target="_blank">
-                      https://telegra.ph/<strong style="color: orange;">${data.result.path}</strong>
-                  </a>`;
+                  if (exportedLinkContainer) {
+                      // Vider le conteneur avant d'ajouter du nouveau contenu
+                      exportedLinkContainer.innerHTML = '';
 
-                  const pageIdElement = document.createElement('p');
-                  pageIdElement.innerHTML = `
-                  <p>Telegra.ph ID: <strong style="color: orange;">${data.result.path}</strong>
-                    <!-- Button for clearing Telegraph page content -->
-                    <button id="clearTelegraphPageButton" style="background-color: red; color: white; padding: 5px 10px; margin-bottom: 5px; border: none; font-size: 12px; cursor: pointer;">
-                        Delete
-                    </button>
-                  </p>
-                  <p>Your private Telegra.ph access token for API modifications: <strong style="color: red;">${accessToken}</strong></p>`;
-                  exportedLinkContainer.appendChild(pageIdElement);
+                      // Ajouter le lien exporté
+                      const exportedLinkElement = document.createElement('div');
+                      exportedLinkElement.innerHTML = `
+                        <p>Exported config link: <a href="${telegraphUrl}" target="_blank">
+                            https://telegra.ph/<strong style="color: orange;">${data.result.path}</strong>
+                        </a></p>`;
+                      
+                      // Ajouter l'ID de la page et le bouton "Delete"
+                      const pageIdElement = document.createElement('p');
+                      pageIdElement.innerHTML = `
+                      <p>Telegra.ph ID: <strong style="color: orange;">${data.result.path}</strong></p>
+                      <p>Your private Telegra.ph access token for API modifications:</p>
+                      <p><strong style="color: red;">${accessToken}</strong></p>
+                      <br><br>
+                      Import current configuration to your device`;
 
-                  document.getElementById('clearTelegraphPageButton').addEventListener('click', clearTelegraphPageContent);
-                  
+                      // Ajouter tout au conteneur
+                      exportedLinkContainer.appendChild(exportedLinkElement);
+                      exportedLinkContainer.appendChild(pageIdElement);
 
-                  exportedLinkContainer.style.display = 'block';
+                      // Vérifier si l'élément 'qrCode' existe ou le créer dynamiquement
+                      let qrCodeContainer = document.getElementById('qrCode');
+                      if (!qrCodeContainer) {
+                          qrCodeContainer = document.createElement('div');
+                          qrCodeContainer.id = 'qrCode';
+                          exportedLinkContainer.appendChild(qrCodeContainer); // Ajouter le conteneur si absent
+                      }
 
-                  // Générer et afficher le QR code avec le lien personnalisé
-                  generateQRCode(customLink);
+                      // Vider le conteneur de QR code avant d'en générer un nouveau
+                      qrCodeContainer.innerHTML = ''; 
+
+                      // Générer et afficher le QR code avec le lien personnalisé
+                      generateQRCode(customLink);
+
+                      exportedLinkContainer.style.display = 'block';
+                  } else {
+                      throw new Error("L'élément 'exportedLinkContainer' n'existe pas dans le DOM.");
+                  }
               } else {
                   throw new Error("Erreur lors de la création de la page sur Telegra.ph.");
               }
@@ -1083,6 +1135,9 @@ document.addEventListener('DOMContentLoaded', () => {
           alert(`Erreur : ${error.message}`);
       }
     }
+
+
+
 
     async function clearTelegraphPageContent() {
       try {
@@ -1180,12 +1235,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // Fonction pour générer et afficher un QR code
     function generateQRCode(url) {
         const qrCodeContainer = document.getElementById('qrCode');
-        qrCodeContainer.innerHTML = ''; // Vider le contenu avant de générer un nouveau QR code
-        new QRCode(qrCodeContainer, {
-            text: url,
-            width: 128,
-            height: 128
-        });
+        // Vérifier si l'élément existe avant de le manipuler
+        if (qrCodeContainer) {
+          // Vider le contenu du conteneur de QR code avant d'en générer un nouveau
+          qrCodeContainer.innerHTML = ''; 
+
+          // Générer le QR code avec la bibliothèque QRCode.js
+          new QRCode(qrCodeContainer, {
+              text: url,
+              width: 128,
+              height: 128
+          });
+        } else {
+            console.error("L'élément 'qrCode' n'existe pas dans le DOM.");
+        }
     }    
 
     // Fonction pour importer la configuration depuis Telegraph
@@ -1353,3 +1416,172 @@ document.addEventListener('DOMContentLoaded', () => {
   // }
 });
 
+// Ajoute ce code à la fin de ton fichier script.js
+document.addEventListener('DOMContentLoaded', () => {
+  const existingConfigButton = document.getElementById('existingConfigButton');
+  const existingConfigContainer = document.getElementById('existingConfigContainer');
+  const pagesList = document.getElementById('pagesList');
+  const editModeToggle = document.getElementById('editModeToggle');
+  let isEditMode = false;
+
+  // Fonction pour gérer l'affichage du bouton avec débogage
+  function toggleExistingConfigButton() {
+      const config = JSON.parse(localStorage.getItem('config'));
+
+      console.log("Config loaded from localStorage:", config); // Ajout du log pour voir la config
+
+      if (config && config.accesstoken && config.randomID) {
+        console.log("AccessToken and randomID found, attempting to show button.");
+        const existingConfigButton = document.getElementById('existingConfigButton');
+
+        console.log("Button display style set to: ", existingConfigButton.style.display);
+      } else {
+          console.log("No AccessToken or randomID found.");
+      }
+  }
+
+  // Appel initial au chargement de la page
+  toggleExistingConfigButton();
+
+  // Activer le mode édition
+  editModeToggle.addEventListener('click', () => {
+      isEditMode = !isEditMode;
+
+      // Affiche ou cache le bouton selon le mode édition
+      toggleExistingConfigButton();
+
+      // Affichage des boutons et formulaires en mode édition
+      document.getElementById('addPageButton').style.display = isEditMode ? 'inline-block' : 'none';
+      document.getElementById('addShortcutButton').style.display = isEditMode ? 'inline-block' : 'none';
+      document.getElementById('exportConfigButton').style.display = isEditMode ? 'inline-block' : 'none';
+      document.getElementById('importConfigButton').style.display = isEditMode ? 'inline-block' : 'none';
+      document.getElementById('resetButton').style.display = isEditMode ? 'inline-block' : 'none';
+
+      // Gérer l'état du mode édition
+      editModeToggle.textContent = isEditMode ? 'Disable Edit Mode' : 'Enable Edit Mode';
+  });
+
+  // Récupère les pages existantes
+  function getExistingPages() {
+      const config = JSON.parse(localStorage.getItem('config'));
+      const accessToken = config ? config.accesstoken : null;
+
+      if (!accessToken) {
+          alert('No access token found in the local configuration.');
+          return;
+      }
+
+      fetch('https://api.telegra.ph/getPageList', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: new URLSearchParams({
+              'access_token': accessToken,
+          }),
+      })
+      .then(response => response.json())
+      .then(data => {
+          console.log('API Response:', data);
+
+          if (data.ok && data.result.pages && data.result.pages.length > 0) {
+              const pages = data.result.pages;
+              displayPages(pages); // Affiche les pages récupérées
+          } else {
+              alert('No pages found or failed to fetch existing pages.');
+          }
+      })
+      .catch(error => {
+          console.error('Error fetching pages:', error);
+          alert('Failed to fetch existing pages. Please check your access token and try again.');
+      });
+  }
+
+  function displayPages(pages) {
+      const container = document.createElement('div');
+      container.id = 'existingPagesContainer';
+      container.style.textAlign = 'center';
+      container.style.backgroundColor = '#222';
+
+
+      // Filtrer les pages avec le titre "Deleted Page"
+      const filteredPages = pages.filter(page => page.title !== "Deleted Page");
+
+      // Si aucune page filtrée, afficher un message
+      if (filteredPages.length === 0) {
+          alert('No valid pages found.');
+          return;
+      }
+
+      filteredPages.forEach(page => {
+          const pageID = page.url.replace('https://telegra.ph/', ''); // Extraire l'ID de la page
+          const pageElement = document.createElement('div');
+          pageElement.innerHTML = `
+              <p>Telegra.ph ID: <strong><a href="${page.url}" style="color: orange; text-decoration: none;" target="_blank">${pageID}</a></strong>
+              <button class="deletePageButton" data-page-id="${page.path}">Delete</button></p>
+          `;
+
+          // Ajouter l'événement de suppression
+          const deleteButton = pageElement.querySelector('.deletePageButton');
+          deleteButton.addEventListener('click', () => {
+              deletePage(page.path, pageElement);
+          });
+
+          container.appendChild(pageElement);
+      });
+
+      // Afficher le conteneur dans l'interface
+      const controlsContainer = document.getElementById('controlsContainer');
+      controlsContainer.appendChild(container);
+  }
+
+  // Ajouter un événement au bouton "Existing Config"
+  existingConfigButton.addEventListener('click', getExistingPages);
+});
+
+// Place this function at the global scope, outside any other functions
+async function deletePage(pagePath, pageElement) {
+  try {
+      const config = JSON.parse(localStorage.getItem('config'));
+      const accessToken = config ? config.accesstoken : null;
+
+      if (!accessToken) {
+          throw new Error('Access token is missing.');
+      }
+
+      // API URL pour vider le contenu de la page
+      const telegraphEditPageURL = 'https://api.telegra.ph/editPage';
+      const emptyContent = JSON.stringify([{"tag": "p", "children": [" "]}]);
+
+      const response = await fetch(telegraphEditPageURL, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: new URLSearchParams({
+              'access_token': accessToken,
+              'path': pagePath, // Le chemin de la page sans le domaine
+              'title': 'Deleted Page',
+              'author_name': 'https://drslid.github.io/EvPortal',
+              'content': emptyContent
+          })
+      });
+
+      if (response.ok) {
+          const data = await response.json();
+          if (data.ok) {
+              // Supprime visuellement le lien et le bouton une fois que la page est vidée
+              if (pageElement) {
+                  pageElement.remove(); // Supprimer l'élément complet de la page
+              }
+          } else {
+              throw new Error('Failed to delete content on Telegraph.');
+          }
+      } else {
+          throw new Error('Error clearing content from Telegraph.');
+      }
+  } catch (error) {
+      console.error('Error deleting page:', error);
+      alert('Error: ' + error.message);
+  }
+}
