@@ -305,11 +305,6 @@ document.addEventListener('DOMContentLoaded', () => {
             "order": 2
           },
           {
-            "name": "Tesla_Waze",
-            "url": "https://teslawaze.azurewebsites.net/",
-            "order": 3
-          },
-          {
             "name": "Apple Maps",
             "url": "https://maps.apple.com/",
             "order": 4
