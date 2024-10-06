@@ -1380,7 +1380,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
               alert('Data successfully imported from Telegra.ph!');
               loadFromLocalStorage(); // Recharger l'interface
-              window.location.href = '/';
+              window.location.href = 'https://drslid.github.io/EvPortal/';
           } else {
               alert('Erreur lors de la récupération des données de Telegra.ph.');
           }
