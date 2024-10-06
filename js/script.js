@@ -623,35 +623,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Charger les pages et raccourcis depuis localStorage ou utiliser les pages par défaut
     function loadFromLocalStorage() {
-        // Charger les pages enregistrées dans le localStorage
-        const pages = JSON.parse(localStorage.getItem('pages')) || Object.keys(defaultPages);
-    
-        pages.forEach(page => {
-            createPageSection(page);
-    
-            let shortcuts = JSON.parse(localStorage.getItem(page)) || [];
-            
-            // Si aucun raccourci n'est enregistré, charger les raccourcis par défaut
-            if (shortcuts.length === 0 && defaultPages[page]) {
-                shortcuts = defaultPages[page];  // Charger les raccourcis par défaut
-                localStorage.setItem(page, JSON.stringify(shortcuts)); // Sauvegarder les raccourcis par défaut dans le localStorage
-            }
-    
-            // Trier les raccourcis par 'order' avant de les afficher
-            shortcuts.sort((a, b) => a.order - b.order);
-    
-            // Vider le conteneur avant de le remplir
-            const container = document.querySelector(`#${page} .shortcuts-container`);
-            container.innerHTML = '';  // Assure que le conteneur est vide avant d'ajouter les raccourcis
-            
-            // Ajouter les raccourcis dans l'ordre
-            shortcuts.forEach(shortcut => {
-                addNewShortcut(page, shortcut.name, shortcut.url, shortcut.order);
-            });
-        });
-    
-        setActiveSection(pages[0]);
-    }
+      // Charger les pages enregistrées dans le localStorage
+      const savedPages = JSON.parse(localStorage.getItem('pages')) || [];
+  
+      if (savedPages.length === 0) {
+          // Si aucune page n'est sauvegardée, charger les pages et raccourcis par défaut
+          const defaultPagesKeys = Object.keys(defaultPages);
+          defaultPagesKeys.forEach(page => {
+              createPageSection(page);
+              localStorage.setItem(page, JSON.stringify(defaultPages[page]));
+          });
+          localStorage.setItem('pages', JSON.stringify(defaultPagesKeys));
+      } else {
+          // Charger les pages sauvegardées
+          savedPages.forEach(page => {
+              createPageSection(page);
+              let shortcuts = JSON.parse(localStorage.getItem(page)) || [];
+  
+              // Si la page n'a pas de raccourcis (mais n'est pas supprimée), ne rien faire
+              if (shortcuts.length > 0) {
+                  shortcuts.sort((a, b) => a.order - b.order);
+                  const container = document.querySelector(`#${page} .shortcuts-container`);
+                  container.innerHTML = '';
+                  shortcuts.forEach(shortcut => {
+                      addNewShortcut(page, shortcut.name, shortcut.url, shortcut.order);
+                  });
+              }
+          });
+      }
+  
+      // Activer la première section (par exemple, 'cinema') après le chargement
+      setActiveSection(savedPages[0] || Object.keys(defaultPages)[0]);
+  }
     
     
     
@@ -678,13 +681,46 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     
-    // Supprimer un raccourci du localStorage
     function removeShortcutFromLocalStorage(page, shortcutElement) {
-        const shortcutName = shortcutElement.querySelector('span').textContent;
-        let shortcuts = JSON.parse(localStorage.getItem(page) || '[]');
-        shortcuts = shortcuts.filter(shortcut => shortcut.name !== shortcutName);
-        localStorage.setItem(page, JSON.stringify(shortcuts));
+      const shortcutName = shortcutElement.querySelector('span').textContent;
+      let shortcuts = JSON.parse(localStorage.getItem(page) || '[]');
+  
+      // Filtrer les raccourcis pour exclure celui qu'on souhaite supprimer
+      const updatedShortcuts = shortcuts.filter(shortcut => shortcut.name !== shortcutName);
+  
+      // Si la suppression a effectivement réduit la taille du tableau
+      if (updatedShortcuts.length !== shortcuts.length) {
+          // Retirer l'élément du DOM immédiatement
+          shortcutElement.remove(); 
+          // Délai pour mettre à jour le localStorage après que le DOM se soit mis à jour
+          setTimeout(() => {
+              localStorage.setItem(page, JSON.stringify(updatedShortcuts));
+          }, 100); // Délai de 100ms pour assurer la synchronisation avec le DOM
+      } else {
+          console.error(`Échec de la suppression du raccourci ${shortcutName} pour la page ${page}`);
+      }
     }
+    
+    // Ajout d'un écouteur d'événement pour la suppression avec vérification après un délai
+    document.querySelectorAll('.delete-shortcut').forEach(button => {
+        button.addEventListener('click', (event) => {
+            event.stopPropagation();
+            const shortcutElement = button.closest('.shortcut');
+            const page = shortcutElement.closest('.page-section').id;
+    
+            // Supprimer le raccourci avec une gestion des erreurs
+            removeShortcutFromLocalStorage(page, shortcutElement);
+    
+            // Vérifier après un délai si la suppression a été réussie, sinon réessayer
+            setTimeout(() => {
+                const shortcuts = JSON.parse(localStorage.getItem(page) || '[]');
+                if (shortcuts.some(shortcut => shortcut.name === shortcutElement.querySelector('span').textContent)) {
+                    removeShortcutFromLocalStorage(page, shortcutElement);
+                }
+            }, 300); // Attendre 300ms pour voir si le localStorage a bien été mis à jour
+        });
+    });
+    
 
     // Supprimer une page du localStorage
     function removePageFromLocalStorage(pageName) {
@@ -1426,16 +1462,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Fonction pour gérer l'affichage du bouton avec débogage
   function toggleExistingConfigButton() {
       const config = JSON.parse(localStorage.getItem('config'));
-
-      console.log("Config loaded from localStorage:", config); // Ajout du log pour voir la config
-
       if (config && config.accesstoken && config.randomID) {
-        console.log("AccessToken and randomID found, attempting to show button.");
         const existingConfigButton = document.getElementById('existingConfigButton');
-
-        console.log("Button display style set to: ", existingConfigButton.style.display);
-      } else {
-          console.log("No AccessToken or randomID found.");
       }
   }
 
@@ -1481,8 +1509,6 @@ document.addEventListener('DOMContentLoaded', () => {
       })
       .then(response => response.json())
       .then(data => {
-          console.log('API Response:', data);
-
           if (data.ok && data.result.pages && data.result.pages.length > 0) {
               const pages = data.result.pages;
               displayPages(pages); // Affiche les pages récupérées
