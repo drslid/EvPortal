@@ -988,188 +988,252 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-  // Fonction pour exporter la configuration vers Telegraph avec le même randomID pour l'auteur et la page, et avec vérification
-  async function exportConfig() {
-    try {
-        // Récupérer toutes les clés disponibles dans le localStorage
-        const keys = Object.keys(localStorage);
-        const dataToExport = {};
+    // Fonction pour exporter la configuration vers Telegraph avec le même randomID pour l'auteur et la page, et avec vérification
+    async function exportConfig() {
+      try {
+          // Récupérer toutes les clés disponibles dans le localStorage
+          const keys = Object.keys(localStorage);
+          const dataToExport = {};
 
-        // Boucle sur chaque clé pour récupérer les raccourcis associés
-        keys.forEach(key => {
-            const shortcuts = JSON.parse(localStorage.getItem(key) || '[]');
-            dataToExport[key] = shortcuts;
+          // Boucle sur chaque clé pour récupérer les raccourcis associés
+          keys.forEach(key => {
+              const shortcuts = JSON.parse(localStorage.getItem(key) || '[]');
+              dataToExport[key] = shortcuts;
+          });
+
+          // Vérification des données extraites
+          if (Object.keys(dataToExport).length === 0) {
+              throw new Error("Aucune page ou raccourci trouvé dans le localStorage.");
+          }
+
+          // Convertir les données en JSON avec gestion des caractères spéciaux
+          const jsonData = JSON.stringify(dataToExport, null, 2);
+          if (!jsonData) {
+              throw new Error("Échec de la conversion des données en JSON.");
+          }
+
+          // Générer un ID aléatoire pour l'exportation
+          const randomID = generateRandomID(); // Utilisé à la fois pour le titre et le nom de l'auteur
+
+          // Générer un access token pour Telegraph
+          const accessToken = await getTelegraphAccessToken();
+          if (!accessToken) {
+              throw new Error("Impossible de générer un access token pour Telegra.ph.");
+          }
+
+          // Créer une page sur Telegraph avec les données JSON
+          const response = await fetch('https://api.telegra.ph/createPage', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded'
+              },
+              body: new URLSearchParams({
+                  'access_token': accessToken,
+                  'title': `${randomID}`, // Utilisation du même randomID pour le titre
+                  'author_name': `https://drslid.github.io/EvPortal`,   // Utilisation du même randomID pour le nom de l'auteur
+                  'content': JSON.stringify([{"tag":"pre","children":[jsonData]}]) // Contenu encodé
+              })
+          });
+
+          if (response.ok) {
+              const data = await response.json();
+              if (data.ok) {
+                  const telegraphUrl = `https://telegra.ph/${data.result.path}`;
+
+                  // Extraire l'ID complet de la page (incluant la date à la fin)
+                  const pageID = data.result.path;
+
+                  // Afficher l'URL originale de Telegraph dans l'interface
+                  const customLink = `https://drslid.github.io/EvPortal/?code=${data.result.path}`;
+
+                  // Mettre à jour l'interface avec l'URL et l'ID complet (avec la date à la fin)
+                  const exportedLinkContainer = document.getElementById('exportedLinkContainer');
+                  const exportedLinkElement = document.getElementById('exportedLink');
+                  exportedLinkElement.innerHTML = `
+                  <a href="${telegraphUrl}" target="_blank">
+                      https://telegra.ph/<strong style="color: orange;">${data.result.path}</strong>
+                  </a>`;
+
+                  const pageIdElement = document.createElement('p');
+                  pageIdElement.innerHTML = `
+                  <p>Telegra.ph ID: <strong style="color: orange;">${data.result.path}</strong>
+                    <!-- Button for clearing Telegraph page content -->
+                    <button id="clearTelegraphPageButton" style="background-color: red; color: white; padding: 5px 10px; margin-bottom: 5px; border: none; font-size: 12px; cursor: pointer;">
+                        Delete
+                    </button>
+                  </p>
+                  <p>Your private Telegra.ph access token for API modifications: <strong style="color: red;">${accessToken}</strong></p>`;
+                  exportedLinkContainer.appendChild(pageIdElement);
+
+                  document.getElementById('clearTelegraphPageButton').addEventListener('click', clearTelegraphPageContent);
+                  
+
+                  exportedLinkContainer.style.display = 'block';
+
+                  // Générer et afficher le QR code avec le lien personnalisé
+                  generateQRCode(customLink);
+              } else {
+                  throw new Error("Erreur lors de la création de la page sur Telegra.ph.");
+              }
+          } else {
+              throw new Error(`Erreur lors de l'export vers Telegra.ph. Statut: ${response.status}`);
+          }
+      } catch (error) {
+          console.error("Erreur lors de l'exportation de la configuration :", error);
+          alert(`Erreur : ${error.message}`);
+      }
+    }
+
+    async function clearTelegraphPageContent() {
+      try {
+          // Extract the access token and page ID directly from where they are stored/displayed
+          const accessTokenElement = document.querySelector('strong[style*="color: red"]');
+          const telegraphLinkElement = document.querySelector('a[href*="telegra.ph"]');
+  
+          if (!accessTokenElement || !telegraphLinkElement) {
+              throw new Error("Couldn't find the access token or Telegraph link.");
+          }
+  
+          const accessToken = accessTokenElement.textContent.trim();
+          const pageID = telegraphLinkElement.href.split('/').pop(); // Extract page ID from the link
+  
+          // API URL to edit the page content
+          const telegraphEditPageURL = 'https://api.telegra.ph/editPage';
+
+          const emptyContent = JSON.stringify([{"tag":"p","children":[" "]}]);
+  
+          // Make the request to clear the content of the Telegraph page
+          const response = await fetch(telegraphEditPageURL, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded'
+              },
+              body: new URLSearchParams({
+                  'access_token': accessToken, // Use the access token
+                  'path': pageID, // The path of the page (without the domain)
+                  'title': 'Deleted Page', // Keep the title or change it as needed
+                  'author_name': `https://drslid.github.io/EvPortal`,
+                  'content': emptyContent
+              })
+          });
+  
+          if (response.ok) {
+              const data = await response.json();
+              if (data.ok) {
+                  alert('Telegraph page content cleared successfully!');
+              } else {
+                  alert('Failed to clear content on Telegraph.');
+              }
+          } else {
+              alert('Error clearing content from Telegraph.');
+          }
+      } catch (error) {
+          console.error('Error clearing Telegraph page:', error);
+          alert('Error: ' + error.message);
+      }
+    }
+  
+  
+  
+
+
+    // Exemple de fonction pour générer un ID aléatoire de 8 caractères
+    function generateRandomID() {
+      const characters = '0123456789';
+      let randomID = '';
+      for (let i = 0; i < 12; i++) {
+          randomID += characters.charAt(Math.floor(Math.random() * characters.length));
+      }
+      return randomID;
+    }
+
+    // Exemple de fonction pour obtenir l'access token depuis Telegraph
+    async function getTelegraphAccessToken() {
+      try {
+          const response = await fetch('https://api.telegra.ph/createAccount', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded'
+              },
+              body: new URLSearchParams({
+                  'short_name': 'EvPortal',
+                  'author_name': `https://drslid.github.io/EvPortal`
+              })
+          });
+
+          const data = await response.json();
+          if (data.ok) {
+              return data.result.access_token;
+          } else {
+              throw new Error("Erreur lors de la création du compte Telegra.ph.");
+          }
+      } catch (error) {
+          console.error("Erreur lors de la génération de l'access token :", error);
+          return null;
+      }
+    }
+
+
+
+
+
+    // Fonction pour générer et afficher un QR code
+    function generateQRCode(url) {
+        const qrCodeContainer = document.getElementById('qrCode');
+        qrCodeContainer.innerHTML = ''; // Vider le contenu avant de générer un nouveau QR code
+        new QRCode(qrCodeContainer, {
+            text: url,
+            width: 128,
+            height: 128
         });
+    }    
 
-        // Vérification des données extraites
-        if (Object.keys(dataToExport).length === 0) {
-            throw new Error("Aucune page ou raccourci trouvé dans le localStorage.");
-        }
+    // Fonction pour importer la configuration depuis Telegraph
+    async function importConfig() {
+      const telegraphID = document.getElementById('importConfigID').value.trim();
+      if (!telegraphID) {
+          alert('Please enter a Telegra.ph page ID.');
+          return;
+      }
 
-        // Convertir les données en JSON avec gestion des caractères spéciaux
-        const jsonData = JSON.stringify(dataToExport, null, 2);
-        if (!jsonData) {
-            throw new Error("Échec de la conversion des données en JSON.");
-        }
+      const telegraphURL = `https://api.telegra.ph/getPage/${telegraphID}?return_content=true`;
 
-        // Générer un ID aléatoire pour l'exportation
-        const randomID = generateRandomID(); // Utilisé à la fois pour le titre et le nom de l'auteur
+      // Récupérer les données depuis Telegraph
+      try {
+          const response = await fetch(telegraphURL); // Récupère le contenu brut
+          if (response.ok) {
+              const data = await response.json();
+              if (data.ok && data.result.content) {
+                  const jsonContent = data.result.content[0].children[0]; // Le contenu JSON est dans le premier enfant
 
-        // Générer un access token pour Telegraph
-        const accessToken = await getTelegraphAccessToken();
-        if (!accessToken) {
-            throw new Error("Impossible de générer un access token pour Telegraph.");
-        }
+                  const importedData = JSON.parse(jsonContent);
 
-        // Créer une page sur Telegraph avec les données JSON
-        const response = await fetch('https://api.telegra.ph/createPage', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: new URLSearchParams({
-                'access_token': accessToken,
-                'title': `EvPortal User Backup ${randomID}`, // Utilisation du même randomID pour le titre
-                'author_name': `drslid.github.io/EvPortal`,   // Utilisation du même randomID pour le nom de l'auteur
-                'content': JSON.stringify([{"tag":"pre","children":[jsonData]}]) // Contenu encodé
-            })
-        });
+                  // Vérifier le format des données
+                  if (Object.keys(importedData).every(page => Array.isArray(importedData[page]))) {
+                      // Sauvegarder les données importées dans le localStorage
+                      localStorage.setItem('pages', JSON.stringify(Object.keys(importedData)));
+                      Object.keys(importedData).forEach(page => {
+                          localStorage.setItem(page, JSON.stringify(importedData[page]));
+                      });
 
-        if (response.ok) {
-            const data = await response.json();
-            if (data.ok) {
-                const telegraphUrl = `https://telegra.ph/${data.result.path}`;
-
-                // Extraire l'ID complet de la page (incluant la date à la fin)
-                const pageID = data.result.path;
-
-                // Afficher l'URL originale de Telegraph dans l'interface
-                const customLink = `https://drslid.github.io/EvPortal/?code=${data.result.path}`;
-
-                // Mettre à jour l'interface avec l'URL et l'ID complet (avec la date à la fin)
-                const exportedLinkContainer = document.getElementById('exportedLinkContainer');
-                const exportedLinkElement = document.getElementById('exportedLink');
-                exportedLinkElement.innerHTML = `
-                <a href="${telegraphUrl}" target="_blank">
-                    ${telegraphUrl}
-                </a>`;
-
-                const pageIdElement = document.createElement('p');
-                pageIdElement.textContent = `ID de la page : EvPortal-User-Backup-${randomID}-${pageID.slice(-5)}`; // Ajoute les derniers 5 caractères de la date à la fin
-                exportedLinkContainer.appendChild(pageIdElement);
-                exportedLinkContainer.style.display = 'block';
-
-                // Générer et afficher le QR code avec le lien personnalisé
-                generateQRCode(customLink);
-            } else {
-                throw new Error("Erreur lors de la création de la page sur Telegraph.");
-            }
-        } else {
-            throw new Error(`Erreur lors de l'export vers Telegraph. Statut: ${response.status}`);
-        }
-    } catch (error) {
-        console.error("Erreur lors de l'exportation de la configuration :", error);
-        alert(`Erreur : ${error.message}`);
-    }
-  }
-
-
-
-  // Exemple de fonction pour générer un ID aléatoire de 8 caractères
-  function generateRandomID() {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let randomID = '';
-    for (let i = 0; i < 8; i++) {
-        randomID += characters.charAt(Math.floor(Math.random() * characters.length));
-    }
-    return randomID;
-  }
-
-  // Exemple de fonction pour obtenir l'access token depuis Telegraph
-  async function getTelegraphAccessToken() {
-    try {
-        const response = await fetch('https://api.telegra.ph/createAccount', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: new URLSearchParams({
-                'short_name': 'EvPortal',
-                'author_name': 'EvPortalUser'
-            })
-        });
-
-        const data = await response.json();
-        if (data.ok) {
-            return data.result.access_token;
-        } else {
-            throw new Error("Erreur lors de la création du compte Telegraph.");
-        }
-    } catch (error) {
-        console.error("Erreur lors de la génération de l'access token :", error);
-        return null;
-    }
-  }
-
-
-
-
-
-  // Fonction pour générer et afficher un QR code
-  function generateQRCode(url) {
-      const qrCodeContainer = document.getElementById('qrCode');
-      qrCodeContainer.innerHTML = ''; // Vider le contenu avant de générer un nouveau QR code
-      new QRCode(qrCodeContainer, {
-          text: url,
-          width: 128,
-          height: 128
-      });
-  }    
-
-  // Fonction pour importer la configuration depuis Telegraph
-  async function importConfig() {
-    const telegraphID = document.getElementById('importConfigID').value.trim();
-    if (!telegraphID) {
-        alert('Please enter a Telegraph page ID.');
-        return;
+                      alert('Configuration successfully imported!');
+                      loadFromLocalStorage(); // Recharger l'interface avec les nouvelles données
+                  } else {
+                      alert('The format of the imported data is incorrect.');
+                  }
+              } else {
+                  alert('Error retrieving data from Telegra.ph.');
+              }
+          } else {
+              alert('Error retrieving data from Telegra.ph.');
+          }
+      } catch (error) {
+          console.error('Erreur lors de la requête Telegra.ph:', error);
+          alert('Erreur lors de la connexion à Telegra.ph.');
+      }
     }
 
-    const telegraphURL = `https://api.telegra.ph/getPage/${telegraphID}?return_content=true`;
 
-    // Récupérer les données depuis Telegraph
-    try {
-        const response = await fetch(telegraphURL); // Récupère le contenu brut
-        if (response.ok) {
-            const data = await response.json();
-            if (data.ok && data.result.content) {
-                const jsonContent = data.result.content[0].children[0]; // Le contenu JSON est dans le premier enfant
-
-                const importedData = JSON.parse(jsonContent);
-
-                // Vérifier le format des données
-                if (Object.keys(importedData).every(page => Array.isArray(importedData[page]))) {
-                    // Sauvegarder les données importées dans le localStorage
-                    localStorage.setItem('pages', JSON.stringify(Object.keys(importedData)));
-                    Object.keys(importedData).forEach(page => {
-                        localStorage.setItem(page, JSON.stringify(importedData[page]));
-                    });
-
-                    alert('Configuration successfully imported!');
-                    loadFromLocalStorage(); // Recharger l'interface avec les nouvelles données
-                } else {
-                    alert('The format of the imported data is incorrect.');
-                }
-            } else {
-                alert('Error retrieving data from Telegraph.');
-            }
-        } else {
-            alert('Error retrieving data from Telegraph.');
-        }
-    } catch (error) {
-        console.error('Erreur lors de la requête Telegraph:', error);
-        alert('Erreur lors de la connexion à Telegraph.');
-    }
-  }
 
 
 
@@ -1234,7 +1298,7 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
           const response = await fetch(telegraphURL);
           if (!response.ok) {
-              throw new Error('Erreur lors de la requête vers Telegraph : ' + response.status);
+              throw new Error('Erreur lors de la requête vers Telegra.ph : ' + response.status);
           }
           
           const data = await response.json();
@@ -1251,14 +1315,14 @@ document.addEventListener('DOMContentLoaded', () => {
                   localStorage.setItem(page, JSON.stringify(jsonData[page]));
               });
 
-              alert('Data successfully imported from Telegraph!');
+              alert('Data successfully imported from Telegra.ph!');
               loadFromLocalStorage(); // Recharger l'interface
           } else {
-              alert('Erreur lors de la récupération des données de Telegraph.');
+              alert('Erreur lors de la récupération des données de Telegra.ph.');
           }
       } catch (error) {
-          console.error('Erreur lors de l\'importation depuis Telegraph :', error);
-          alert('Unable to retrieve data from Telegraph.');
+          console.error('Erreur lors de l\'importation depuis Telegra.ph :', error);
+          alert('Unable to retrieve data from Telegra.ph.');
       }
     }
 
