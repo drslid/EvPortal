@@ -1380,6 +1380,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
               alert('Data successfully imported from Telegra.ph!');
               loadFromLocalStorage(); // Recharger l'interface
+              window.location.href = '/';
           } else {
               alert('Erreur lors de la récupération des données de Telegra.ph.');
           }
@@ -1388,8 +1389,6 @@ document.addEventListener('DOMContentLoaded', () => {
           alert('Unable to retrieve data from Telegra.ph.');
       }
     }
-
-
     loadFromLocalStorage();
 });
 
