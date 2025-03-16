@@ -617,39 +617,62 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // Charger les pages et raccourcis depuis localStorage ou utiliser les pages par défaut
-    function loadFromLocalStorage() {
-      // Charger les pages enregistrées dans le localStorage
-      const savedPages = JSON.parse(localStorage.getItem('pages')) || [];
-  
-      if (savedPages.length === 0) {
-          // Si aucune page n'est sauvegardée, charger les pages et raccourcis par défaut
-          const defaultPagesKeys = Object.keys(defaultPages);
-          defaultPagesKeys.forEach(page => {
-              createPageSection(page);
-              localStorage.setItem(page, JSON.stringify(defaultPages[page]));
-          });
-          localStorage.setItem('pages', JSON.stringify(defaultPagesKeys));
-      } else {
-          // Charger les pages sauvegardées
-          savedPages.forEach(page => {
-              createPageSection(page);
-              let shortcuts = JSON.parse(localStorage.getItem(page)) || [];
-  
-              // Si la page n'a pas de raccourcis (mais n'est pas supprimée), ne rien faire
+    async function loadFromLocalStorage() {
+      // Ajouter un indicateur de chargement
+      const loadingIndicator = document.createElement('div');
+      loadingIndicator.id = 'loading-indicator';
+      loadingIndicator.innerHTML = 'Chargement des raccourcis...';
+      document.body.appendChild(loadingIndicator);
+
+      try {
+          // Charger les pages enregistrées dans le localStorage
+          const savedPages = JSON.parse(localStorage.getItem('pages')) || [];
+          
+          // Créer toutes les sections de page d'abord
+          const pagesToLoad = savedPages.length === 0 ? Object.keys(defaultPages) : savedPages;
+          for (const page of pagesToLoad) {
+              await createPageSection(page);
+          }
+
+          // Charger tous les raccourcis ensuite
+          for (const page of pagesToLoad) {
+              const shortcuts = savedPages.length === 0 ? 
+                  defaultPages[page] : 
+                  JSON.parse(localStorage.getItem(page)) || [];
+              
               if (shortcuts.length > 0) {
                   shortcuts.sort((a, b) => a.order - b.order);
                   const container = document.querySelector(`#${page} .shortcuts-container`);
                   container.innerHTML = '';
-                  shortcuts.forEach(shortcut => {
-                      addNewShortcut(page, shortcut.name, shortcut.url, shortcut.order);
-                  });
+                  
+                  // Charger les raccourcis en parallèle
+                  await Promise.all(shortcuts.map(shortcut => 
+                      addNewShortcut(page, shortcut.name, shortcut.url, shortcut.order)
+                  ));
               }
-          });
+          }
+
+          // Sauvegarder si c'était le premier chargement
+          if (savedPages.length === 0) {
+              localStorage.setItem('pages', JSON.stringify(pagesToLoad));
+              pagesToLoad.forEach(page => {
+                  localStorage.setItem(page, JSON.stringify(defaultPages[page]));
+              });
+          }
+
+          // Activer la première section après le chargement complet
+          setActiveSection(pagesToLoad[0]);
+          
+          // Forcer un reflow pour s'assurer que tout est bien positionné
+          document.body.offsetHeight;
+      } catch (error) {
+          console.error('Erreur lors du chargement :', error);
+      } finally {
+          // Masquer l'indicateur de chargement avec une transition
+          loadingIndicator.style.opacity = '0';
+          setTimeout(() => loadingIndicator.remove(), 300);
       }
-  
-      // Activer la première section (par exemple, 'cinema') après le chargement
-      setActiveSection(savedPages[0] || Object.keys(defaultPages)[0]);
-  }
+    }
     
     
     
@@ -1420,7 +1443,7 @@ document.addEventListener('DOMContentLoaded', () => {
           alert('Unable to retrieve data from Telegra.ph.');
       }
     }
-    loadFromLocalStorage();
+    loadFromLocalStorage().catch(console.error);
 });
 
 document.addEventListener('DOMContentLoaded', () => {
