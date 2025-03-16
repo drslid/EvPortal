@@ -35,7 +35,7 @@
     <ul id="menu">
     </ul>
     <nav id="controlsContainer" role="navigation" aria-label="Main controls">
-        <button id="editModeToggle">Enable Edit Mode</button>
+        <button id="editModeToggle">Edit Mode</button>
         <button id="addPageButton" style="display: none;">Add Page</button>
         <button id="addShortcutButton" style="display: none;">Add Shortcut</button>
         <button id="exportConfigButton" style="display: none;">Export Config</button>
@@ -44,10 +44,52 @@
         <button id="resetButton" style="display: none;">Reset</button>
         <input type="text" id="importConfigURL" placeholder="Telegraph Link" style="display: none;">
         <div id="importConfigContainer" style="display: none; text-align: center; margin-top: 10px;">
+            <p style="color: white; text-align: center">
+                Enter the <strong>Telegra.ph ID</strong> of a page containing a valid configuration.<br>
+                You can use an exported configuration from EvPortal <br>or import a <strong>custom configuration</strong> Telegra.ph page formatted as JSON.  
+            </p>
+            <p style="color: white; text-align: center;">
+                <strong>Example :</strong> <br>For your link : https://telegra.ph/<span style="color: orange;">395491390618-03-16-11</span>  
+                <br>
+                The Telegra.ph ID is <span style="color: orange;">395491390618-03-16-11</span>  
+            </p>
             <div style="display: inline-flex; align-items: center;">
                 <span style="color: white; margin-right: 5px;">https://telegra.ph/</span>
                 <input type="text" id="importConfigID" placeholder="id here" style="margin: 0 auto; color: orange;">
-            <button id="confirmImportButton">Import</button>
+                <button id="confirmImportButton">Import</button>
+            </div>
+            <p style="color: white; text-align: center;">
+                If you create a <strong>custom configuration</strong>, the JSON structure must follow this format :
+            </p>
+            <div style="display: flex; justify-content: center;">
+                <pre style="background-color: #222; color: white; padding: 10px; border-radius: 5px; text-align: left;">
+                {
+                    "pages": [
+                        "pageone",
+                        "pagetwo"
+                    ],
+                    "pageone": [
+                        {
+                        "name": "google",
+                        "url": "https://www.google.com",
+                        "order": 1
+                        },
+                        {
+                        "name": "youtube",
+                        "url": "https://www.youtube.com",
+                        "order": 2
+                        }
+                    ],
+                    "pagetwo": [
+                        {
+                        "name": "wikipedia",
+                        "url": "https://www.wikipedia.org",
+                        "order": 1
+                        }
+                    ]
+                }
+                </pre>
+            </div>
         </div>
         <div id="exportedLinkContainer" style="display: none">
             <p>Exported config link: <a id="exportedLink" href="#" target="_blank"></a></p>

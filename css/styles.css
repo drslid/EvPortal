@@ -364,7 +364,6 @@ button {
     flex-direction: column; /* Arrange le contenu verticalement */
     align-items: center; /* Centre horizontalement tous les éléments */
     justify-content: center; /* Centre verticalement */
-    width: 100%; /* Prendre toute la largeur */
     margin-top: 20px;
     background-color: #222;
     padding: 20px;

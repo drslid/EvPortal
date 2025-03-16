@@ -1350,10 +1350,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-
-
-
-
     // Ajouter des écouteurs d'événements pour les boutons
     document.getElementById('exportConfigButton').addEventListener('click', exportConfig);
     document.getElementById('importConfigButton').addEventListener('click', () => {
