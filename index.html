@@ -4,55 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    
-    <!-- Title and Description for SEO -->
     <title>EvPortal - Your Personalized Tesla Link Manager</title>
     <meta name="description" content="EvPortal allows you to create customizable pages and shortcuts for quick access to your favorite sites from your Tesla screen.">
-
-    <!-- Open Graph for Social Sharing (Facebook, LinkedIn, etc.) -->
     <meta property="og:title" content="EvPortal - Personalized Link Manager for Tesla" />
     <meta property="og:description" content="Quickly access your favorite websites, streaming services, music, navigation, and more from your Tesla screen." />
     <meta property="og:image" content="./img/social-preview.png" />
     <meta property="og:url" content="https://drslid.github.io/EvPortal/" />
     <meta property="og:type" content="website" />
-
-    <!-- Twitter Card for Social Sharing -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="EvPortal - Tesla Personalized Link Manager">
     <meta name="twitter:description" content="Customize and manage your favorite links on your Tesla screen with EvPortal.">
-
-    <!-- Favicon and Icons -->
     <link rel="apple-touch-icon" sizes="180x180" href="./img/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="./img/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="./img/favicon-16x16.png">
     <link rel="mask-icon" href="./img/safari-pinned-tab.svg" color="#4a4a4a">
     <link rel="shortcut icon" href="./img/favicon.ico">
     <link rel="manifest" href="./img/site.webmanifest">
-
-    <!-- Theme Color for Mobile Browsers -->
     <meta name="theme-color" content="#ffffff">
     <meta name="msapplication-TileColor" content="#909090">
     <meta name="msapplication-config" content="./img/browserconfig.xml">
-    
-    <!-- Preload important assets for performance -->
     <link rel="preload" href="./img/logo.webp" as="image">
-
-    <!-- Stylesheets -->
     <link rel="stylesheet" href="./css/styles.css">
 </head>
 <body>
-    <div id="header">
+    <header id="header" role="banner" aria-label="Site header">
         <a href="https://drslid.github.io/EvPortal/">
             <img src="./img/logo.webp" width="629" height="54" alt="Portal Logo">
         </a>
-    </div>
+    </header>
     <ul id="menu">
-        <!-- Default pages will be loaded here -->
     </ul>
-    
-    <!-- New container to center buttons and forms -->
-    <div id="controlsContainer">
-        <!-- Existing buttons -->
+    <nav id="controlsContainer" role="navigation" aria-label="Main controls">
         <button id="editModeToggle">Enable Edit Mode</button>
         <button id="addPageButton" style="display: none;">Add Page</button>
         <button id="addShortcutButton" style="display: none;">Add Shortcut</button>
@@ -60,44 +42,34 @@
         <button id="importConfigButton" style="display: none;">Import Config</button>
         <button id="existingConfigButton" style="display: none;">Existing Config</button>
         <button id="resetButton" style="display: none;">Reset</button>
-    
         <input type="text" id="importConfigURL" placeholder="Telegraph Link" style="display: none;">
-        
         <div id="importConfigContainer" style="display: none; text-align: center; margin-top: 10px;">
             <div style="display: inline-flex; align-items: center;">
                 <span style="color: white; margin-right: 5px;">https://telegra.ph/</span>
                 <input type="text" id="importConfigID" placeholder="id here" style="margin: 0 auto; color: orange;">
-            </div>
             <button id="confirmImportButton">Import</button>
-        </div>        
-
+        </div>
         <div id="exportedLinkContainer" style="display: none">
             <p>Exported config link: <a id="exportedLink" href="#" target="_blank"></a></p>
             <div id="qrCode"></div>
         </div>
-
         <div id="addPageForm" style="display: none;">
             <input type="text" id="newPageName" placeholder="New page name" maxlength="16">
             <button onclick="addNewPage()">Add Page</button>
         </div>
-        
         <div id="addShortcutForm" style="display: none;">
             <input type="text" id="shortcutName" placeholder="Shortcut name" maxlength="16">
             <input type="url" id="shortcutURL" placeholder="Shortcut URL">
             <button onclick="addShortcutToCurrentPage()">Add Shortcut</button>
         </div>
-    </div>
-
-    <div id="content">
-        <!-- Page sections will be loaded here -->
-    </div>
+    </nav>
+    <main id="content" role="main">
+    </main>
     <script src="./js/script.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
     <div id="youtubeRedirectButtonContainer" style="display: none;">
         <button id="youtubeRedirectButton">⛶ Fullscreen</button>
-    </div>    
-
+    </div>
     <footer>
         <p>© 2024 EvPortal - Version: <span id="version">1.0.0</span> - All rights reserved</p>
         <p id="privacyNotice">This website does not store any user data, does not use cookies, and does not track or collect any personal information.</p>
