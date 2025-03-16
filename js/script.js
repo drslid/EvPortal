@@ -621,7 +621,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Ajouter un indicateur de chargement
       const loadingIndicator = document.createElement('div');
       loadingIndicator.id = 'loading-indicator';
-      loadingIndicator.innerHTML = 'Chargement des raccourcis...';
+      loadingIndicator.innerHTML = 'Loading shortcuts <span class="loading-icon">⏳</span>';
       document.body.appendChild(loadingIndicator);
 
       try {
