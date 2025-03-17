@@ -15,11 +15,297 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Pages par défaut et leurs raccourcis
     const defaultPages = {
+        "tv": [
+          {
+            "name": "MolotovTV",
+            "url": "https://www.molotov.tv/",
+            "order": 1
+          },
+          {
+            "name": "TNTenDirect",
+            "url": "https://www.tntendirect.com/",
+            "order": 2
+          },
+          {
+            "name": "Francetv",
+            "url": "https://www.france.tv/",
+            "order": 3
+          },
+          {
+            "name": "MyTF1",
+            "url": "https://www.tf1.fr/",
+            "order": 4
+          },
+          {
+            "name": "6play",
+            "url": "https://www.6play.fr/",
+            "order": 5
+          },
+          {
+            "name": "Arte.tv",
+            "url": "https://www.arte.tv/fr/",
+            "order": 6
+          },
+          {
+            "name": "TV5Monde",
+            "url": "https://www.tv5monde.com/",
+            "order": 13
+          },
+          {
+            "name": "RTBFAuvio",
+            "url": "https://www.rtbf.be/auvio/direct",
+            "order": 14
+          },
+          {
+            "name": "PlutoTV",
+            "url": "https://pluto.tv/live-tv",
+            "order": 16
+          },
+          {
+            "name": "StreemaTV",
+            "url": "https://streema.com/tv",
+            "order": 17
+          }
+        ],
+        "pages": [
+          "cinema",
+          "music",
+          "games",
+          "weather",
+          "navigation",
+          "charging",
+          "news",
+          "tv",
+          "social"
+        ],
+        "charging": [
+          {
+            "name": "ChargePoint",
+            "url": "https://driver.chargepoint.com/",
+            "order": null
+          },
+          {
+            "name": "ABetterRoutePlanner",
+            "url": "https://abetterrouteplanner.com/",
+            "order": 1
+          },
+          {
+            "name": "PlugShare",
+            "url": "https://www.plugshare.com/",
+            "order": 2
+          },
+          {
+            "name": "Tesla Supercharger",
+            "url": "https://www.tesla.com/trips",
+            "order": 4
+          },
+          {
+            "name": "ChargeMap",
+            "url": "https://fr.chargemap.com/map",
+            "order": 9
+          },
+          {
+            "name": "ChargePrice",
+            "url": "https://fr.chargeprice.app/",
+            "order": 10
+          }
+        ],
+        "games": [
+          {
+            "name": "GForceNow",
+            "url": "https://play.geforcenow.com/mall/#/layout/games",
+            "order": null
+          },
+          {
+            "name": "AirConsole",
+            "url": "https://www.airconsole.com/",
+            "order": 3
+          },
+          {
+            "name": "2048",
+            "url": "https://jeu2048.fr/",
+            "order": 4
+          },
+          {
+            "name": "Solitaire",
+            "url": "https://solitaire.com/",
+            "order": 5
+          },
+          {
+            "name": "Minesweeper",
+            "url": "https://minesweeperonline.com/",
+            "order": 7
+          },
+          {
+            "name": "Snake",
+            "url": "https://playsnake.org/",
+            "order": 8
+          },
+          {
+            "name": "Chess",
+            "url": "https://www.chess.com/",
+            "order": 9
+          },
+          {
+            "name": "Crazy Games",
+            "url": "https://www.crazygames.fr/",
+            "order": 11
+          },
+          {
+            "name": "Jeux.fr",
+            "url": "https://www.jeux.fr/",
+            "order": 12
+          },
+          {
+            "name": "1001 Jeux",
+            "url": "https://www.1001jeux.fr/",
+            "order": 13
+          },
+          {
+            "name": "Poki",
+            "url": "https://poki.com/fr",
+            "order": 14
+          },
+          {
+            "name": "Jeux-Gratuits.com",
+            "url": "https://www.jeux-gratuits.com/",
+            "order": 15
+          },
+          {
+            "name": "PlayHop",
+            "url": "https://playhop.com/fr",
+            "order": 16
+          }
+        ],
+        "navigation": [
+          {
+            "name": "Plans",
+            "url": "https://beta.maps.apple.com/",
+            "order": null
+          },
+          {
+            "name": "GoogleMaps",
+            "url": "https://maps.google.com/",
+            "order": 1
+          },
+          {
+            "name": "Waze",
+            "url": "https://www.waze.com/",
+            "order": 2
+          },
+          {
+            "name": "Here WeGo",
+            "url": "https://wego.here.com/",
+            "order": 5
+          },
+          {
+            "name": "OpenStreetMap",
+            "url": "https://www.openstreetmap.org/",
+            "order": 6
+          },
+          {
+            "name": "MapQuest",
+            "url": "https://www.mapquest.com/",
+            "order": 7
+          },
+          {
+            "name": "BingMaps",
+            "url": "https://www.bing.com/maps",
+            "order": 8
+          },
+          {
+            "name": "A Better Route Planner",
+            "url": "https://abetterrouteplanner.com/",
+            "order": 9
+          },
+          {
+            "name": "Infotraffic",
+            "url": "https://www.infotrafic.com/",
+            "order": 10
+          }
+        ],
+        "social": [
+          {
+            "name": "Kick",
+            "url": "https://kick.com/",
+            "order": null
+          },
+          {
+            "name": "Facebook",
+            "url": "https://www.facebook.com/",
+            "order": 1
+          },
+          {
+            "name": "X",
+            "url": "https://www.x.com/",
+            "order": 2
+          },
+          {
+            "name": "Instagram",
+            "url": "https://www.instagram.com/",
+            "order": 3
+          },
+          {
+            "name": "LinkedIn",
+            "url": "https://www.linkedin.com/",
+            "order": 4
+          },
+          {
+            "name": "Snapchat",
+            "url": "https://www.snapchat.com/",
+            "order": 5
+          },
+          {
+            "name": "TikTok",
+            "url": "https://www.tiktok.com/",
+            "order": 6
+          },
+          {
+            "name": "Reddit",
+            "url": "https://www.reddit.com/",
+            "order": 7
+          },
+          {
+            "name": "WhatsAppWeb",
+            "url": "https://web.whatsapp.com/",
+            "order": 8
+          },
+          {
+            "name": "Pinterest",
+            "url": "https://www.pinterest.com/",
+            "order": 9
+          },
+          {
+            "name": "Tumblr",
+            "url": "https://www.tumblr.com/",
+            "order": 10
+          },
+          {
+            "name": "Discord",
+            "url": "https://discord.com/channels/@me",
+            "order": 11
+          },
+          {
+            "name": "TelegramWeb",
+            "url": "https://web.telegram.org/",
+            "order": 12
+          },
+          {
+            "name": "WeChat",
+            "url": "https://web.wechat.com/",
+            "order": null
+          }
+        ],
         "cinema": [
           {
             "name": "CrunchyRoll",
             "url": "https://www.crunchyroll.com/",
             "order": 0
+          },
+          {
+            "name": "RakutenTV",
+            "url": "https://www.rakuten.tv/fr/gardens/free",
+            "order": null
           },
           {
             "name": "Plex",
@@ -105,291 +391,6 @@ document.addEventListener('DOMContentLoaded', () => {
             "name": "AnimeSama",
             "url": "https://anime-sama.fr/",
             "order": 17
-          }
-        ],
-        "music": [
-          {
-            "name": "Apple Music",
-            "url": "https://music.apple.com/",
-            "order": 1
-          },
-          {
-            "name": "Deezer",
-            "url": "https://www.deezer.com/en/channels/explore/",
-            "order": 2
-          },
-          {
-            "name": "SoundCloud",
-            "url": "https://www.soundcloud.com/",
-            "order": 3
-          },
-          {
-            "name": "Tidal",
-            "url": "https://www.tidal.com/",
-            "order": 4
-          },
-          {
-            "name": "Spotify",
-            "url": "https://open.spotify.com/",
-            "order": 5
-          },
-          {
-            "name": "Qobuz",
-            "url": "https://www.qobuz.com/",
-            "order": 6
-          },
-          {
-            "name": "ZeffyrMusic",
-            "url": "https://www.zeffyrmusic.com/",
-            "order": 7
-          },
-          {
-            "name": "AllForMusic",
-            "url": "https://www.allformusic.fr/",
-            "order": 8
-          },
-          {
-            "name": "AccuRadio",
-            "url": "https://www.accuradio.com/",
-            "order": 9
-          },
-          {
-            "name": "iHeartRadio",
-            "url": "https://www.iheart.com/",
-            "order": 10
-          },
-          {
-            "name": "MixCloud",
-            "url": "https://www.mixcloud.com/",
-            "order": 11
-          },
-          {
-            "name": "Pandora",
-            "url": "https://www.pandora.com/",
-            "order": 12
-          },
-          {
-            "name": "LiveOne",
-            "url": "https://www.liveone.com/",
-            "order": 13
-          },
-          {
-            "name": "Idagio",
-            "url": "https://www.idagio.com/",
-            "order": 14
-          },
-          {
-            "name": "TuneIn",
-            "url": "https://tunein.com/",
-            "order": 15
-          }
-        ],
-        "games": [
-          {
-            "name": "Twitch",
-            "url": "https://www.twitch.tv/",
-            "order": 1
-          },
-          {
-            "name": "Kick",
-            "url": "https://kick.com/",
-            "order": 2
-          },
-          {
-            "name": "AirConsole",
-            "url": "https://www.airconsole.com/",
-            "order": 3
-          },
-          {
-            "name": "2048",
-            "url": "https://jeu2048.fr/",
-            "order": 4
-          },
-          {
-            "name": "Solitaire",
-            "url": "https://solitaire.com/",
-            "order": 5
-          },
-          {
-            "name": "Tetris",
-            "url": "https://tetris.com/",
-            "order": 6
-          },
-          {
-            "name": "Minesweeper",
-            "url": "https://minesweeperonline.com/",
-            "order": 7
-          },
-          {
-            "name": "Snake",
-            "url": "https://playsnake.org/",
-            "order": 8
-          },
-          {
-            "name": "Chess",
-            "url": "https://www.chess.com/",
-            "order": 9
-          },
-          {
-            "name": "Checkers",
-            "url": "https://www.checkers.com/",
-            "order": 10
-          },
-          {
-            "name": "Crazy Games",
-            "url": "https://www.crazygames.fr/",
-            "order": 11
-          },
-          {
-            "name": "Jeux.fr",
-            "url": "https://www.jeux.fr/",
-            "order": 12
-          },
-          {
-            "name": "1001 Jeux",
-            "url": "https://www.1001jeux.fr/",
-            "order": 13
-          },
-          {
-            "name": "Poki",
-            "url": "https://poki.com/fr",
-            "order": 14
-          },
-          {
-            "name": "Jeux-Gratuits.com",
-            "url": "https://www.jeux-gratuits.com/",
-            "order": 15
-          },
-          {
-            "name": "PlayHop",
-            "url": "https://playhop.com/fr",
-            "order": 16
-          }
-        ],
-        "weather": [
-          {
-            "name": "Ventusky",
-            "url": "https://www.ventusky.com/",
-            "order": 0
-          },
-          {
-            "name": "Windy",
-            "url": "https://www.windy.com/",
-            "order": 1
-          },
-          {
-            "name": "Weather.com",
-            "url": "https://weather.com/",
-            "order": 2
-          },
-          {
-            "name": "LaChaineMeteo",
-            "url": "https://www.lachainemeteo.com/",
-            "order": 3
-          },
-          {
-            "name": "Météo France",
-            "url": "https://meteofrance.com/",
-            "order": 4
-          }
-        ],
-        "navigation": [
-          {
-            "name": "GoogleMaps",
-            "url": "https://maps.google.com/",
-            "order": 1
-          },
-          {
-            "name": "Waze",
-            "url": "https://www.waze.com/",
-            "order": 2
-          },
-          {
-            "name": "Apple Maps",
-            "url": "https://maps.apple.com/",
-            "order": 4
-          },
-          {
-            "name": "Here WeGo",
-            "url": "https://wego.here.com/",
-            "order": 5
-          },
-          {
-            "name": "OpenStreetMap",
-            "url": "https://www.openstreetmap.org/",
-            "order": 6
-          },
-          {
-            "name": "MapQuest",
-            "url": "https://www.mapquest.com/",
-            "order": 7
-          },
-          {
-            "name": "BingMaps",
-            "url": "https://www.bing.com/maps",
-            "order": 8
-          },
-          {
-            "name": "A Better Route Planner",
-            "url": "https://abetterrouteplanner.com/",
-            "order": 9
-          },
-          {
-            "name": "Infotraffic",
-            "url": "https://www.infotrafic.com/",
-            "order": 10
-          }
-        ],
-        "charging": [
-          {
-            "name": "ABetterRoutePlanner",
-            "url": "https://abetterrouteplanner.com/",
-            "order": 1
-          },
-          {
-            "name": "PlugShare",
-            "url": "https://www.plugshare.com/",
-            "order": 2
-          },
-          {
-            "name": "ChargePoint",
-            "url": "https://www.chargepoint.com/",
-            "order": 3
-          },
-          {
-            "name": "Tesla Supercharger",
-            "url": "https://www.tesla.com/trips",
-            "order": 4
-          },
-          {
-            "name": "Electrify America",
-            "url": "https://www.electrifyamerica.com/",
-            "order": 5
-          },
-          {
-            "name": "EVgo",
-            "url": "https://www.evgo.com/",
-            "order": 6
-          },
-          {
-            "name": "ZapMap",
-            "url": "https://www.zap-map.com/",
-            "order": 7
-          },
-          {
-            "name": "Ionity",
-            "url": "https://www.ionity.eu/",
-            "order": 8
-          },
-          {
-            "name": "ChargeMap",
-            "url": "https://fr.chargemap.com/map",
-            "order": 9
-          },
-          {
-            "name": "ChargePrice",
-            "url": "https://fr.chargeprice.app/",
-            "order": 10
           }
         ],
         "news": [
@@ -499,118 +500,108 @@ document.addEventListener('DOMContentLoaded', () => {
             "order": 20
           }
         ],
-        "tv": [
+        "weather": [
           {
-            "name": "MolotovTV",
-            "url": "https://www.molotov.tv/",
+            "name": "Ventusky",
+            "url": "https://www.ventusky.com/",
+            "order": 0
+          },
+          {
+            "name": "Windy",
+            "url": "https://www.windy.com/",
             "order": 1
           },
           {
-            "name": "TNTenDirect",
-            "url": "https://www.tntendirect.com/",
+            "name": "Weather.com",
+            "url": "https://weather.com/",
             "order": 2
           },
           {
-            "name": "Francetv",
-            "url": "https://www.france.tv/",
+            "name": "LaChaineMeteo",
+            "url": "https://www.lachainemeteo.com/",
             "order": 3
           },
           {
-            "name": "MyTF1",
-            "url": "https://www.tf1.fr/",
+            "name": "Météo France",
+            "url": "https://meteofrance.com/",
             "order": 4
-          },
-          {
-            "name": "6play",
-            "url": "https://www.6play.fr/",
-            "order": 5
-          },
-          {
-            "name": "Arte.tv",
-            "url": "https://www.arte.tv/fr/",
-            "order": 6
-          },
-          {
-            "name": "TV5Monde",
-            "url": "https://www.tv5monde.com/",
-            "order": 13
-          },
-          {
-            "name": "RTBFAuvio",
-            "url": "https://www.rtbf.be/auvio/direct",
-            "order": 14
-          },
-          {
-            "name": "PlutoTV",
-            "url": "https://pluto.tv/live-tv",
-            "order": 16
-          },
-          {
-            "name": "StreemaTV",
-            "url": "https://streema.com/tv",
-            "order": 17
           }
         ],
-        "social": [
+        "music": [
           {
-            "name": "Facebook",
-            "url": "https://www.facebook.com/",
+            "name": "TuneIn",
+            "url": "https://tunein.com/radio/home/",
+            "order": null
+          },
+          {
+            "name": "Apple Music",
+            "url": "https://music.apple.com/",
             "order": 1
           },
           {
-            "name": "X",
-            "url": "https://www.x.com/",
+            "name": "Deezer",
+            "url": "https://www.deezer.com/en/channels/explore/",
             "order": 2
           },
           {
-            "name": "Instagram",
-            "url": "https://www.instagram.com/",
+            "name": "SoundCloud",
+            "url": "https://www.soundcloud.com/",
             "order": 3
           },
           {
-            "name": "LinkedIn",
-            "url": "https://www.linkedin.com/",
+            "name": "Tidal",
+            "url": "https://www.tidal.com/",
             "order": 4
           },
           {
-            "name": "Snapchat",
-            "url": "https://www.snapchat.com/",
+            "name": "Spotify",
+            "url": "https://open.spotify.com/",
             "order": 5
           },
           {
-            "name": "TikTok",
-            "url": "https://www.tiktok.com/",
+            "name": "Qobuz",
+            "url": "https://www.qobuz.com/",
             "order": 6
           },
           {
-            "name": "Reddit",
-            "url": "https://www.reddit.com/",
+            "name": "ZeffyrMusic",
+            "url": "https://www.zeffyrmusic.com/",
             "order": 7
           },
           {
-            "name": "WhatsAppWeb",
-            "url": "https://web.whatsapp.com/",
+            "name": "AllForMusic",
+            "url": "https://www.allformusic.fr/",
             "order": 8
           },
           {
-            "name": "Pinterest",
-            "url": "https://www.pinterest.com/",
+            "name": "AccuRadio",
+            "url": "https://www.accuradio.com/",
             "order": 9
           },
           {
-            "name": "Tumblr",
-            "url": "https://www.tumblr.com/",
+            "name": "iHeartRadio",
+            "url": "https://www.iheart.com/",
             "order": 10
           },
           {
-            "name": "Discord",
-            "url": "https://discord.com/channels/@me",
+            "name": "MixCloud",
+            "url": "https://www.mixcloud.com/",
             "order": 11
           },
           {
-            "name": "TelegramWeb",
-            "url": "https://web.telegram.org/",
+            "name": "Pandora",
+            "url": "https://www.pandora.com/",
             "order": 12
+          },
+          {
+            "name": "LiveOne",
+            "url": "https://www.liveone.com/",
+            "order": 13
+          },
+          {
+            "name": "Idagio",
+            "url": "https://www.idagio.com/",
+            "order": 14
           }
         ]
       };

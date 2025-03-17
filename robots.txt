@@ -1,0 +1,3 @@
+User-agent: *
+Disallow:
+Sitemap: https://drslid.github.io/EvPortal/sitemap.xml
