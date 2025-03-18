@@ -42,6 +42,10 @@
   <img src="https://drslid.github.io/EvPortal/img/evportal_capture_1.png" alt="EvPortal Screenshot" width="600">
 </p>
 
+<p align="center">
+  <img src="https://drslid.github.io/EvPortal/img/evportal_ev_interior.png" alt="EvPortal Ev Inerior" width="600">
+</p>
+
 
 ## 📖 Table of Contents  
 - [🚀 Key Features](#-key-features)  
