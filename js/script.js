@@ -15,7 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Pages par défaut et leurs raccourcis
     const defaultPages = {
-      "pages": ["cinema", "music", "games", "weather", "navigation", "charging", "news", "tv", "social"],
       "cinema": [
         {"name": "CrunchyRoll", "url": "https://www.crunchyroll.com/", "order": 1},
         {"name": "Plex", "url": "https://app.plex.tv/", "order": 2},
