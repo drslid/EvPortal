@@ -99,7 +99,7 @@ Planned features and improvements include:
 
 ## 🤝 Contributing
 
-We appreciate and encourage community contributions! If you'd like to help improve this project, here’s how you can get involved.
+I appreciate and encourage community contributions! If you'd like to help improve this project, here’s how you can get involved.
 
 ### 🚀 How You Can Contribute
 
