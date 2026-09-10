@@ -1,0 +1,1282 @@
+{
+  "1001jeux.fr": {
+    "file": "1001jeux.fr.png",
+    "source": "https://www.google.com/s2/favicons?domain=1001jeux.fr&sz=64",
+    "original": "https://ccf.admeen.org/32/icon/favicon-96x96.png",
+    "downloaded": "2026-09-10",
+    "bytes": 2140,
+    "width": 64,
+    "height": 64,
+    "sha256": "f79a32506d7c5a89a7efa4f1b3aad96da50335df2adddb164ff6f43d0e3ff369"
+  },
+  "20minutes.fr": {
+    "file": "20minutes.fr.png",
+    "source": "https://www.google.com/s2/favicons?domain=20minutes.fr&sz=64",
+    "original": "https://www.20minutes.fr/favicons/favicon.ico",
+    "downloaded": "2026-09-10",
+    "bytes": 390,
+    "width": 48,
+    "height": 48,
+    "sha256": "f87cd4afa74375de3d4e0ee8a2329fb108c73e81fa16e8d49c6cf4c6288024c0"
+  },
+  "abetterrouteplanner.com": {
+    "file": "abetterrouteplanner.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=abetterrouteplanner.com&sz=64",
+    "original": "https://abetterrouteplanner.com/favicon.ico",
+    "downloaded": "2026-09-10",
+    "bytes": 1444,
+    "width": 64,
+    "height": 64,
+    "sha256": "484515f4f3c08518a44d716b673dc13ee6bfd028dfbb70d8fff39617d6a8693d"
+  },
+  "accuradio.com": {
+    "file": "accuradio.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=accuradio.com&sz=64",
+    "original": "https://www.accuradio.com/static/images/favicon-180.png",
+    "downloaded": "2026-09-10",
+    "bytes": 1025,
+    "width": 64,
+    "height": 64,
+    "sha256": "d3693d7a32806c2ca3610d2871c9efc41eb831e1b5aaada968483e43648215bc"
+  },
+  "accuweather.com": {
+    "file": "accuweather.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=accuweather.com&sz=64",
+    "original": "https://www.accuweather.com/favicon.ico",
+    "downloaded": "2026-09-10",
+    "bytes": 2263,
+    "width": 48,
+    "height": 48,
+    "sha256": "fbf736467d852f35b87d4e6e860f0fcc2747584cfeff1dcd02125fb91b2457f8"
+  },
+  "afp.com": {
+    "file": "afp.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=www.afp.com&sz=64",
+    "original": "https://www.afp.com/themes/custom/afp9/assets/images/favicon_afp.com_201120.ico",
+    "downloaded": "2026-09-10",
+    "bytes": 690,
+    "width": 64,
+    "height": 64,
+    "sha256": "36bf23546841b591297d40b9d45c93f7faf3293712e069124164b9f2c65be2a8"
+  },
+  "airconsole.com": {
+    "file": "airconsole.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=airconsole.com&sz=64",
+    "original": "https://www.airconsole.com/file/.ci-marco-eng-3080-bmw-epg-479771497356707296/favicons/apple-touch-icon.png",
+    "downloaded": "2026-09-10",
+    "bytes": 911,
+    "width": 64,
+    "height": 64,
+    "sha256": "807c7d6a5c35b8ec2603895151b7cc3176be769567a76b563188f24e5ebe8c1f"
+  },
+  "aljazeera.com": {
+    "file": "aljazeera.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=aljazeera.com&sz=64",
+    "original": "https://www.aljazeera.com/favicon_aje.ico",
+    "downloaded": "2026-09-10",
+    "bytes": 738,
+    "width": 48,
+    "height": 48,
+    "sha256": "6251226932a3e45f9066a38cd1a8a2674fa8e7ba4668c5f42321c022d902eed5"
+  },
+  "app.plex.tv": {
+    "file": "app.plex.tv.png",
+    "source": "https://www.google.com/s2/favicons?domain=app.plex.tv&sz=64",
+    "original": "https://app.plex.tv/desktop/static/icon-ipad.png",
+    "downloaded": "2026-09-10",
+    "bytes": 645,
+    "width": 64,
+    "height": 64,
+    "sha256": "87d5b33a2ec79856bb2a91344f0e4d7b3623b7e2efcfe120d81b5e81f0855e58"
+  },
+  "arte.tv": {
+    "file": "arte.tv.png",
+    "source": "https://www.google.com/s2/favicons?domain=www.arte.tv&sz=64",
+    "original": "http://www.arte.tv/favicon.ico",
+    "downloaded": "2026-09-10",
+    "bytes": 289,
+    "width": 16,
+    "height": 16,
+    "sha256": "c8a29d704cf77c6533e8605323bed2d37f1b637d67e8139b7fc3a2e6f1bf3d31"
+  },
+  "automobile-propre.com": {
+    "file": "automobile-propre.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=automobile-propre.com&sz=64",
+    "original": "https://www.automobile-propre.com/favicon.ico",
+    "downloaded": "2026-09-10",
+    "bytes": 568,
+    "width": 48,
+    "height": 48,
+    "sha256": "695257aa414bb2df03f63090af8c085a6c25fc3e49a1b5ffc4ed3f023b021734"
+  },
+  "auvio.rtbf.be": {
+    "file": "auvio.rtbf.be.png",
+    "source": "https://www.google.com/s2/favicons?domain=auvio.rtbf.be&sz=64",
+    "original": "https://auvio.rtbf.be/images/icons/auvio_96x96.png",
+    "downloaded": "2026-09-10",
+    "bytes": 626,
+    "width": 64,
+    "height": 64,
+    "sha256": "dbbe67ab3f6b4cfb3338e2f844be61dfd5d2a9247bf7944d9dcd2ba747b36d1b"
+  },
+  "bandcamp.com": {
+    "file": "bandcamp.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=bandcamp.com&sz=64",
+    "original": "https://s4.bcbits.com/client-bundle/1/PageLayout_1/favicon-e91a942bb76c26f619d5945a00cf8e60.static/favicon/apple-touch-icon.png",
+    "downloaded": "2026-09-10",
+    "bytes": 303,
+    "width": 64,
+    "height": 64,
+    "sha256": "a596dae9e2447364889f63a40493f3a33e1665ae2ccaa06f04be7ae7b602708e"
+  },
+  "bbc.com": {
+    "file": "bbc.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=bbc.com&sz=64",
+    "original": "https://static.files.bbci.co.uk/bbcdotcom/web/20260821-111954-d28c495a96-web-3.19.0-2/apple-touch-icon.png",
+    "downloaded": "2026-09-10",
+    "bytes": 174,
+    "width": 64,
+    "height": 64,
+    "sha256": "aeb6316daedab5cf4708b816d77ad8fd27639bf98a1b8a35e9cf648016c4c34e"
+  },
+  "bfmtv.com": {
+    "file": "bfmtv.com.jpg",
+    "source": "https://www.google.com/s2/favicons?domain=bfmtv.com&sz=64",
+    "original": "https://www.bfmtv.com/apple-icon-76x76.png",
+    "downloaded": "2026-09-10",
+    "bytes": 1345,
+    "width": 64,
+    "height": 64,
+    "sha256": "127bc3f2ef768d17117877a51a0dfcbcf933fde4b0a59b921ee07ca85d11a5c9"
+  },
+  "bing.com": {
+    "file": "bing.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=bing.com&sz=64",
+    "original": "http://www.bing.com/sa/simg/favicon-trans-bg-blue-mg-png.png",
+    "downloaded": "2026-09-10",
+    "bytes": 548,
+    "width": 32,
+    "height": 32,
+    "sha256": "e9d195b1c3c84aa92a53c37c214961e7d3f98fe7ac72ecebd1bd93b5fddf83ca"
+  },
+  "bison-fute.gouv.fr": {
+    "file": "bison-fute.gouv.fr.png",
+    "source": "https://www.google.com/s2/favicons?domain=bison-fute.gouv.fr&sz=64",
+    "original": "https://www.bison-fute.gouv.fr/webapp/assets/icon/favicon.png",
+    "downloaded": "2026-09-10",
+    "bytes": 2381,
+    "width": 64,
+    "height": 64,
+    "sha256": "f98b91cc47c73a44f43136c1b9dd22263b47e157809abd847d3d4a6244f6fb4b"
+  },
+  "bsky.app": {
+    "file": "bsky.app.png",
+    "source": "https://www.google.com/s2/favicons?domain=bsky.app&sz=64",
+    "original": "https://web-cdn.bsky.app/static/apple-touch-icon.png",
+    "downloaded": "2026-09-10",
+    "bytes": 575,
+    "width": 64,
+    "height": 64,
+    "sha256": "e1f593254792ef325d0f8fc75756b4e71df56b08f238c3e2e2f8291f90f80717"
+  },
+  "calendar.google.com": {
+    "file": "calendar.google.com.ico",
+    "source": "https://calendar.google.com/googlecalendar/images/favicons_2020q4/calendar_31.ico",
+    "original": "https://calendar.google.com/googlecalendar/images/favicons_2020q4/calendar_31.ico",
+    "downloaded": "2026-09-10",
+    "bytes": 4414,
+    "width": 32,
+    "height": 32,
+    "sha256": "4b08278e69975910e73fced1604a0bcc1283451d9fe85f7b6b11e03f019fbc7c"
+  },
+  "canalplus.com": {
+    "file": "canalplus.com.jpg",
+    "source": "https://www.google.com/s2/favicons?domain=canalplus.com&sz=64",
+    "original": "https://www.canalplus.com/apple-touch-icon-120x120.png",
+    "downloaded": "2026-09-10",
+    "bytes": 680,
+    "width": 64,
+    "height": 64,
+    "sha256": "2ceea64914f0aa7b9127c1813d3557435aaae0c00afb7134c94543c008605c04"
+  },
+  "charge.freshmile.com": {
+    "file": "charge.freshmile.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=charge.freshmile.com&sz=64",
+    "original": "https://charge.freshmile.com/favicon-freshmile.svg",
+    "downloaded": "2026-09-10",
+    "bytes": 551,
+    "width": 64,
+    "height": 64,
+    "sha256": "606c8650a0321c2d7d844be3d7b6ff65de1ff2c44515625d15a31dbd23025618"
+  },
+  "chargefinder.com": {
+    "file": "chargefinder.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=chargefinder.com&sz=64",
+    "original": "https://static.chargefinder.com/icons/apple-touch-icon.png",
+    "downloaded": "2026-09-10",
+    "bytes": 462,
+    "width": 64,
+    "height": 64,
+    "sha256": "29d6e4cccdd93a19f10ec1df08a51515bfa1aab99f4d16fb59fb4ad07eeea98e"
+  },
+  "chargemap.com": {
+    "file": "chargemap.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=chargemap.com&sz=64",
+    "original": "https://cdn.prod.website-files.com/67d193a4dbe0901706d9a4ca/6a3e0f7edef2a21765cc4eaa_Logos%20(1).png",
+    "downloaded": "2026-09-10",
+    "bytes": 968,
+    "width": 64,
+    "height": 64,
+    "sha256": "1efde5331b22529fa2e21f88df8427f47ad2112a9888353c22029a6a78ce3fec"
+  },
+  "chess.com": {
+    "file": "chess.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=chess.com&sz=64",
+    "original": "https://www.chess.com/bundles/web/favicons/apple-touch-icon.7aaa2d1f.png",
+    "downloaded": "2026-09-10",
+    "bytes": 772,
+    "width": 64,
+    "height": 64,
+    "sha256": "486b2d4436b2825db3d0c8f2d8a8af22e0537ad0751c9d46637e840530a6c81b"
+  },
+  "cnews.fr": {
+    "file": "cnews.fr.png",
+    "source": "https://www.google.com/s2/favicons?domain=cnews.fr&sz=64",
+    "original": "https://www.cnews.fr/themes/cnews/img/favicon-64x64.png",
+    "downloaded": "2026-09-10",
+    "bytes": 2211,
+    "width": 64,
+    "height": 64,
+    "sha256": "852b149c09aca15a54ec64aaf0d232a73ad8ae82911764e32ea481bf4590cdc4"
+  },
+  "crave.ca": {
+    "file": "crave.ca.png",
+    "source": "https://www.google.com/s2/favicons?domain=crave.ca&sz=64",
+    "original": "https://www.crave.ca/9259/assets/logos/craveLogo.png",
+    "downloaded": "2026-09-10",
+    "bytes": 765,
+    "width": 64,
+    "height": 64,
+    "sha256": "2f644c2e0439a1ff64509917498cfb7192e9bdf91d1a9ede0094ff7e3bfd9075"
+  },
+  "crazygames.com": {
+    "file": "crazygames.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=crazygames.com&sz=64",
+    "original": "https://imgs.crazygames.com/favicons/apple-touch-icon-3.png?metadata=none&quality=60&width=120&height=120&fit=crop&format=png",
+    "downloaded": "2026-09-10",
+    "bytes": 1320,
+    "width": 64,
+    "height": 64,
+    "sha256": "0f634d80a40235f104362422697f2e02eee748d60cd93bce8d2904b546633304"
+  },
+  "dazn.com": {
+    "file": "dazn.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=dazn.com&sz=64",
+    "original": "https://www.dazn.com/icons/apple-touch-icon-180x180.png",
+    "downloaded": "2026-09-10",
+    "bytes": 647,
+    "width": 64,
+    "height": 64,
+    "sha256": "6153b0f7b489fd602547975f6b6a6a92713189786e0410e74350bbac7bad0b14"
+  },
+  "deepl.com": {
+    "file": "deepl.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=deepl.com&sz=64",
+    "original": "https://www.deepl.com/img/favicon/favicon_96.png",
+    "downloaded": "2026-09-10",
+    "bytes": 679,
+    "width": 64,
+    "height": 64,
+    "sha256": "bfe4e7ae18dba57cf92d1734f240c79f1366b71a5910b84935aaebc8211c7f1f"
+  },
+  "deezer.com": {
+    "file": "deezer.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=deezer.com&sz=64",
+    "original": "https://cdn-files.dzcdn.net/cache/images/common/favicon/favicon-72x72.52f8186cd0543de61a12.png",
+    "downloaded": "2026-09-10",
+    "bytes": 747,
+    "width": 64,
+    "height": 64,
+    "sha256": "6bd0791286eeb9f085d61f7c2e762a9ca64cfdfe7affaf8a6d326eefc4a67a1a"
+  },
+  "discord.com": {
+    "file": "discord.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=discord.com&sz=64",
+    "original": "https://cdn.prod.website-files.com/6257adef93867e50d84d30e2/6266bc493fb42d4e27bb8393_847541504914fd33810e70a0ea73177e.ico",
+    "downloaded": "2026-09-10",
+    "bytes": 742,
+    "width": 64,
+    "height": 64,
+    "sha256": "d6bebf0b8d4bfdc948fc6deea925018801a8adc5f8fafe8f5937b6e100348940"
+  },
+  "disneyplus.com": {
+    "file": "disneyplus.com.jpg",
+    "source": "https://www.google.com/s2/favicons?domain=disneyplus.com&sz=64",
+    "original": "https://static-assets.bamgrid.com/product/disneyplus/favicons/favicon_dis_48x48_@2X.2eebc912779d4f2ee8d9c6204d443ab6.png",
+    "downloaded": "2026-09-10",
+    "bytes": 1148,
+    "width": 64,
+    "height": 64,
+    "sha256": "c17eae52fa64545b630703a0f5b15b08d832179eb67f68a8f63d8c8ca177883b"
+  },
+  "docs.google.com": {
+    "file": "docs.google.com.ico",
+    "source": "https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico",
+    "original": "https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico",
+    "downloaded": "2026-09-10",
+    "bytes": 16958,
+    "width": 64,
+    "height": 64,
+    "sha256": "9fe9a7f7259c48914d90f0dd37e1e29505241f9fbbac06d65d61b23fef8968b9"
+  },
+  "drive.google.com": {
+    "file": "drive.google.com.png",
+    "source": "https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png",
+    "original": "https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png",
+    "downloaded": "2026-09-10",
+    "bytes": 1594,
+    "width": 32,
+    "height": 32,
+    "sha256": "2ab9cd0ffdddf7bf060620ae328fe626bfa2c004739adedb74ec894faf9bee31"
+  },
+  "driver.chargepoint.com": {
+    "file": "driver.chargepoint.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=chargepoint.com&sz=64",
+    "original": "https://www.chargepoint.com/themes/chargepoint/favicon.ico",
+    "downloaded": "2026-09-10",
+    "bytes": 437,
+    "width": 16,
+    "height": 16,
+    "sha256": "d38c145a7e8ce0291d6504a106936b99f9ab98da60f36d8acdb9e7c4408fbdb3"
+  },
+  "edition.cnn.com": {
+    "file": "edition.cnn.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=edition.cnn.com&sz=64",
+    "original": "https://edition.cnn.com/media/sites/cnn/apple-touch-icon.png",
+    "downloaded": "2026-09-10",
+    "bytes": 612,
+    "width": 64,
+    "height": 64,
+    "sha256": "fffc7807a18b3d32766012cbaf5ae5e6768202bf0ceb672e58d4606a0e73b8fd"
+  },
+  "facebook.com": {
+    "file": "facebook.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=facebook.com&sz=64",
+    "original": "https://z-m-static.xx.fbcdn.net/rsrc.php/yj/r/rvjuhHLwc7B.ico",
+    "downloaded": "2026-09-10",
+    "bytes": 779,
+    "width": 64,
+    "height": 64,
+    "sha256": "b12cd8c58adacef99311c4f2fc9f9aaabf51a48a013e3b3440641c6db5e2a5cc"
+  },
+  "fastnedcharging.com": {
+    "file": "fastnedcharging.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=fastnedcharging.com&sz=64",
+    "original": "https://www.fastnedcharging.com/assets/favicons/favicon.ico",
+    "downloaded": "2026-09-10",
+    "bytes": 2359,
+    "width": 64,
+    "height": 64,
+    "sha256": "19c9b5dac5d081ebdb16139a9b01ea0e02bd86d69bfeb3d6ce29c2f2fc6fdb8e"
+  },
+  "fr.chargeprice.app": {
+    "file": "fr.chargeprice.app.png",
+    "source": "https://www.google.com/s2/favicons?domain=fr.chargeprice.app&sz=64",
+    "original": "https://fr.chargeprice.app/img/logos/apple-touch-icon.png",
+    "downloaded": "2026-09-10",
+    "bytes": 523,
+    "width": 64,
+    "height": 64,
+    "sha256": "7cbe28e8fa422d6ab3bc5c18117b59519362d20f654dbbbc1f12f7d6b96b0655"
+  },
+  "fr.euronews.com": {
+    "file": "fr.euronews.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=fr.euronews.com&sz=64",
+    "original": "https://fr.euronews.com/apple-touch-icon-72x72.png",
+    "downloaded": "2026-09-10",
+    "bytes": 490,
+    "width": 64,
+    "height": 64,
+    "sha256": "7d8ea868aa92234aff2dcf10ca3ba9fbf815557187f34a7c1db738395946cc84"
+  },
+  "fr.wikipedia.org": {
+    "file": "fr.wikipedia.org.png",
+    "source": "https://www.google.com/s2/favicons?domain=fr.wikipedia.org&sz=64",
+    "original": "https://fr.wikipedia.org/static/apple-touch/wikipedia.png",
+    "downloaded": "2026-09-10",
+    "bytes": 586,
+    "width": 64,
+    "height": 64,
+    "sha256": "22b3066d098a7e7b1e49eb8bc5e4b5b1072b33b2b00830fb54d98be0cff15b54"
+  },
+  "france.tv": {
+    "file": "france.tv.png",
+    "source": "https://www.google.com/s2/favicons?domain=france.tv&sz=64",
+    "original": "https://www.france.tv/favicons/favicon-120.png",
+    "downloaded": "2026-09-10",
+    "bytes": 1002,
+    "width": 64,
+    "height": 64,
+    "sha256": "352ce6c96783d3d2edc72909eb24ad575dcfb016d6b584e974fa6c5444842aae"
+  },
+  "france24.com": {
+    "file": "france24.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=france24.com&sz=64",
+    "original": "https://www.france24.com/apple-touch-icon.png",
+    "downloaded": "2026-09-10",
+    "bytes": 1421,
+    "width": 64,
+    "height": 64,
+    "sha256": "c2f28397b93d4223f04eb9acc9f0a65c0680a55fa95ae791063e02148117e8d4"
+  },
+  "franceinfo.fr": {
+    "file": "franceinfo.fr.png",
+    "source": "https://www.google.com/s2/favicons?domain=franceinfo.fr&sz=64",
+    "original": "https://www.franceinfo.fr/assets/common/images/pwa/ios/180-1797f52d.png",
+    "downloaded": "2026-09-10",
+    "bytes": 449,
+    "width": 64,
+    "height": 64,
+    "sha256": "143471402519ef2adff72b371a5801f02179786ce128130f51ccdd04bf8c45f8"
+  },
+  "github.com": {
+    "file": "github.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=github.com&sz=64",
+    "original": "https://github.githubassets.com/favicons/favicon.svg",
+    "downloaded": "2026-09-10",
+    "bytes": 519,
+    "width": 32,
+    "height": 32,
+    "sha256": "1a81fbfbf0a8efe0a8a9a16f0951e679dbbda131fe014a150176056199968e06"
+  },
+  "hbomax.com": {
+    "file": "hbomax.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=hbomax.com&sz=64",
+    "original": "https://www.hbomax.com/dotcom/img/hbomax/apple-touch-icon.png",
+    "downloaded": "2026-09-10",
+    "bytes": 652,
+    "width": 64,
+    "height": 64,
+    "sha256": "06e42127d414fafe5663cf42c24e69beb92bf8c27c5823a7ca725242ebc325fb"
+  },
+  "idagio.com": {
+    "file": "idagio.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=idagio.com&sz=64",
+    "original": "https://www.idagio.com/favicon.ico",
+    "downloaded": "2026-09-10",
+    "bytes": 413,
+    "width": 32,
+    "height": 32,
+    "sha256": "fa86f46208ad4146499a6c0a5278f11074a917b361e5e2eecc3f71c37d8b42e9"
+  },
+  "iheart.com": {
+    "file": "iheart.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=iheart.com&sz=64",
+    "original": "https://www.iheart.com/static/assets/apple-touch-icon.png",
+    "downloaded": "2026-09-10",
+    "bytes": 903,
+    "width": 64,
+    "height": 64,
+    "sha256": "10634399c386e7e2291c442357401afdf839c8240a51418ca44089109dc2e23d"
+  },
+  "infotrafic.com": {
+    "file": "infotrafic.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=infotrafic.com&sz=64",
+    "original": "https://www.infotrafic.com/assets/icons/apple-touch-icon.png",
+    "downloaded": "2026-09-10",
+    "bytes": 684,
+    "width": 64,
+    "height": 64,
+    "sha256": "ce646b2a9b3367668d51edb2ed20ebeceee47e125f663e5dcf6fe925230ad18a"
+  },
+  "instagram.com": {
+    "file": "instagram.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=instagram.com&sz=64",
+    "original": "https://static.cdninstagram.com/rsrc.php/yj/r/f01UdNyJjJj.webp",
+    "downloaded": "2026-09-10",
+    "bytes": 3682,
+    "width": 64,
+    "height": 64,
+    "sha256": "3e576c28e4811958812e44be949f0818c8f8da7ebb565b6a0bee0e815068202d"
+  },
+  "ionity.eu": {
+    "file": "ionity.eu.png",
+    "source": "https://www.google.com/s2/favicons?domain=ionity.eu&sz=64",
+    "original": "https://cdn.prod.website-files.com/66e197644ead7b648dbae27d/6710b334c09bdd82f3086cbb_ionity_webclip.png",
+    "downloaded": "2026-09-10",
+    "bytes": 498,
+    "width": 64,
+    "height": 64,
+    "sha256": "45a20b4324b445b04a8b367f9f888c64474d90a5a47fb5aa6580062ff68795a9"
+  },
+  "jeu2048.fr": {
+    "file": "jeu2048.fr.png",
+    "source": "https://www.google.com/s2/favicons?domain=jeu2048.fr&sz=64",
+    "original": "https://jeu2048.fr/favicon.ico",
+    "downloaded": "2026-09-10",
+    "bytes": 716,
+    "width": 32,
+    "height": 32,
+    "sha256": "c884a49187d8dfe218fa6beddcaf67bca126eb152825d34253ed53c96417c05d"
+  },
+  "jeux-gratuits.com": {
+    "file": "jeux-gratuits.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=jeux-gratuits.com&sz=64",
+    "original": "https://www.jeux-gratuits.com/favicon.ico",
+    "downloaded": "2026-09-10",
+    "bytes": 2127,
+    "width": 48,
+    "height": 48,
+    "sha256": "3762fcb28a7c863fbf4ddc62b10beca92978ab64ee283c43caee9450f6545bba"
+  },
+  "jeux.fr": {
+    "file": "jeux.fr.png",
+    "source": "https://www.google.com/s2/favicons?domain=jeux.fr&sz=64",
+    "original": "https://www.jeux.fr/favicon.ico",
+    "downloaded": "2026-09-10",
+    "bytes": 7011,
+    "width": 64,
+    "height": 64,
+    "sha256": "14944d4d9797046851230c86861c965216e966bfd30483035b07f62ad06bbe08"
+  },
+  "kick.com": {
+    "file": "kick.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=kick.com&sz=64",
+    "original": "https://kick.com/apple-icon.png?apple-icon.0ldhg5ovdrppx.png",
+    "downloaded": "2026-09-10",
+    "bytes": 367,
+    "width": 64,
+    "height": 64,
+    "sha256": "7ec8fc575e51faa21c049a4c28d51b4682bfeb90959b4947f8761352a3456c9e"
+  },
+  "lachainemeteo.com": {
+    "file": "lachainemeteo.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=lachainemeteo.com&sz=64",
+    "original": "https://static5.mclcm.net/lcm2018/fr/common/favicons/96_desktop_shortcut_icon.png",
+    "downloaded": "2026-09-10",
+    "bytes": 1413,
+    "width": 64,
+    "height": 64,
+    "sha256": "3053dc6e7fb45e91563b416a9aeee48e5e0ccbe4eb284203af7d2dd80ab9e02e"
+  },
+  "lefigaro.fr": {
+    "file": "lefigaro.fr.png",
+    "source": "https://www.google.com/s2/favicons?domain=lefigaro.fr&sz=64",
+    "original": "https://www.lefigaro.fr/apple-touch-icon.png",
+    "downloaded": "2026-09-10",
+    "bytes": 540,
+    "width": 64,
+    "height": 64,
+    "sha256": "557fae07eb9e65e180a2605fe8798597d3f95b2637289402e21223a95cb26022"
+  },
+  "lemonde.fr": {
+    "file": "lemonde.fr.png",
+    "source": "https://www.google.com/s2/favicons?domain=lemonde.fr&sz=64",
+    "original": "https://www.lemonde.fr/bucket/resources/front/static/img/logos/icon-76.png",
+    "downloaded": "2026-09-10",
+    "bytes": 944,
+    "width": 64,
+    "height": 64,
+    "sha256": "18d69b9bbec59ee142b54baba45cde7f920eca378f56f5915ce5b6c9e2af5c00"
+  },
+  "lexpress.fr": {
+    "file": "lexpress.fr.png",
+    "source": "https://www.google.com/s2/favicons?domain=lexpress.fr&sz=64",
+    "original": "https://www.lexpress.fr/pf/resources/icons/fav/apple-touch-icon.png?d=867",
+    "downloaded": "2026-09-10",
+    "bytes": 434,
+    "width": 64,
+    "height": 64,
+    "sha256": "16a7ed1c9fb71bfcfbd9e3c7eec3d53f33f915cfcb71522461897aaa335aef47"
+  },
+  "liberation.fr": {
+    "file": "liberation.fr.png",
+    "source": "https://www.google.com/s2/favicons?domain=liberation.fr&sz=64",
+    "original": "https://www.liberation.fr/pf/resources/images/liberation/favicon.ico?d=252",
+    "downloaded": "2026-09-10",
+    "bytes": 361,
+    "width": 48,
+    "height": 48,
+    "sha256": "bde8186c0f888d1b5384ae27afb61170bacb6c94f4c8c302ab04ce6af8a43a4b"
+  },
+  "lichess.org": {
+    "file": "lichess.org.png",
+    "source": "https://www.google.com/s2/favicons?domain=lichess.org&sz=64",
+    "original": "https://lichess1.org/assets/logo/lichess-favicon.svg",
+    "downloaded": "2026-09-10",
+    "bytes": 995,
+    "width": 64,
+    "height": 64,
+    "sha256": "3a61879c6883d9aaa579a462f656ca59e061fc4232b861ed95beac4ced9c0704"
+  },
+  "linkedin.com": {
+    "file": "linkedin.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=linkedin.com&sz=64",
+    "original": "https://static.licdn.com/aero-v1/sc/h/al2o9zrvru7aqj8e1x2rzsrca",
+    "downloaded": "2026-09-10",
+    "bytes": 834,
+    "width": 64,
+    "height": 64,
+    "sha256": "eda6fe05a8638d28efe6d27dd867cff3259854a02403e234c6a7677db5ad564a"
+  },
+  "listen.tidal.com": {
+    "file": "listen.tidal.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=listen.tidal.com&sz=64",
+    "original": "https://tidal.com/favicon.ico",
+    "downloaded": "2026-09-10",
+    "bytes": 345,
+    "width": 48,
+    "height": 48,
+    "sha256": "156fc04e5db0c171d5964d8bfc159bcede0ba8c7c0d4686030b53ce0005128e5"
+  },
+  "liveone.com": {
+    "file": "liveone.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=liveone.com&sz=64",
+    "original": "https://cdn.liveone.com/s=4.0.1340/images/icons/browser/favicon-72x72.png",
+    "downloaded": "2026-09-10",
+    "bytes": 804,
+    "width": 64,
+    "height": 64,
+    "sha256": "e244205325270d23012d3c8c4d419a89eddc1da4be6f26fb362275bd15b69b73"
+  },
+  "m6.fr": {
+    "file": "m6.fr.png",
+    "source": "https://www.google.com/s2/favicons?domain=m6.fr&sz=64",
+    "original": "https://www.m6.fr/assets/images/icons/touch/apple-touch-icon-ipad.png",
+    "downloaded": "2026-09-10",
+    "bytes": 824,
+    "width": 64,
+    "height": 64,
+    "sha256": "97c7ac2e4c65b0d3fffc5c8602c73f773dff1f3d43cd0a2c5b6e4d71b2cea8b1"
+  },
+  "mail.google.com": {
+    "file": "mail.google.com.ico",
+    "source": "https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico",
+    "original": "https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico",
+    "downloaded": "2026-09-10",
+    "bytes": 11582,
+    "width": 48,
+    "height": 48,
+    "sha256": "f358ac6fa9c77d4e78eae8c9113493908d90222a06f9883d3b99f5c5aefdee13"
+  },
+  "mapquest.com": {
+    "file": "mapquest.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=mapquest.com&sz=64",
+    "original": "https://www.mapquest.com/icon.png?645f33d294f26f93",
+    "downloaded": "2026-09-10",
+    "bytes": 1050,
+    "width": 48,
+    "height": 48,
+    "sha256": "5a7ed67608cbcb6cdd65c66c314fd79570999cb725b533b689bfd314316997e6"
+  },
+  "maps.apple.com": {
+    "file": "maps.apple.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=maps.apple.com&sz=64",
+    "original": "https://maps.apple.com/static/maps-app-web-client/images/maps-app-icon-120x120.png",
+    "downloaded": "2026-09-10",
+    "bytes": 2221,
+    "width": 64,
+    "height": 64,
+    "sha256": "66a4f84178934da067f12c9946c6d521f1bad1aaef1853fd3f993d4e961896ec"
+  },
+  "maps.google.com": {
+    "file": "maps.google.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=maps.google.com&sz=64",
+    "original": "https://www.google.com/images/branding/product/ico/web_maps_icon_96dp.ico",
+    "downloaded": "2026-09-10",
+    "bytes": 1398,
+    "width": 64,
+    "height": 64,
+    "sha256": "7b722326a6b6b0965a92c7e8424b4ee1c3d530fcac45b8745a37b43c4ca02801"
+  },
+  "mediapart.fr": {
+    "file": "mediapart.fr.png",
+    "source": "https://www.google.com/s2/favicons?domain=mediapart.fr&sz=64",
+    "original": "https://www.mediapart.fr/icon-news.svg",
+    "downloaded": "2026-09-10",
+    "bytes": 1363,
+    "width": 64,
+    "height": 64,
+    "sha256": "00a39f6c7b49f2efd49940edde033da4956bdc6ee2007faa09dfbd39d059f477"
+  },
+  "meteofrance.com": {
+    "file": "meteofrance.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=meteofrance.com&sz=64",
+    "original": "https://meteofrance.com/sites/default/files/favicon_0.png",
+    "downloaded": "2026-09-10",
+    "bytes": 654,
+    "width": 64,
+    "height": 64,
+    "sha256": "b5f4a102bffde8ccccb4f4a1cdbdc631c71ca0e872bf59c21893e1a421d9db18"
+  },
+  "minesweeperonline.com": {
+    "file": "minesweeperonline.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=minesweeperonline.com&sz=64",
+    "original": "https://minesweeperonline.com/favicon.ico",
+    "downloaded": "2026-09-10",
+    "bytes": 144,
+    "width": 16,
+    "height": 16,
+    "sha256": "1086d6cd73da6a59963848f840eefb2b17343c9c68f771b9c929cfb18bbc6a1d"
+  },
+  "mixcloud.com": {
+    "file": "mixcloud.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=mixcloud.com&sz=64",
+    "original": "https://www.mixcloud.com/assets/mix-CS3CZvyo-favicon.ico",
+    "downloaded": "2026-09-10",
+    "bytes": 640,
+    "width": 64,
+    "height": 64,
+    "sha256": "a7f4ff5b4a85c2dd04c873f24463d68925fd8d847739ee62ee73b61261605731"
+  },
+  "molotov.tv": {
+    "file": "molotov.tv.png",
+    "source": "https://www.google.com/s2/favicons?domain=molotov.tv&sz=64",
+    "original": "https://www.molotov.tv/favicon.ico",
+    "downloaded": "2026-09-10",
+    "bytes": 887,
+    "width": 64,
+    "height": 64,
+    "sha256": "599701d9037699e286eebaf783a7bf1af2490e0075ae952f0320f3ac849d33d7"
+  },
+  "music.apple.com": {
+    "file": "music.apple.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=music.apple.com&sz=64",
+    "original": "https://music.apple.com/assets/favicon/favicon-180.png",
+    "downloaded": "2026-09-10",
+    "bytes": 890,
+    "width": 64,
+    "height": 64,
+    "sha256": "8b043584b5faa9b9cb1a22738123d2c71786d004e9f1725f1db7acdd2f23ea9b"
+  },
+  "music.youtube.com": {
+    "file": "music.youtube.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=music.youtube.com&sz=64",
+    "original": "https://music.youtube.com/img/favicon_96.png",
+    "downloaded": "2026-09-10",
+    "bytes": 741,
+    "width": 64,
+    "height": 64,
+    "sha256": "161f4059a3d0b6008199910ee43dd52851f3f51f6b0314d7bf6abfc6c4352e80"
+  },
+  "netflix.com": {
+    "file": "netflix.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=netflix.com&sz=64",
+    "original": "https://www.netflix.com/favicon.ico",
+    "downloaded": "2026-09-10",
+    "bytes": 1468,
+    "width": 64,
+    "height": 64,
+    "sha256": "330ddc5f685c74123ddaab4f2640f41df8ff65e58f8c374640e2aea5ec16b7dd"
+  },
+  "notion.com": {
+    "file": "notion.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=notion.com&sz=64",
+    "original": "https://www.notion.com/front-static/favicon.ico",
+    "downloaded": "2026-09-10",
+    "bytes": 1511,
+    "width": 64,
+    "height": 64,
+    "sha256": "88b730df0cab66ffecc4df1227cb70855db1a7a3fdaf0d066c64fbce104d5457"
+  },
+  "nytimes.com": {
+    "file": "nytimes.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=nytimes.com&sz=64",
+    "original": "https://static01.nyt.com/vi-assets/static-assets/assets/ios-iphone-114x144-PTTpqXor.png",
+    "downloaded": "2026-09-10",
+    "bytes": 1003,
+    "width": 64,
+    "height": 64,
+    "sha256": "27e4cc8cd9e8f4d51544ad38456e1a8c58b36e24fe4d3548e3968da150f3b380"
+  },
+  "onedrive.live.com": {
+    "file": "onedrive.live.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=onedrive.live.com&sz=64",
+    "original": "https://www.microsoft.com/favicon.ico?v2",
+    "downloaded": "2026-09-10",
+    "bytes": 177,
+    "width": 64,
+    "height": 64,
+    "sha256": "33a03200b71055b3eafcd46496b977612b1e28f828bdc2eaf1f8c78035ccc6ab"
+  },
+  "open.spotify.com": {
+    "file": "open.spotify.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=open.spotify.com&sz=64",
+    "original": "https://open.spotifycdn.com/cdn/images/favicon.0f31d2ea.ico",
+    "downloaded": "2026-09-10",
+    "bytes": 2417,
+    "width": 48,
+    "height": 48,
+    "sha256": "221c12256905b791dc2268598bbff57aad8ddd1931fcc4e1559c7f6c87b32b8c"
+  },
+  "openstreetmap.org": {
+    "file": "openstreetmap.org.jpg",
+    "source": "https://www.google.com/s2/favicons?domain=openstreetmap.org&sz=64",
+    "original": "https://www.openstreetmap.org/assets/apple-touch-icon-72x72-63c6fdf3ddf65feebac1c0441bf6a378d1e4bde7107f598ae86733c402895eae.png",
+    "downloaded": "2026-09-10",
+    "bytes": 1091,
+    "width": 64,
+    "height": 64,
+    "sha256": "eb4a4e8e3ed98585b30c2312fe7f08c704188a861767985316c0c53b6d434622"
+  },
+  "outlook.live.com": {
+    "file": "outlook.live.com.jpg",
+    "source": "https://www.google.com/s2/favicons?domain=outlook.live.com&sz=64",
+    "original": "https://res.public.onecdn.static.microsoft/assets/mail/pwa/v4/pngs/apple-touch-icon.png",
+    "downloaded": "2026-09-10",
+    "bytes": 1420,
+    "width": 64,
+    "height": 64,
+    "sha256": "9b980370696acfad558391628a5c0896a1b7ca0f3e9c92357f8ce62b6ed585fa"
+  },
+  "paramountplus.com": {
+    "file": "paramountplus.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=paramountplus.com&sz=64",
+    "original": "https://www.paramountplus.com/favicon.ico",
+    "downloaded": "2026-09-10",
+    "bytes": 710,
+    "width": 64,
+    "height": 64,
+    "sha256": "4077801cbddebcea1498e6a4e14833c0fbd9427cbb00c392b5c83cd76f469e1c"
+  },
+  "pinterest.com": {
+    "file": "pinterest.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=pinterest.com&sz=64",
+    "original": "https://s.pinimg.com/webapp/logo_transparent_144x144-3da7a67b.png",
+    "downloaded": "2026-09-10",
+    "bytes": 653,
+    "width": 64,
+    "height": 64,
+    "sha256": "b38aa406fca05bac21ffed3dfa6be18f5aa1c032a2bdf5df004e57daf485d61b"
+  },
+  "plan.tomtom.com": {
+    "file": "plan.tomtom.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=plan.tomtom.com&sz=64",
+    "original": "https://plan.tomtom.com/favicon.svg",
+    "downloaded": "2026-09-10",
+    "bytes": 785,
+    "width": 64,
+    "height": 64,
+    "sha256": "5caba725c58f65f8664da98e8f89bcf02a8fe2e79e5b1e17202ed41d97b25f25"
+  },
+  "play.geforcenow.com": {
+    "file": "play.geforcenow.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=play.geforcenow.com&sz=64",
+    "original": "https://play.geforcenow.com/mall/assets/icons/GFN-Logo-120.webp",
+    "downloaded": "2026-09-10",
+    "bytes": 508,
+    "width": 64,
+    "height": 64,
+    "sha256": "ea184400ade9b7e26c8c98988de9ed54858f88a230ad7dc40f43d4f489fddb51"
+  },
+  "play.qobuz.com": {
+    "file": "play.qobuz.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=qobuz.com&sz=64",
+    "original": "https://static.qobuz.com/images/favicon/favicon-96x96.png",
+    "downloaded": "2026-09-10",
+    "bytes": 673,
+    "width": 64,
+    "height": 64,
+    "sha256": "6af2786dae45ecc61469aba3c21a392ed038f9ecd7e0d26f9bcc15176dcf8089"
+  },
+  "playhop.com": {
+    "file": "playhop.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=playhop.com&sz=64",
+    "original": "https://yastatic.net/s3/games-static/favicons/playhop/apple-touch-icon.png?v=1",
+    "downloaded": "2026-09-10",
+    "bytes": 1586,
+    "width": 64,
+    "height": 64,
+    "sha256": "cb7aee3699cd5551b4b778132455e6583e7076e36f3258139f14dd672ba2fec3"
+  },
+  "playsnake.org": {
+    "file": "playsnake.org.png",
+    "source": "https://www.google.com/s2/favicons?domain=playsnake.org&sz=64",
+    "original": "https://playsnake.org/favicon.ico",
+    "downloaded": "2026-09-10",
+    "bytes": 181,
+    "width": 16,
+    "height": 16,
+    "sha256": "240ee4949a17f331df775cb4c204141f27ccbfe203fb7e7f9bf6492f5ed57770"
+  },
+  "plugshare.com": {
+    "file": "plugshare.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=plugshare.com&sz=64",
+    "original": "https://www.plugshare.com/favicon.ico",
+    "downloaded": "2026-09-10",
+    "bytes": 2664,
+    "width": 64,
+    "height": 64,
+    "sha256": "dea16ce991bc8aace69f4c110a7a968209d2a2d0ada50e0002248f54c452ce45"
+  },
+  "pluto.tv": {
+    "file": "pluto.tv.png",
+    "source": "https://www.google.com/s2/favicons?domain=pluto.tv&sz=64",
+    "original": "https://pluto.tv/favicon/large.png",
+    "downloaded": "2026-09-10",
+    "bytes": 732,
+    "width": 64,
+    "height": 64,
+    "sha256": "b7b062d3a9153fe45d56f8933ca07c2d5f8357013d65697ba444bc3d46b7e56b"
+  },
+  "poki.com": {
+    "file": "poki.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=poki.com&sz=64",
+    "original": "https://a.poki-cdn.com/icons/apple-touch-icon.png",
+    "downloaded": "2026-09-10",
+    "bytes": 963,
+    "width": 64,
+    "height": 64,
+    "sha256": "781769c26d3863a41ce195ac16a5515ba110d76dfd2152cad4f3e2e6b9875fda"
+  },
+  "primevideo.com": {
+    "file": "primevideo.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=primevideo.com&sz=64",
+    "original": "https://m.media-amazon.com/images/G/01/digital/video/DVUI/favicons/apple-touch-icon-72x72.png",
+    "downloaded": "2026-09-10",
+    "bytes": 1104,
+    "width": 64,
+    "height": 64,
+    "sha256": "59d4df14d909ce152b14c68f628961def40c07413a9289b7b28580e9228cac7c"
+  },
+  "radio.garden": {
+    "file": "radio.garden.png",
+    "source": "https://www.google.com/s2/favicons?domain=radio.garden&sz=64",
+    "original": "https://radio.garden/public/icons/ios/ios-appicon-76-76.png",
+    "downloaded": "2026-09-10",
+    "bytes": 2786,
+    "width": 64,
+    "height": 64,
+    "sha256": "e5f7b37afba43844696fd62ff82e3ef0baa54b27805567484f390ab97329f0d1"
+  },
+  "radiofrance.fr": {
+    "file": "radiofrance.fr.png",
+    "source": "https://www.google.com/s2/favicons?domain=radiofrance.fr&sz=64",
+    "original": "https://www.radiofrance.fr/favicon.ico",
+    "downloaded": "2026-09-10",
+    "bytes": 836,
+    "width": 48,
+    "height": 48,
+    "sha256": "d230947fdc6dd831c379484faceaddb36d574f82a1be763f0b38bce41153b813"
+  },
+  "rakuten.tv": {
+    "file": "rakuten.tv.png",
+    "source": "https://www.google.com/s2/favicons?domain=rakuten.tv&sz=64",
+    "original": "https://prod-kuato.rakuten.tv/favicon.ico",
+    "downloaded": "2026-09-10",
+    "bytes": 900,
+    "width": 64,
+    "height": 64,
+    "sha256": "6676c0f6612e9a71df5b52c521fabd295f1dfdc2ad83013b1e4d81a8d8080566"
+  },
+  "reddit.com": {
+    "file": "reddit.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=reddit.com&sz=64",
+    "original": "https://www.redditstatic.com/shreddit/assets/favicon/76x76.png",
+    "downloaded": "2026-09-10",
+    "bytes": 1380,
+    "width": 64,
+    "height": 64,
+    "sha256": "066900b1776b2eebae00be78ca7c26836f2622b2ed753db701589f960debe8d2"
+  },
+  "reuters.com": {
+    "file": "reuters.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=reuters.com&sz=64",
+    "original": "https://www.reuters.com/pf/resources/images/reuters/favicon/tr_fvcn_kinesis_180x180_v2.png?d=378&mxId=00000000",
+    "downloaded": "2026-09-10",
+    "bytes": 739,
+    "width": 64,
+    "height": 64,
+    "sha256": "53f1fd37f8112215708b36ba81c09a6f0d3984fe9e76a444774ae61efc2f865c"
+  },
+  "rt.com": {
+    "file": "rt.com.jpg",
+    "source": "https://www.google.com/s2/favicons?domain=rt.com&sz=64",
+    "original": "https://www.rt.com/static/block/touch-icon/apple-touch-icon-72x72-precomposed.png",
+    "downloaded": "2026-09-10",
+    "bytes": 1057,
+    "width": 64,
+    "height": 64,
+    "sha256": "082fc88f45318f20db16f68340372c986c23ed21c1fe2f1499d6b1eb611b6af4"
+  },
+  "rtbf.be": {
+    "file": "rtbf.be.png",
+    "source": "https://www.google.com/s2/favicons?domain=rtbf.be&sz=64",
+    "original": "https://static-oaos.rtbf.be/favicon/rtbf-actus-192.png",
+    "downloaded": "2026-09-10",
+    "bytes": 655,
+    "width": 64,
+    "height": 64,
+    "sha256": "fd0e3ecccfb9e13e067b89b5ee6706724a94c9ecdc5a82a33d33aaaee7c12f9c"
+  },
+  "solitaire.com": {
+    "file": "solitaire.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=solitaire.com&sz=64",
+    "original": "https://solitaire.com/favicon.ico",
+    "downloaded": "2026-09-10",
+    "bytes": 1893,
+    "width": 32,
+    "height": 32,
+    "sha256": "9e56c0f26a16c176cfe707bbc19cb49dd3bd2638956961b0c6c450ef5a97f39f"
+  },
+  "soundcloud.com": {
+    "file": "soundcloud.com.jpg",
+    "source": "https://www.google.com/s2/favicons?domain=soundcloud.com&sz=64",
+    "original": "https://a-v2.sndcdn.com/assets/images/sc-icons/ios-a62dfc8fe7.png",
+    "downloaded": "2026-09-10",
+    "bytes": 1209,
+    "width": 64,
+    "height": 64,
+    "sha256": "1350f3d329e2e6f885fdca2a6a50faa1b5c0f2039407031180d457187ed63e8b"
+  },
+  "starz.com": {
+    "file": "starz.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=starz.com&sz=64",
+    "original": "https://www.starz.com/assets/starz/images/favicon.ico",
+    "downloaded": "2026-09-10",
+    "bytes": 3972,
+    "width": 48,
+    "height": 48,
+    "sha256": "fdcd033e2e493eb5765ba8d96432bc0047c853c4891c9537424a8625849aa786"
+  },
+  "stations.go-electra.com": {
+    "file": "stations.go-electra.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=go-electra.com&sz=64",
+    "original": "https://www.go-electra.com/favicons/favicon.ico",
+    "downloaded": "2026-09-10",
+    "bytes": 3113,
+    "width": 64,
+    "height": 64,
+    "sha256": "9a249f92dfaffa756752884906c5ca0aca2a4683484cfd0a741b0fa77122aee2"
+  },
+  "sudoku.com": {
+    "file": "sudoku.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=sudoku.com&sz=64",
+    "original": "https://sudoku.com/apple-touch-icon-72x72.png",
+    "downloaded": "2026-09-10",
+    "bytes": 1093,
+    "width": 64,
+    "height": 64,
+    "sha256": "85d8612e04716afd5de5e96979207a494f261a996f6737d842f4c1301df47b1b"
+  },
+  "sytadin.fr": {
+    "file": "sytadin.fr.png",
+    "source": "https://www.google.com/s2/favicons?domain=sytadin.fr&sz=64",
+    "original": "https://m.sytadin.fr/favicon.ico",
+    "downloaded": "2026-09-10",
+    "bytes": 185,
+    "width": 16,
+    "height": 16,
+    "sha256": "000c69cde7b35d620d332d26867729265b256e543e60f3f99bc4165b61947a74"
+  },
+  "tesla.com": {
+    "file": "tesla.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=tesla.com&sz=64",
+    "original": "https://www.tesla.com/themes/custom/tesla_frontend/assets/favicons/apple-touch-icon-72x72.png",
+    "downloaded": "2026-09-10",
+    "bytes": 730,
+    "width": 64,
+    "height": 64,
+    "sha256": "edda03999aeb3c6ad7a07ed75819105068c6078a2151e9dd703e2547dadeaaa6"
+  },
+  "tf1.fr": {
+    "file": "tf1.fr.jpg",
+    "source": "https://www.google.com/s2/favicons?domain=tf1.fr&sz=64",
+    "original": "https://www.tf1.fr/apple-icon.png?apple-icon.0di_xv58cm9p6.png",
+    "downloaded": "2026-09-10",
+    "bytes": 1114,
+    "width": 64,
+    "height": 64,
+    "sha256": "9bd762952a82c118886d1ea556298e6c209313bdd77c1508e09382073f76f239"
+  },
+  "theguardian.com": {
+    "file": "theguardian.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=theguardian.com&sz=64",
+    "original": "https://assets.guim.co.uk/static/frontend/icons/homescreen/apple-touch-icon-120.png",
+    "downloaded": "2026-09-10",
+    "bytes": 781,
+    "width": 64,
+    "height": 64,
+    "sha256": "e7d10edf4c2df22ef0e2517264b200ac1db420ffe0b87ae077b6b945aa2344a1"
+  },
+  "tiktok.com": {
+    "file": "tiktok.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=tiktok.com&sz=64",
+    "original": "https://www.tiktok.com/favicon.ico",
+    "downloaded": "2026-09-10",
+    "bytes": 953,
+    "width": 32,
+    "height": 32,
+    "sha256": "e421a9daf1ebd712bab3febecb1f93b765fbfc2b22d2c3b4231efe3203de2381"
+  },
+  "tumblr.com": {
+    "file": "tumblr.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=tumblr.com&sz=64",
+    "original": "https://assets.tumblr.com/pop/manifest/favicon-cfddd25f.svg",
+    "downloaded": "2026-09-10",
+    "bytes": 848,
+    "width": 64,
+    "height": 64,
+    "sha256": "f8a6316e6e88842a718574503b2ae488f77433742108b4e478ab89ab54c2deb1"
+  },
+  "tunein.com": {
+    "file": "tunein.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=tunein.com&sz=64",
+    "original": "https://cdn-web.tunein.com/assets/img/apple-touch-icon-180.png",
+    "downloaded": "2026-09-10",
+    "bytes": 454,
+    "width": 64,
+    "height": 64,
+    "sha256": "35a4bb094e652133dfc9c6384c41b8816f15422eb46621c583e62002bb4292ba"
+  },
+  "tv.apple.com": {
+    "file": "tv.apple.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=tv.apple.com&sz=64",
+    "original": "https://tv.apple.com/assets/favicon/favicon-180.png",
+    "downloaded": "2026-09-10",
+    "bytes": 1337,
+    "width": 64,
+    "height": 64,
+    "sha256": "542da9f4c849796b1ae23588dea92a2c0d7f775f764ead9a39ce471e3c677c8b"
+  },
+  "tv5mondeplus.com": {
+    "file": "tv5mondeplus.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=tv5mondeplus.com&sz=64",
+    "original": "https://www.tv5mondeplus.com/favicon.ico",
+    "downloaded": "2026-09-10",
+    "bytes": 1277,
+    "width": 64,
+    "height": 64,
+    "sha256": "7805e7f593404ff0ced3b7235431ba9bc36fe947b70f6c1b9302a6957af1885a"
+  },
+  "ventusky.com": {
+    "file": "ventusky.com.jpg",
+    "source": "https://www.google.com/s2/favicons?domain=ventusky.com&sz=64",
+    "original": "https://static.ventusky.com/images_v2/apple-touch-icon-152x152.png",
+    "downloaded": "2026-09-10",
+    "bytes": 1055,
+    "width": 64,
+    "height": 64,
+    "sha256": "20e0e700cd17fa13b08145c07e1fa18426fd7281de3eefb5ced5d289a2b95bde"
+  },
+  "vigilance.meteofrance.fr": {
+    "file": "vigilance.meteofrance.fr.png",
+    "source": "https://www.google.com/s2/favicons?domain=meteofrance.fr&sz=64",
+    "original": "https://meteofrance.fr/sites/default/files/favicon_0.png",
+    "downloaded": "2026-09-10",
+    "bytes": 654,
+    "width": 64,
+    "height": 64,
+    "sha256": "b5f4a102bffde8ccccb4f4a1cdbdc631c71ca0e872bf59c21893e1a421d9db18"
+  },
+  "washingtonpost.com": {
+    "file": "washingtonpost.com.jpg",
+    "source": "https://www.google.com/s2/favicons?domain=washingtonpost.com&sz=64",
+    "original": "https://www.washingtonpost.com/touch-icon-iphone.png",
+    "downloaded": "2026-09-10",
+    "bytes": 1176,
+    "width": 64,
+    "height": 64,
+    "sha256": "7dd42d8dd818ed371563647709848f9b0d8055aaf2244f8f83cc3c79fe4b1db8"
+  },
+  "waze.com": {
+    "file": "waze.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=waze.com&sz=64",
+    "original": "https://www.waze.com/favicon.ico",
+    "downloaded": "2026-09-10",
+    "bytes": 831,
+    "width": 32,
+    "height": 32,
+    "sha256": "3a190ed37c7b65779f79369aa28200848dcdc0f5f49bc3ceabe8091e9f7c58b9"
+  },
+  "weather.com": {
+    "file": "weather.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=weather.com&sz=64",
+    "original": "https://weather.com/_next/static/media/apple-icon-72x72.227p4zczecbm1.png",
+    "downloaded": "2026-09-10",
+    "bytes": 1444,
+    "width": 64,
+    "height": 64,
+    "sha256": "54770d08f6f85e10c1248262e8cc48b9d8487b4af4b351faf1a319d70e41e65b"
+  },
+  "web.snapchat.com": {
+    "file": "web.snapchat.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=web.snapchat.com&sz=64",
+    "original": "https://cf-st.sc-cdn.net/dw/favicons/e9b6d2d3-dweb_slash_web-prod-web-v9/apple-touch-icon-72x72.png",
+    "downloaded": "2026-09-10",
+    "bytes": 1124,
+    "width": 64,
+    "height": 64,
+    "sha256": "db636d41023562dec73a8a265aef05ef1b661ecdb7e16ce2fbb5ca5a968dd39d"
+  },
+  "web.telegram.org": {
+    "file": "web.telegram.org.png",
+    "source": "https://www.google.com/s2/favicons?domain=web.telegram.org&sz=64",
+    "original": "https://web.telegram.org/k/assets/img/apple-touch-icon.png?v=jw3mK7G9Ry",
+    "downloaded": "2026-09-10",
+    "bytes": 810,
+    "width": 64,
+    "height": 64,
+    "sha256": "cc1d15a18cc42820d1f2780865d8eccd9258322206b0d7406cd182b7b53ebec3"
+  },
+  "web.wechat.com": {
+    "file": "web.wechat.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=web.wechat.com&sz=64",
+    "original": "https://res.wx.qq.com/a/wx_fed/assets/res/OTE0YTAw.png",
+    "downloaded": "2026-09-10",
+    "bytes": 960,
+    "width": 64,
+    "height": 64,
+    "sha256": "ef1ab7ab5efb16715a64db298bf376248956594293ab0f13ed637b3d37213196"
+  },
+  "web.whatsapp.com": {
+    "file": "web.whatsapp.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=whatsapp.com&sz=64",
+    "original": "https://static.whatsapp.net/rsrc.php/y1/r/FJbTMJqMap7.svg",
+    "downloaded": "2026-09-10",
+    "bytes": 421,
+    "width": 23,
+    "height": 23,
+    "sha256": "5fb89c248e8e7e3345229deca2cdff93c10f94cb30674bde36ab1db1bb643da7"
+  },
+  "wego.here.com": {
+    "file": "wego.here.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=wego.here.com&sz=64",
+    "original": "https://wego.here.com/logo192.png",
+    "downloaded": "2026-09-10",
+    "bytes": 753,
+    "width": 64,
+    "height": 64,
+    "sha256": "32a7ceca844e1a98cdb40e8d002782e977ee21879f8e2c9bf8d2742528bc3e4b"
+  },
+  "windy.com": {
+    "file": "windy.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=windy.com&sz=64",
+    "original": "https://img.windy.com/albums/icons/logo-full.png?w=72",
+    "downloaded": "2026-09-10",
+    "bytes": 1659,
+    "width": 64,
+    "height": 64,
+    "sha256": "d7958289c4ca859cc669b2de55b492a7773b137c46c7559858f0a0842454b56f"
+  },
+  "x.com": {
+    "file": "x.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=x.com&sz=64",
+    "original": "https://x.com/apple-touch-icon.png",
+    "downloaded": "2026-09-10",
+    "bytes": 583,
+    "width": 64,
+    "height": 64,
+    "sha256": "dde30d54d7be5fca3a28f148ef61af8f49ed99623d4f6e123ffb2e5e9d0cb8c6"
+  },
+  "youtube.com": {
+    "file": "youtube.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=youtube.com&sz=64",
+    "original": "https://www.youtube.com/s/desktop/f13793d9/img/favicon_96x96.png",
+    "downloaded": "2026-09-10",
+    "bytes": 548,
+    "width": 64,
+    "height": 64,
+    "sha256": "f4727a0fe90f724e5a7ba8d2facab29f516f81922beefb7d12ddc75e22cefb55"
+  }
+}

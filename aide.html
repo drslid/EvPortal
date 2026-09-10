@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title data-i18n="help.title">Aide EvPortal — Raccourcis et plein écran Tesla</title>
+    <meta name="description" data-i18n-content="help.description" content="Organisez vos raccourcis EvPortal, transférez-les du téléphone à la Tesla avec Telegra.ph et découvrez les langues et le plein écran.">
+    <meta name="theme-color" content="#111213">
+    <link rel="canonical" href="https://drslid.github.io/EvPortal/aide.html">
+    <link rel="icon" href="./img/favicon.ico">
+    <link rel="stylesheet" href="./css/styles.css">
+    <script>try { document.documentElement.dataset.theme = JSON.parse(localStorage.getItem("evportal.state.v2") || "{}").theme === "light" ? "light" : "dark"; } catch (_) { document.documentElement.dataset.theme = "dark"; }</script>
+    <script src="./js/translations.js" defer></script>
+    <script src="./js/i18n.js" defer></script>
+</head>
+<body>
+    <main class="help-page">
+        <a data-i18n="help.back" class="back-link" href="./">Retour aux raccourcis</a>
+        <div class="settings-row">
+        <label data-i18n="help.language" for="languageSelect">Langue</label>
+            <select id="languageSelect" data-i18n-aria-label="help.language" aria-label="Langue">
+                <option value="en" lang="en">English</option>
+                <option value="fr" lang="fr" selected>Français</option>
+                <option value="es" lang="es">Español</option>
+                <option value="de" lang="de">Deutsch</option>
+                <option value="it" lang="it">Italiano</option>
+                <option value="ru" lang="ru">Русский</option>
+                <option value="ar" lang="ar">العربية</option>
+                <option value="pt" lang="pt">Português</option>
+            </select>
+        </div>
+        <h1 data-i18n="help.heading">Votre écran. Vos raccourcis.</h1>
+        <p data-i18n="help.intro">Touchez un raccourci pour ouvrir le service dans un nouvel onglet. Le bouton de thème en haut permet de choisir le mode clair ou sombre. Les huit langues sont disponibles dans les réglages ; l’arabe s’affiche de droite à gauche.</p>
+        <h2 data-i18n="help.organizeHeading">Organiser les raccourcis</h2>
+        <p data-i18n="help.ranking">« Tous » affiche d’abord les raccourcis les plus ouverts. À égalité, votre ordre manuel est conservé. Le classement reste enregistré après rechargement.</p>
+        <p data-i18n="help.dragging">Dans une catégorie ou « Favoris », touchez « Modifier » puis déplacez les raccourcis avec leur poignée. L’étoile ajoute un favori et le crayon permet de modifier. Touchez « Terminer » quand vous avez fini. « Tous » conserve son classement automatique.</p>
+        <p data-i18n="help.keyboard">Au clavier, sélectionnez une poignée puis appuyez sur Espace, utilisez les flèches et validez avec Entrée. Échap annule.</p>
+        <h2 data-i18n="help.addHeading">Ajouter un raccourci ou une catégorie</h2>
+        <p data-i18n="help.adding">Le bouton « + » ouvre le catalogue et propose de créer un raccourci ou une catégorie. « Déjà présent » indique un service déjà ajouté. La loupe recherche dans tous vos raccourcis.</p>
+        <p data-i18n="help.categories">Créez jusqu’à cinq catégories personnelles avec un nom de 16 caractères maximum et une icône au choix. Le crayon permet de les modifier. Les anciennes catégories dépassant ces limites sont conservées. Toutes les catégories restent visibles sans défilement horizontal.</p>
+        <h2 data-i18n="help.transferHeading">Du téléphone à la Tesla</h2>
+        <ol>
+        <li data-i18n="help.stepPrepare">Sur le téléphone, ouvrez EvPortal et préparez vos raccourcis.</li>
+        <li data-i18n="help.stepPublish">Touchez « Partager », nommez la sauvegarde puis créez le lien et le QR code.</li>
+        <li data-i18n="help.stepCode">Conservez le code Telegra.ph affiché ou copiez le lien.</li>
+        <li data-i18n="help.stepImport">Sur la Tesla, ouvrez Réglages → Importer depuis Telegra.ph et saisissez le code ou le lien.</li>
+        <li data-i18n="help.stepApply">Chargez les raccourcis, vérifiez l’aperçu puis confirmez leur utilisation.</li>
+        </ol>
+        <p data-i18n="help.qr">Le QR code se scanne avec un téléphone. Pour importer sur la Tesla, utilisez le code ou le lien.</p>
+        <p data-i18n="help.snapshot">Un partage est un instantané : après de nouvelles modifications, créez un nouveau partage et importez-le sur l’autre appareil. Il n’y a pas de synchronisation automatique.</p>
+        <p data-i18n="help.public">La sauvegarde Telegra.ph est publique. « Mes liens partagés » retrouve les publications du compte présent dans ce navigateur. L’import accepte aussi les anciens liens et les fichiers JSON.</p>
+        <h2 data-i18n="help.fullscreenHeading">Plein écran Tesla</h2>
+        <p data-i18n="help.fullscreen">À l’arrêt, touchez « Plein écran ». Sur YouTube, choisissez « Accéder au site » ou « Go to site » pour revenir à EvPortal dans le mode Théâtre. Les raccourcis demandent un nouvel onglet, dont le comportement dépend du navigateur du véhicule.</p>
+        <p data-i18n="help.fullscreenFallback">Si la Tesla n’est pas reconnue, choisissez « Ouvrir le mode Théâtre Tesla » dans les réglages. Sur ordinateur, le bouton utilise le plein écran classique. La redirection peut évoluer avec les mises à jour du véhicule ou de YouTube.</p>
+        <p data-i18n="help.compatibility">L’ouverture d’un site ne garantit pas la lecture vidéo : pays, compte, abonnement et navigateur peuvent la limiter. Le divertissement s’utilise à l’arrêt.</p>
+        <p>
+        <a data-i18n="help.teslaManual" href="https://www.tesla.com/ownersmanual/modely/fr_fr/GUID-79A49D40-A028-435B-A7F6-8E48846AB9E9.html" target="_blank" rel="noopener noreferrer">Manuel Tesla</a>
+        ·
+        <a data-i18n="help.myTesla" href="https://mytesla.nu/" target="_blank" rel="noopener noreferrer">Méthode décrite par myTesla</a>
+        </p>
+        <h2 data-i18n="help.storageHeading">Retrouver mes réglages</h2>
+        <p data-i18n="help.storage">Vos raccourcis, favoris et préférences sont enregistrés dans ce navigateur. Les anciennes configurations sont reprises sur la même adresse. Le navigateur et le Théâtre peuvent avoir des stockages distincts ; importez votre partage dans chacun. Effacer les données du site nécessite une restauration depuis un partage ou un fichier JSON.</p>
+        <h2 data-i18n="help.previewHeading">Tester un aperçu local</h2>
+        <p data-i18n="help.preview">Le téléphone et la Tesla doivent pouvoir accéder au même aperçu. « localhost » désigne chaque appareil séparément. Dans « Adresse d’EvPortal », renseignez une adresse joignable depuis les appareils concernés. L’adresse publique affiche la version publiée, qui peut différer de cet aperçu.</p>
+        <h2 data-i18n="help.privacyHeading">À propos et confidentialité</h2>
+        <p data-i18n="help.privacy">EvPortal est gratuit, sans affiliation avec Tesla. Logos et traductions sont embarqués. Les compteurs d’ouvertures restent dans votre configuration, sans outil d’analyse d’audience. Telegra.ph est contacté à votre demande ; le jeton du compte reste séparé du partage. Les sites ouverts appliquent leur propre politique.</p>
+        <div class="help-footer">
+        <a data-i18n="help.source" href="https://github.com/drslid/EvPortal" target="_blank" rel="noopener noreferrer">Code source</a>
+        ·
+        <a data-i18n="help.report" href="https://github.com/drslid/EvPortal/issues" target="_blank" rel="noopener noreferrer">Signaler un problème</a>
+        ·
+        <a data-i18n="help.back" href="./">Retour aux raccourcis</a>
+        <p data-i18n="help.license">EvPortal · Licence MIT</p>
+        </div>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const i18n = window.EVI18n;
+            const selector = document.getElementById('languageSelect');
+            if (!i18n || !selector) return;
+            selector.value = i18n.language;
+            selector.addEventListener('change', function () { i18n.setLanguage(selector.value); });
+            window.addEventListener('evportal:languagechange', function () { selector.value = i18n.language; });
+        });
+    </script>
+</body>
+</html>

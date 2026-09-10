@@ -1,0 +1,15 @@
+{
+  "category.all": "All",
+  "category.favorites": "Favorites",
+  "category.cinema": "Video",
+  "category.music": "Music",
+  "category.tv": "TV",
+  "category.charging": "Charging",
+  "category.games": "Games",
+  "category.navigation": "Trips",
+  "category.social": "Social",
+  "category.news": "News",
+  "category.weather": "Weather",
+  "category.productivity": "Tools",
+  "category.folder": "Folder"
+}
