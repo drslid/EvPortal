@@ -34,6 +34,19 @@ document.addEventListener('DOMContentLoaded', function () {
     let editingCategoryID = null;
     let editingCategoryLabel = '';
     let pendingImport = null;
+    let sharingClient = null;
+    let backupPickerAttempt = 0;
+    const PREVIOUS_TRANSFER_KEY = 'evportal.previous-transfer.v1';
+    let previousTransfer = null;
+    function refreshPreviousTransfer() {
+        previousTransfer = null;
+        try {
+            const savedTransfer = storage && storage.getItem(PREVIOUS_TRANSFER_KEY);
+            if (savedTransfer) previousTransfer = Core.normalizeState(JSON.parse(savedTransfer));
+        } catch (_) { /* A damaged recovery copy must not prevent startup. */ }
+        $('undoTransferButton').hidden = !previousTransfer;
+    }
+    refreshPreviousTransfer();
     let importAttempt = 0;
     let importAbort = null;
     let tileSortable = null;
@@ -629,6 +642,9 @@ document.addEventListener('DOMContentLoaded', function () {
     $('catalogSearch').addEventListener('input', renderCatalog);
 
     function openImport(proposal) {
+        backupPickerAttempt += 1;
+        $('savedBackupPicker').hidden = true;
+        $('savedBackupList').replaceChildren();
         pendingImport = null;
         importAttempt += 1;
         $('importError').textContent = '';
@@ -637,7 +653,7 @@ document.addEventListener('DOMContentLoaded', function () {
         $('importFile').value = '';
         $('importConfigID').value = proposal || '';
         const legacyDetails = $('importConfigID').closest('details');
-        if (legacyDetails) legacyDetails.open = Boolean(proposal);
+        if (legacyDetails) legacyDetails.open = true;
         openDialog($('importDialog'));
         if (proposal) $('importConfigID').focus();
     }
@@ -649,6 +665,112 @@ document.addEventListener('DOMContentLoaded', function () {
         $('confirmImportButton').hidden = false;
         $('importError').textContent = '';
     }
+
+    async function showSavedBackups(offset, attempt) {
+        const list = $('savedBackupList');
+        if (!offset) {
+            list.replaceChildren();
+            const loading = element('p', 'field-help', t('app.loadingConfig'));
+            loading.dataset.i18n = 'app.loadingConfig';
+            list.append(loading);
+        }
+        list.setAttribute('aria-busy', 'true');
+        try {
+            const result = sharingClient ? await sharingClient.listPages(offset) : { pages: [], total: 0, nextOffset: 0 };
+            if (attempt !== backupPickerAttempt || !$('importDialog').open) return;
+            if (!offset) list.replaceChildren();
+            const oldMore = list.querySelector('[data-more-backups]');
+            if (oldMore) oldMore.remove();
+            result.pages.forEach(function (backup) {
+                const button = element('button', 'full-width', backup.title || backup.path);
+                button.type = 'button';
+                button.addEventListener('click', function () { loadTelegraphBackup(backup.path); });
+                list.append(button);
+            });
+            if (result.nextOffset < result.total && result.nextOffset > (offset || 0)) {
+                const more = element('button', 'full-width', t('share.more'));
+                more.type = 'button';
+                more.dataset.moreBackups = 'true';
+                more.dataset.i18n = 'share.more';
+                more.addEventListener('click', function () { more.disabled = true; showSavedBackups(result.nextOffset, attempt); });
+                list.append(more);
+            }
+            if (!list.childElementCount) {
+                const empty = element('p', 'field-help', t('share.empty'));
+                empty.dataset.i18n = 'share.empty';
+                list.append(empty);
+            }
+        } catch (error) {
+            if (attempt === backupPickerAttempt && $('importDialog').open) {
+                if (!offset) list.replaceChildren();
+                const more = list.querySelector('[data-more-backups]');
+                if (more) more.disabled = false;
+                $('importError').textContent = error.i18nKey ? t(error.i18nKey, error.i18nParams) : error.message;
+            }
+        } finally { if (attempt === backupPickerAttempt) list.removeAttribute('aria-busy'); }
+    }
+
+    function chooseSavedBackup() {
+        openImport();
+        $('savedBackupPicker').hidden = false;
+        $('legacyImportOptions').open = false;
+        showSavedBackups(0, backupPickerAttempt);
+    }
+
+    function renderTransferredState(next) {
+        state = next;
+        storageLocked = false;
+        storageWarningKey = '';
+        storageWarning = '';
+        query = '';
+        $('searchInput').value = '';
+        applyTheme();
+        render();
+        $('undoTransferButton').hidden = !previousTransfer;
+    }
+
+    function applyReceivedState(candidate) {
+        const next = Core.applyCatalogUpdates(Core.normalizeState(candidate), catalog).state;
+        const previous = Core.normalizeState(state);
+        let recoveryBefore;
+        let recoveryWritten = false;
+        try {
+            if (!storage) throw new Error();
+            recoveryBefore = storage.getItem(PREVIOUS_TRANSFER_KEY);
+            storage.setItem(PREVIOUS_TRANSFER_KEY, JSON.stringify(previous));
+            recoveryWritten = true;
+            if (!Core.saveState(storage, next)) throw new Error();
+        } catch (_) {
+            if (recoveryWritten) {
+                try {
+                    if (recoveryBefore === null) storage.removeItem(PREVIOUS_TRANSFER_KEY);
+                    else storage.setItem(PREVIOUS_TRANSFER_KEY, recoveryBefore);
+                } catch (_) { /* Current shortcuts stay unchanged even if storage becomes unavailable. */ }
+            }
+            const error = new Error(t('pair.storageUnavailable'));
+            error.i18nKey = 'pair.storageUnavailable';
+            throw error;
+        }
+        previousTransfer = previous;
+        renderTransferredState(next);
+        return true;
+    }
+
+    $('undoTransferButton').hidden = !previousTransfer;
+    $('undoTransferButton').addEventListener('click', function () {
+        refreshPreviousTransfer();
+        if (!previousTransfer) return;
+        if (!Core.saveState(storage, previousTransfer)) {
+            announce(t('pair.storageUnavailable'), true);
+            return;
+        }
+        const restored = previousTransfer;
+        previousTransfer = null;
+        try { storage.removeItem(PREVIOUS_TRANSFER_KEY); } catch (_) { /* Restoration has already succeeded. */ }
+        renderTransferredState(restored);
+        closeDialog($('settingsDialog'));
+        announce(t('pair.undone'));
+    });
 
     $('importConfigButton').addEventListener('click', function () { openImport(); });
     $('importFile').addEventListener('change', async function () {
@@ -666,8 +788,7 @@ document.addEventListener('DOMContentLoaded', function () {
             previewImport(Core.parseImport(text, catalog));
         } catch (error) { if (attempt === importAttempt) $('importError').textContent = error.message; }
     });
-    $('telegraphImportForm').addEventListener('submit', async function (event) {
-        event.preventDefault();
+    async function loadTelegraphBackup(proposal) {
         const attempt = ++importAttempt;
         if (importAbort) importAbort.abort();
         pendingImport = null;
@@ -676,7 +797,7 @@ document.addEventListener('DOMContentLoaded', function () {
         $('importPreview').textContent = '';
         let timeout;
         try {
-            const path = Core.telegraphImportPath($('importConfigID').value);
+            const path = Core.telegraphImportPath(proposal);
             importAbort = new AbortController();
             timeout = window.setTimeout(function () { if (importAbort) importAbort.abort(); }, 15000);
             $('importPreview').textContent = t('app.loadingConfig');
@@ -697,6 +818,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     : (error instanceof TypeError ? t('app.connectionFailed') : (error instanceof SyntaxError ? t('app.invalidConfig') : error.message));
             }
         } finally { window.clearTimeout(timeout); }
+    }
+    $('telegraphImportForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        loadTelegraphBackup($('importConfigID').value);
     });
     $('confirmImportButton').addEventListener('click', function () {
         if (!pendingImport) return;
@@ -805,6 +930,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (event.key === 'Escape' && document.activeElement === $('searchInput')) { toggleSearch(false); }
     });
     window.addEventListener('storage', function (event) {
+        if (event.key === PREVIOUS_TRANSFER_KEY || event.key === null) refreshPreviousTransfer();
         if (event.key !== Core.STORAGE_KEY || !event.newValue || storageLocked) return;
         try {
             state = Core.normalizeState(JSON.parse(event.newValue));
@@ -873,8 +999,18 @@ document.addEventListener('DOMContentLoaded', function () {
     render();
     if (!storageLocked) persist([loaded.source === 'legacy' ? t('app.legacyRecovered') : '', loaded.updates ? t('app.catalogUpdated', { count: loaded.updates }) : ''].filter(Boolean).join(' '));
     else announce('');
-    if (window.EVTelegraph) window.EVTelegraph.init({ getState: function () { return state; }, announce: announce });
+    if (window.EVTelegraph) sharingClient = window.EVTelegraph.init({ getState: function () { return state; }, announce: announce });
+    const incomingPairing = window.location.hash.startsWith('#receive=');
+    if (window.EVPairing) {
+        window.EVPairing.init({
+            getState: function () { return state; },
+            applyState: applyReceivedState,
+            announce: announce,
+            chooseBackup: chooseSavedBackup
+        });
+        $('importDialog').addEventListener('close', function () { window.EVPairing.resumeSender(); });
+    }
     const params = new URLSearchParams(window.location.search);
     const proposal = params.get('code') || params.get('config');
-    if (proposal) openImport(proposal.slice(0, 300));
+    if (proposal && !incomingPairing) openImport(proposal.slice(0, 300));
 });

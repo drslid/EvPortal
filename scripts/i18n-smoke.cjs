@@ -89,6 +89,7 @@ let browser;
         assert.equal(await page.locator('html').getAttribute('lang'), other);
         await page.locator('#languageSelect').selectOption(language);
         assert.equal(await page.evaluate(() => localStorage.getItem(EVState.STORAGE_KEY)), before, 'Language leaves shortcut configuration untouched');
+        await page.locator('#settingsDialog details').evaluate(details => details.open = true);
         await page.locator('#importConfigButton').click();
         assert.equal(await page.locator('#importDialogTitle').textContent(), dictionaries[language]['static.restore']);
         await page.locator('#importConfigID').fill('not/a/page');

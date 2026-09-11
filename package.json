@@ -9,6 +9,9 @@
     "check:links": "node scripts/check-links.mjs",
     "test:interactions": "node scripts/interaction-smoke.cjs",
     "test:share": "node scripts/telegraph-smoke.cjs",
+    "test:pairing": "node scripts/pairing-smoke.cjs",
+    "test:pairing:live": "node scripts/pairing-live-smoke.cjs",
+    "test:relay": "npm --prefix relay test",
     "build:locales": "node scripts/build-locales.cjs",
     "test:i18n": "node scripts/i18n-smoke.cjs"
   },

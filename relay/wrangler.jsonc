@@ -1,0 +1,20 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "evportal-pairing-relay",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-07-30",
+  "workers_dev": true,
+  "preview_urls": false,
+  "vars": {
+    "ALLOWED_ORIGINS": "https://drslid.github.io"
+  },
+  "durable_objects": {
+    "bindings": [{ "name": "PAIRING_SESSIONS", "class_name": "PairingSession" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["PairingSession"] }],
+  "ratelimits": [
+    { "name": "CREATE_LIMITER", "namespace_id": "87421001", "simple": { "limit": 20, "period": 60 } },
+    { "name": "REQUEST_LIMITER", "namespace_id": "87421002", "simple": { "limit": 120, "period": 60 } }
+  ],
+  "observability": { "enabled": false }
+}
