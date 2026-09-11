@@ -96,15 +96,20 @@ En mode « Modifier », supprimer un raccourci ou une catégorie prend effet imm
 
 ## Développement local
 
-Depuis la racine du dépôt :
+Pour tester **le portail et la réception QR réelle** sur cet ordinateur, utilisez Node.js 22 ou supérieur, puis, depuis la racine du dépôt :
 
 ```bash
-python3 -m http.server 8080
+npm ci --prefix relay
+npm run dev
 ```
 
-Ouvrez ensuite `http://localhost:8080/`. Le serveur sert les fichiers statiques ; aucun paquet npm n'est nécessaire pour utiliser le portail. Pour une utilisation normale et des résultats de stockage prévisibles, servez les fichiers via HTTP ou HTTPS.
+Ouvrez **http://127.0.0.1:4187/** et choisissez **Paramètres → Sauvegardes → Recevoir depuis mon téléphone**. Le serveur configure le relais local dans la réponse `/js/config.js`, sans modifier le fichier destiné à la publication. Il démarre Wrangler sur le port 8787 si nécessaire, ou vérifie un relais EvPortal déjà présent : origine autorisée, création d’une session, réception et suppression. Le bouton fonctionne dans un navigateur ordinaire disposant de Web Crypto ; aucun remplacement de configuration par Playwright n’est nécessaire. [Développement local Cloudflare](https://developers.cloudflare.com/workers/local-development/).
 
-Les QR codes ouvrent toujours l’adresse publique d’EvPortal. Un aperçu local peut différer de la version publiée ; les tests de réception doivent utiliser une version et un relais accessibles aux deux appareils. Les recettes automatisées interceptent les services externes et ne publient aucune sauvegarde réelle.
+`Ctrl+C` arrête le serveur et uniquement le Worker qu’il a lui-même démarré. Un relais préexistant est conservé. Si un port est occupé par un autre programme, le démarrage s’interrompt sans arrêter ce programme. Pour choisir d’autres ports : `npm run dev -- --port 4188 --relay-port 8788`.
+
+Ce mode écoute uniquement sur la boucle locale. Le QR de réception utilise l’adresse de l’aperçu courant : **127.0.0.1/localhost désigne le téléphone lui-même après un scan sur téléphone**, et ne permet donc pas de joindre le PC. Pour tester deux navigateurs sur le même ordinateur, ouvrez l’adresse décodée du QR dans un second profil ou une fenêtre privée. Pour un vrai téléphone et une Tesla, le portail et le relais doivent être accessibles aux deux appareils en HTTPS, avec les origines du portail autorisées côté relais ; le simple remplacement de localhost par une IP réseau en HTTP ne fournit pas le contexte sécurisé nécessaire au chiffrement. Les liens de sauvegarde Telegra.ph continuent à utiliser l’adresse publique du portail.
+
+Pour afficher uniquement les fichiers statiques, sans relais de réception local, `python3 -m http.server 8080` reste possible. Ouvrez alors `http://localhost:8080/` ; cette commande sert la configuration publique telle quelle. Un aperçu local peut différer de la version publiée.
 
 ```text
 index.html                 Tableau de raccourcis et métadonnées SEO
@@ -167,7 +172,7 @@ npm run test:i18n
 
 Les scripts navigateur démarrent leur propre serveur local temporaire. La recette d’interactions peut aussi être lancée avec `node scripts/interaction-smoke.cjs`. Sur une machine Linux qui ne possède pas les bibliothèques nécessaires à Chromium, utilisez `npx playwright install --with-deps chromium`. Playwright et axe servent uniquement aux vérifications ; les bibliothèques utilisées par le portail sont embarquées dans le site. Complétez cette recette par un essai sur le véhicule visé.
 
-Le relais nécessite Node.js 22 ou supérieur. Pour tester le transfert complet avec le vrai moteur Cloudflare local, démarrez le portail sur `http://127.0.0.1:4187` et [le relais local sur le port 8787](relay/README.md#installer-et-vérifier), puis lancez `npm run test:pairing:live`. Cette recette ouvre deux navigateurs isolés, décode le QR, vérifie l’envoi chiffré, le refus d’une écriture lorsque le stockage est plein, la validation explicite et l’annulation après rechargement ou changement d’onglet. Elle vérifie aussi le dialogue de partage sur mobile et en arabe. Elle substitue seulement les adresses de test dans ses navigateurs ; la configuration publique reste intacte.
+Le relais nécessite Node.js 22 ou supérieur. Pour tester le transfert complet avec le vrai moteur Cloudflare local, démarrez `npm run dev`, puis lancez `npm run test:pairing:live` dans un autre terminal. Cette recette ouvre deux navigateurs isolés, décode le QR, vérifie l’envoi chiffré, le refus d’une écriture lorsque le stockage est plein, la validation explicite et l’annulation après rechargement ou changement d’onglet. Elle vérifie aussi le dialogue de partage sur mobile et en arabe. Elle utilise la configuration fournie par le serveur de développement et ouvre directement l’adresse décodée du QR, sans substitution de configuration ou d’URL ; la configuration publique reste intacte.
 
 ### Faire évoluer le catalogue
 

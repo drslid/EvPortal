@@ -11,6 +11,14 @@
 
 La validation finale évite de remplacer involontairement une configuration. Les deux appareils doivent disposer d’un accès Internet, sans obligation d’utiliser le même réseau Wi-Fi.
 
+Le QR de réception utilise l’adresse du portail actuellement ouvert, sans reprendre les paramètres d’un ancien import. Le téléphone rejoint ainsi la même version et le même relais que l’écran récepteur. Les QR de sauvegarde Telegra.ph continuent à utiliser l’adresse publique d’EvPortal.
+
+### Essai de développement
+
+Depuis la racine du projet, `npm run dev` sert le portail avec un vrai relais local configuré. `npm run test:pairing:live` ouvre deux navigateurs isolés, décode le QR et suit directement son adresse, sans remplacer `js/config.js` ni réécrire le lien. Un serveur statique seul ne configure pas le relais : si `pairingRelayURL` est vide, le message « Transfert direct indisponible » est attendu.
+
+L’adresse `localhost` convient à deux navigateurs sur le même ordinateur. Pour scanner depuis un téléphone physique ou recevoir dans la Tesla, le portail et le relais doivent être accessibles en HTTPS par les deux appareils ; l’adresse locale de l’ordinateur ne suffit pas.
+
 ```mermaid
 sequenceDiagram
     participant T as Tesla

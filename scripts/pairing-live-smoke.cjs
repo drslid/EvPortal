@@ -1,4 +1,4 @@
-/* Requires the portal on :4187 and the local Worker on :8787; no production requests. */
+/* Requires npm run dev: actual portal configuration and local Worker; no production requests. */
 const { chromium } = require('playwright');
 const assert = require('node:assert/strict');
 const fs = require('node:fs/promises');
@@ -14,11 +14,11 @@ const errors=[];
 const car=await browser.newContext({viewport:{width:1440,height:900},locale:'fr-FR'});
 const phone=await browser.newContext({viewport:{width:390,height:844},locale:'fr-FR'});
 for(const context of [car,phone]) {
- await context.route('**/js/config.js',r=>r.fulfill({contentType:'text/javascript',body:"window.EV_CONFIG={pairingRelayURL:'http://127.0.0.1:8787'};"}));
  context.on('page',p=>p.on('pageerror',e=>errors.push(e.message)));
 }
 const receiver=await car.newPage();
 await receiver.goto('http://127.0.0.1:4187/');
+assert.equal(await receiver.evaluate(()=>EV_CONFIG.pairingRelayURL),'http://127.0.0.1:8787', 'Development server must configure the real relay without test overrides');
 await receiver.evaluate(()=>{const previous=JSON.parse(localStorage.getItem('evportal.state.v2')); previous.categories[0].label='Older recovery'; localStorage.setItem('evportal.previous-transfer.v1',JSON.stringify(previous));});
 await receiver.reload();
 const recoveryBefore=await receiver.evaluate(()=>localStorage.getItem('evportal.previous-transfer.v1'));
@@ -30,7 +30,7 @@ await receiver.locator('#pairReceiveQRCode canvas').waitFor({state:'attached'});
 const pixels=await receiver.locator('#pairReceiveQRCode canvas').evaluate(canvas=>({width:canvas.width,height:canvas.height,data:Array.from(canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data)}));
 const code=jsqr(Uint8ClampedArray.from(pixels.data),pixels.width,pixels.height);
 assert.ok(code,'Receiving QR must be decodable');
-assert.equal(new URL(code.data).origin,'https://drslid.github.io');
+assert.equal(new URL(code.data).origin,'http://127.0.0.1:4187');
 await receiver.screenshot({path:path.join(results, 'evportal-receive-desktop.png')});
 const sender=await phone.newPage();
 await sender.goto('http://127.0.0.1:4187/');
@@ -40,7 +40,7 @@ await sender.evaluate(()=>{
  localStorage.setItem('evportal.state.v2',JSON.stringify(state));
 });
 await sender.reload();
-await sender.goto('http://127.0.0.1:4187/'+new URL(code.data).hash);
+await sender.goto(code.data);
 await sender.locator('#pairSendDialog').waitFor({state:'visible'});
 assert.equal(await sender.evaluate(()=>location.hash),'');
 await sender.screenshot({path:path.join(results, 'evportal-send-mobile.png')});

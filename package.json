@@ -4,6 +4,7 @@
   "private": true,
   "description": "Portail de raccourcis personnalisables pour Tesla et véhicules électriques.",
   "scripts": {
+    "dev": "node scripts/dev.cjs",
     "test": "node --test tests/*.test.js",
     "test:browser": "node scripts/browser-smoke.cjs",
     "test:catalog": "node scripts/catalog-smoke.cjs",

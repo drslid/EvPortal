@@ -14,7 +14,9 @@ npm run check
 
 Les tests utilisent le runtime Cloudflare `workerd` via Miniflare et de vrais Durable Objects SQLite pour les parcours HTTP et les dépôts concurrents. Des tests ciblés couvrent aussi l’expiration, les alarmes et les limites de corps HTTP. `check` prépare le bundle avec Wrangler en mode `--dry-run`, sans publication.
 
-Pour tester avec le portail local :
+Pour tester l’interface, lancez `npm run dev` depuis la racine du projet : cette commande configure le portail et vérifie ou démarre le relais local. Un serveur statique seul ne renseigne pas l’adresse du relais. Le mode local sert aux navigateurs du même ordinateur ; un essai avec un téléphone physique nécessite des adresses HTTPS accessibles aux deux appareils.
+
+Pour démarrer seulement le relais, depuis `relay/` :
 
 ```bash
 npm run dev -- --var 'ALLOWED_ORIGINS:https://drslid.github.io,http://127.0.0.1:4187,http://localhost:4187'
@@ -31,6 +33,8 @@ Ce dernier contrôle crée une session sur `http://127.0.0.1:8787`, chiffre une 
 ## Déployer
 
 Après connexion au compte Cloudflare choisi avec Wrangler, `npm run deploy` publie le Worker et crée le namespace SQLite déclaré par la migration `v1`. Le nom par défaut est `evportal-pairing-relay`. L’URL retournée par Wrangler doit ensuite être renseignée dans la configuration du client EvPortal. GitHub Pages continue d’héberger le portail.
+
+Si la connexion a expiré, `npx wrangler login --device --browser=false --scopes account:read user:read workers:write` permet de la renouveler depuis un navigateur, même lorsque le terminal est distant. Wrangler indique le lien et le code temporaires. Vérifiez ensuite la connexion avec `npx wrangler whoami` ; aucun jeton n’est à ajouter au dépôt.
 
 `wrangler.jsonc` autorise uniquement l’origine de production `https://drslid.github.io`. Pour un autre domaine, adapter `ALLOWED_ORIGINS` avec des origines exactes séparées par des virgules, sans chemin ni wildcard. Les origines locales sont un réglage de développement explicite. L’API exige l’en-tête `Origin`, sauf pour `GET /health` ; cet en-tête filtre les navigateurs, il ne remplace pas l’authentification par jeton.
 

@@ -51,9 +51,18 @@
         if (raw.expiresAt <= (now === undefined ? Date.now() : now)) throw fail('pair.expired');
         return { v: 1, id: raw.id, token: raw.token, key: raw.key, expiresAt: raw.expiresAt };
     }
-    function pairingURL(session, key) {
+    function pairingURL(session, key, currentURL) {
         const credentials = validateCredentials({ id: session.id, token: session.sendToken, expiresAt: session.expiresAt, key: key });
-        return PUBLIC_URL + '#receive=' + encode(new TextEncoder().encode(JSON.stringify(credentials)));
+        let url;
+        try { url = new URL(currentURL || (root.location && root.location.href) || PUBLIC_URL); }
+        catch (_) { throw fail('pair.invalidLink'); }
+        const loopback = url.hostname === 'localhost' || url.hostname === '127.0.0.1' || url.hostname === '[::1]';
+        if ((url.protocol !== 'https:' && !(url.protocol === 'http:' && loopback)) || url.username || url.password) throw fail('pair.invalidLink');
+        // Both devices must use the same portal and relay, including a local
+        // preview or a deployment in a subdirectory. Discard old import codes.
+        url.search = '';
+        url.hash = 'receive=' + encode(new TextEncoder().encode(JSON.stringify(credentials)));
+        return url.href;
     }
     function parseFragment(hash, now) {
         if (typeof hash !== 'string' || !hash.startsWith('#receive=') || hash.length > 1200) throw fail('pair.invalidLink');

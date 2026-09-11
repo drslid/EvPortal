@@ -35,7 +35,7 @@ test('wrong keys, session substitution and modified ciphertext fail authenticati
     await assert.rejects(Pair.decryptState({ iv: payload.iv, ciphertext: Pair.encode(tampered) }, key, id, webcrypto), error => error.i18nKey === 'pair.decryptFailed');
 });
 
-test('QR contains only the sender credentials and key in the fragment of the fixed public URL', () => {
+test('QR contains only sender credentials and key in the fragment, with a public fallback outside the browser', () => {
     const created = session();
     const key = Pair.createKey(webcrypto);
     const url = new URL(Pair.pairingURL(created, key));
@@ -50,6 +50,20 @@ test('QR contains only the sender credentials and key in the fragment of the fix
     const mistyped = '#receive=' + Pair.encode(new TextEncoder().encode(JSON.stringify({ ...parsed, id: [parsed.id] })));
     assert.throws(() => Pair.parseFragment(mistyped), error => error.i18nKey === 'pair.invalidLink');
     assert.throws(() => Pair.parseFragment(url.hash + '='), error => error.i18nKey === 'pair.invalidLink');
+});
+
+test('QR keeps the active portal and subdirectory, removing previous codes and refusing unsafe addresses', () => {
+    const created = session();
+    const key = Pair.createKey(webcrypto);
+    for (const base of ['http://127.0.0.1:4187/', 'http://localhost:4187/EvPortal/', 'http://[::1]:4187/', 'https://preview.example/EvPortal/index.html', Pair.PUBLIC_URL]) {
+        const url = new URL(Pair.pairingURL(created, key, base + '?code=old-backup#old-session'));
+        assert.equal(url.origin + url.pathname, base);
+        assert.equal(url.search, '');
+        assert.equal(Pair.parseFragment(url.hash).token, sendToken);
+    }
+    for (const base of ['javascript:alert(1)', 'file:///tmp/index.html', 'http://public.example/', 'https://user:secret@preview.example/', 'invalid']) {
+        assert.throws(() => Pair.pairingURL(created, key, base), error => error.i18nKey === 'pair.invalidLink');
+    }
 });
 
 test('payload bounds and canonical base64url are enforced before decryption', async () => {
