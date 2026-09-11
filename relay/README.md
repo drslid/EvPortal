@@ -32,9 +32,11 @@ Ce dernier contrôle crée une session sur `http://127.0.0.1:8787`, chiffre une 
 
 ## Déployer
 
+Le relais de production est publié à l’adresse [https://evportal-pairing-relay.carbonnier-anthony.workers.dev](https://evportal-pairing-relay.carbonnier-anthony.workers.dev). Son point de contrôle public est [`/health`](https://evportal-pairing-relay.carbonnier-anthony.workers.dev/health). L’adresse configurée dans `js/config.js` active le bouton de réception sur le portail.
+
 Après connexion au compte Cloudflare choisi avec Wrangler, `npm run deploy` publie le Worker et crée le namespace SQLite déclaré par la migration `v1`. Le nom par défaut est `evportal-pairing-relay`. L’URL retournée par Wrangler doit ensuite être renseignée dans la configuration du client EvPortal. GitHub Pages continue d’héberger le portail.
 
-Si la connexion a expiré, `npx wrangler login --device --browser=false --scopes account:read user:read workers:write` permet de la renouveler depuis un navigateur, même lorsque le terminal est distant. Wrangler indique le lien et le code temporaires. Vérifiez ensuite la connexion avec `npx wrangler whoami` ; aucun jeton n’est à ajouter au dépôt.
+Si la connexion a expiré, `npx wrangler login --device --browser=false --scopes account:read user:read workers:write workers_scripts:write` permet de la renouveler depuis un navigateur, même lorsque le terminal est distant. Wrangler indique le lien et le code temporaires. Le droit `workers_scripts:write` est nécessaire pour lire le sous-domaine et déployer le script ; `workers:write` seul ne suffit pas pour cet accès. Vérifiez ensuite la connexion avec `npx wrangler whoami` ; aucun jeton n’est à ajouter au dépôt. [Droits acceptés pour le sous-domaine Workers](https://developers.cloudflare.com/api/resources/workers/subresources/subdomains/methods/get/).
 
 `wrangler.jsonc` autorise uniquement l’origine de production `https://drslid.github.io`. Pour un autre domaine, adapter `ALLOWED_ORIGINS` avec des origines exactes séparées par des virgules, sans chemin ni wildcard. Les origines locales sont un réglage de développement explicite. L’API exige l’en-tête `Origin`, sauf pour `GET /health` ; cet en-tête filtre les navigateurs, il ne remplace pas l’authentification par jeton.
 

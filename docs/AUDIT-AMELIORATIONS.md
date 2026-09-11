@@ -122,4 +122,4 @@ Les **143 icônes locales** occupent environ **221 Kio**. Les URL sources, dates
 
 Les résultats de la première itération sont conservés dans [l’audit archivé](AUDIT-PREMIERE-ITERATION.md). Ses anciens chiffres ne valident pas à eux seuls cette nouvelle interface.
 
-Le plein écran effectif, les nouveaux onglets dans le Théâtre et le transfert entre téléphone et véhicule restent à confirmer sur une Tesla physique. Le relais public doit encore être activé suivant [la documentation d’appairage téléphone–Tesla](APPAIRAGE-TELEPHONE-TESLA.md). Les résultats Search Console et les performances terrain ne peuvent être mesurés qu’après publication.
+Le plein écran effectif, les nouveaux onglets dans le Théâtre et le transfert entre téléphone et véhicule restent à confirmer sur une Tesla physique. Le relais public est déployé et configuré suivant [la documentation d’appairage téléphone–Tesla](APPAIRAGE-TELEPHONE-TESLA.md). Son contrôle HTTP réel a validé la création, le transfert chiffré, les droits distincts, la reprise et la suppression d’une session synthétique. Les résultats Search Console et les performances terrain ne peuvent être mesurés qu’après publication.
