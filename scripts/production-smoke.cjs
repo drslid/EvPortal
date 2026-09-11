@@ -116,7 +116,7 @@ function matchesResponse(response, method, url) {
         await receiver.locator('#settingsButton').click();
         await receiver.locator('#importConfigButton').click();
         await receiver.locator('#importDialog').waitFor({ state: 'visible' });
-        await receiver.locator('#legacyImportOptions summary').click();
+        await receiver.locator('#legacyImportOptions > summary').click();
         check(await receiver.locator('#importConfigID').isVisible(), 'Backup code and link import interface is missing');
         check(await receiver.locator('#importFile').count() === 1, 'JSON file import interface is missing');
         check(!relayRequests.some(request => ['POST', 'PUT', 'DELETE'].includes(request.method)), 'Frontend-only check must not create or transfer a session');
