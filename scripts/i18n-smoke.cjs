@@ -19,6 +19,16 @@ const server = http.createServer(async (req, res) => {
 });
 const widths = [320, 390, 768, 1024, 1440, 1920];
 const locales = { en: 'en-US', fr: 'fr-FR', es: 'es-ES', de: 'de-DE', it: 'it-IT', ru: 'ru-RU', ar: 'ar-SA', pt: 'pt-BR' };
+const languageOptions = { en: ['🇬🇧', 'English'], fr: ['🇫🇷', 'Français'], es: ['🇪🇸', 'Español'], de: ['🇩🇪', 'Deutsch'], it: ['🇮🇹', 'Italiano'], ru: ['🇷🇺', 'Русский'], ar: ['🇸🇦', 'العربية'], pt: ['🇵🇹', 'Português'] };
+async function verifyLanguageOptions(page) {
+    const options = await page.locator('#languageSelect option').evaluateAll(nodes => nodes.map(node => ({ value: node.value, label: node.textContent.trim() })));
+    assert.equal(options.length, 8);
+    assert.deepEqual(options.map(option => option.value), Object.keys(languageOptions));
+    for (const option of options) {
+        const [flag, name] = languageOptions[option.value];
+        assert.ok(option.label.includes(flag) && option.label.includes(name), 'Flag and native language name remain together: ' + option.value);
+    }
+}
 let browser;
 (async () => {
     await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
@@ -36,7 +46,7 @@ let browser;
         assert.equal(await page.locator('html').getAttribute('lang'), language, 'Browser language detection');
         assert.equal(await page.locator('html').getAttribute('dir'), language === 'ar' ? 'rtl' : 'ltr');
         assert.equal(await page.locator('[data-category="charging"] .category-label').textContent(), dictionaries[language]['category.charging']);
-        assert.equal(await page.locator('#shareButton span').textContent(), dictionaries[language]['static.share']);
+        assert.equal(await page.locator('#header #shareButton').count(), 0, 'Backup export belongs to Settings');
         assert.equal(await page.title(), dictionaries[language]['static.title']);
         assert.equal(await page.locator('#themeToggle').innerText(), '', 'Theme is an icon only');
         assert.equal(await page.locator('#themeToggle use').getAttribute('href'), '#icon-sun');
@@ -81,7 +91,12 @@ let browser;
         }
         await page.setViewportSize({ width: 390, height: 844 });
         await page.locator('#settingsButton').click();
-        assert.equal(await page.locator('#languageSelect option').count(), 8);
+        await verifyLanguageOptions(page);
+        for (const id of ['shareButton', 'importConfigButton', 'pairReceiveButton']) {
+            assert.equal(await page.locator('#backupSettings #' + id).isVisible(), true, 'Backup actions stay together in Settings');
+        }
+        assert.equal(await page.locator('#shareButton span').textContent(), dictionaries[language]['static.exportBackup']);
+        assert.equal(await page.locator('#importConfigButton span').textContent(), dictionaries[language]['static.importBackup']);
         assert.equal(await page.locator('#settingsTitle').textContent(), dictionaries[language]['static.settings']);
         const before = await page.evaluate(() => localStorage.getItem(EVState.STORAGE_KEY));
         const other = language === 'en' ? 'fr' : 'en';
@@ -89,16 +104,21 @@ let browser;
         assert.equal(await page.locator('html').getAttribute('lang'), other);
         await page.locator('#languageSelect').selectOption(language);
         assert.equal(await page.evaluate(() => localStorage.getItem(EVState.STORAGE_KEY)), before, 'Language leaves shortcut configuration untouched');
-        await page.locator('#settingsDialog details').evaluate(details => details.open = true);
         await page.locator('#importConfigButton').click();
-        assert.equal(await page.locator('#importDialogTitle').textContent(), dictionaries[language]['static.restore']);
+        assert.equal(await page.locator('#importDialogTitle').textContent(), dictionaries[language]['static.importBackup']);
+        assert.equal(await page.locator('#savedBackupPicker').isVisible(), true);
+        assert.equal(await page.locator('#importConfigID').isVisible(), false);
+        await page.locator('#legacyImportOptions > summary').click();
         await page.locator('#importConfigID').fill('not/a/page');
         await page.locator('#telegraphImportForm button[type="submit"]').click();
         assert.equal(await page.locator('#importError').textContent(), dictionaries[language]['state.telegraphID']);
         await page.locator('#importDialog [data-close-dialog]').first().click();
+        await page.locator('#settingsButton').click();
         await page.locator('#shareButton').click();
+        assert.equal(await page.locator('#settingsDialog').isVisible(), false, 'Opening export closes Settings');
+        assert.equal(await page.locator('#shareDialogTitle').textContent(), dictionaries[language]['static.exportBackup']);
         assert.equal(await page.locator('#shareTitle').inputValue(), dictionaries[language]['static.defaultBackup']);
-        assert.equal(await page.locator('#sharePublishButton').textContent(), dictionaries[language]['static.publish']);
+        assert.equal(await page.locator('#sharePublishButton span').textContent(), dictionaries[language]['static.publish']);
         assert.ok(await page.locator('#shareDialog').evaluate(node => node.scrollWidth <= node.clientWidth + 1));
         await page.locator('#shareDialog [data-close-dialog]').first().click();
         await page.locator('#catalogButton').click();
@@ -114,11 +134,12 @@ let browser;
         assert.equal(await page.locator('html').getAttribute('lang'), language);
         assert.equal(await page.locator('h1').textContent(), dictionaries[language]['help.heading']);
         assert.equal(await page.locator('#languageSelect').inputValue(), language);
+        await verifyLanguageOptions(page);
         assert.equal(await page.locator('html').getAttribute('dir'), language === 'ar' ? 'rtl' : 'ltr');
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), language + ' help overflow');
         assert.equal(await page.evaluate(() => [...document.querySelectorAll('[data-i18n]')].every(node => node.textContent === EVI18n.t(node.dataset.i18n))), true, 'Help is fully translated');
         await context.close();
-        console.log('✓ ' + language + ': language, theme, 6 widths, categories, import errors, sharing, help and persistence');
+        console.log('✓ ' + language + ': flags and language names on both pages, grouped backup actions, theme, 6 widths, categories, import/export, help and persistence');
     }
     assert.deepEqual(errors, []);
     console.log('8 languages verified across 48 layouts; no horizontal category scrolling or JavaScript errors.');

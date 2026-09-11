@@ -86,6 +86,7 @@ async function run() {
         await page.addScriptTag({ path: require.resolve('jsqr') });
         await page.evaluate(() => Object.defineProperty(navigator, 'clipboard', { value: { writeText: value => window.testCopyShare(value) } }));
         assert.equal(calls.length, 0);
+        await page.locator('#settingsButton').click();
         await page.locator('#shareButton').click();
         assert.equal(calls.length, 0, 'Opening Share makes no account or history request');
         assert.equal(await page.locator('#shareBaseURL, #shareCode, #shareCopyCodeButton, #shareLink').count(), 0, 'No address, manual code or long link is shown');
@@ -155,8 +156,10 @@ async function run() {
 
         await page.locator('#shareDialog [data-close-dialog]').click();
         await page.locator('#settingsButton').click();
-        await page.locator('#importConfigButton').evaluate(button => { const details = button.closest('details'); if (details) details.open = true; });
         await page.locator('#importConfigButton').click();
+        assert.equal(await page.locator('#savedBackupPicker').isVisible(), true);
+        assert.equal(await page.locator('#importConfigID').isVisible(), false);
+        await page.locator('#legacyImportOptions > summary').click();
         await page.locator('#importConfigID').fill(expectedURL);
         const before = await page.evaluate(() => localStorage.getItem(EVState.STORAGE_KEY));
         await page.locator('#telegraphImportForm').evaluate(form => form.requestSubmit());

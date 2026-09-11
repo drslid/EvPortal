@@ -76,10 +76,10 @@ let nextTTL = 300000, nextID = 1, dropNextSendResponse = false, browser;
     const receiver = await receiverContext.newPage();
     await receiver.goto(appURL, { waitUntil: 'networkidle' });
     assert.equal(calls.length, 0, 'No relay account/session request on startup');
-    await receiver.locator('#shareButton').click();
+    await receiver.locator('#settingsButton').click();
     await receiver.locator('#pairReceiveButton').click();
     await receiver.locator('#pairReceiveQRCode').waitFor({ state: 'visible' });
-    assert.equal(await receiver.locator('#shareDialog').evaluate(dialog => dialog.open), false);
+    assert.equal(await receiver.locator('#settingsDialog').evaluate(dialog => dialog.open), false);
     await receiver.addScriptTag({ path: require.resolve('jsqr') });
     const qrURL = await receiver.evaluate(() => {
         const canvas = document.querySelector('#pairReceiveQRCode canvas');
@@ -130,7 +130,7 @@ let nextTTL = 300000, nextID = 1, dropNextSendResponse = false, browser;
     assert.equal(firstSession.deleted, true);
     console.log('✓ Real QR decodes; phone restores a named backup and explicitly sends ciphertext; Tesla previews before applying and acknowledges relay deletion');
 
-    await receiver.locator('#shareButton').click();
+    await receiver.locator('#settingsButton').click();
     await receiver.locator('#pairReceiveButton').click();
     await receiver.locator('#pairReceiveQRCode').waitFor({ state: 'visible' });
     const cancelled = Array.from(sessions.values()).at(-1);
@@ -140,7 +140,7 @@ let nextTTL = 300000, nextID = 1, dropNextSendResponse = false, browser;
     assert.equal(calls.filter(call => call.method === 'GET' && call.url.endsWith(cancelled.id)).length, 0);
     assert.equal(await receiver.locator('#pairReceiveQRCode').isVisible(), false);
     nextTTL = 700;
-    await receiver.locator('#shareButton').click();
+    await receiver.locator('#settingsButton').click();
     await receiver.locator('#pairReceiveButton').click();
     await receiver.locator('#pairReceiveError[data-i18n="pair.receiverExpired"]').waitFor({ timeout: 5000 });
     assert.equal(await receiver.locator('#pairReceiveQRCode').isVisible(), false);
@@ -157,7 +157,7 @@ let nextTTL = 300000, nextID = 1, dropNextSendResponse = false, browser;
     assert.equal(await receiver.locator('#pairReceiveDialog').evaluate(dialog => dialog.open), false);
     assert.equal(await receiver.locator('#pairReceiveQRCode').isVisible(), false);
 
-    await receiver.locator('#shareButton').click();
+    await receiver.locator('#settingsButton').click();
     await receiver.locator('#pairReceiveButton').click();
     await receiver.locator('#pairReceiveQRCode').waitFor({ state: 'visible' });
     const nextQR = await receiver.evaluate(() => {

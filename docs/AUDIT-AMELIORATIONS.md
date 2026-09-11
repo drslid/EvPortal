@@ -1,6 +1,6 @@
 # EvPortal — audit révisé pour l’écran Tesla
 
-Révision : 11 septembre 2026. Les retours utilisateur fixent la priorité : un lanceur de raccourcis simple, lisible d’un regard, facile à toucher. La première proposition ajoutait trop de texte et avait remplacé deux parcours utiles : le partage Telegra.ph avec QR code et le lancement plein écran particulier à Tesla. Ces parcours sont rétablis ; le complément du 11 septembre ajoute la suppression directe et des adresses de partage aléatoires.
+Révision : 11 septembre 2026. Les retours utilisateur fixent la priorité : un lanceur de raccourcis simple, lisible d’un regard, facile à toucher. La première proposition ajoutait trop de texte et avait remplacé deux parcours utiles : le partage Telegra.ph avec QR code et le lancement plein écran particulier à Tesla. Ces parcours sont rétablis. Les compléments du 11 septembre ajoutent la suppression directe, des adresses de partage aléatoires et un groupe « Sauvegardes » dans les paramètres qui rassemble export, import et réception depuis le téléphone.
 
 Publication sur GitHub Pages autorisée après la recette locale. Aucun résultat sur véhicule physique ou dans Search Console n’est présenté comme acquis.
 
@@ -14,7 +14,7 @@ Publication sur GitHub Pages autorisée après la recette locale. Aucun résulta
 | Voir immédiatement les services | Raccourcis avec logo et nom ; descriptions et explications réservées aux vues qui les nécessitent. |
 | Retrouver les services habituels | Vue « Tous » classée par nombre d’ouvertures décroissant ; ordre manuel utilisé en cas d’égalité. |
 | Toucher et déplacer facilement | Grandes surfaces tactiles ; déplacement des raccourcis dans les catégories et les favoris. Aucun glisser-déposer dans « Tous », dont l’ordre est automatique. |
-| Créer sans chercher dans les réglages | Le bouton « + » affiche « Créer un raccourci », « Créer une catégorie » et le catalogue. Les services déjà présents sont signalés par « Déjà présent ». |
+| Créer sans chercher dans les paramètres | Le bouton « + » affiche « Créer un raccourci », « Créer une catégorie » et le catalogue. Les services déjà présents sont signalés par « Déjà présent ». |
 | Personnaliser les catégories | Jusqu’à cinq catégories personnelles créées, nom de 16 caractères maximum, choix d’une icône SVG embarquée et édition par le crayon. |
 | Supprimer en un geste | Suppression immédiate des raccourcis et des catégories, sans confirmation intermédiaire. Supprimer une catégorie enlève aussi son contenu. La réinitialisation complète reste soumise à confirmation. |
 | Ouvrir un service séparément | Les liens des raccourcis demandent un nouvel onglet (`target="_blank"`), conformément au choix utilisateur. |
@@ -28,7 +28,7 @@ Publication sur GitHub Pages autorisée après la recette locale. Aucun résulta
 
 Les descriptions restent dans le catalogue pour faciliter la recherche et la maintenance ; elles n’occupent plus les raccourcis. Les boutons d’édition et les options avancées ne sont affichés que dans les parcours correspondants.
 
-Le vocabulaire de l’interface est uniformisé autour de « raccourci ». La sélection de langue est enregistrée à part sur l’appareil ; elle ne renomme pas les services ni les catégories personnelles et n’impose pas la langue de l’auteur lors d’un partage. Les langues sont proposées avec leurs noms natifs. Les traductions sont embarquées dans le site et se changent sans rechargement.
+Le vocabulaire de l’interface est uniformisé autour de « raccourci ». La sélection de langue est enregistrée à part sur l’appareil ; elle ne renomme pas les services ni les catégories personnelles et n’impose pas la langue de l’auteur lors d’un partage. Les langues sont proposées avec leurs noms natifs et leurs drapeaux ; le nom reste lisible pour identifier la langue. Les traductions sont embarquées dans le site et se changent sans rechargement.
 
 ## Fiabilité conservée
 
@@ -52,11 +52,11 @@ Ces identifiants rendent les nouvelles adresses difficiles à deviner. Ils n’a
 
 ## Transfert téléphone → Tesla
 
-Le nouveau parcours affiche le QR sur l’écran récepteur : **Partager → Recevoir depuis mon téléphone** dans la Tesla, scan depuis le téléphone, choix et envoi de ses raccourcis ou d’une sauvegarde Telegra.ph, puis confirmation sur la Tesla. Le transfert chiffré est valable cinq minutes et ne constitue pas une synchronisation continue. La configuration précédente est conservée localement pour permettre d’annuler le dernier transfert.
+Le nouveau parcours affiche le QR sur l’écran récepteur : **Paramètres → Sauvegardes → Recevoir depuis mon téléphone** dans la Tesla, scan depuis le téléphone, choix et envoi de ses raccourcis ou d’une sauvegarde Telegra.ph, puis confirmation sur la Tesla. Le transfert chiffré est valable cinq minutes et ne constitue pas une synchronisation continue. La configuration précédente est conservée localement pour permettre d’annuler le dernier transfert.
 
 Ce parcours utilise le relais temporaire décrit dans [la documentation d’appairage](APPAIRAGE-TELEPHONE-TESLA.md). Le code d’interface ne suffit pas à activer le service : sa configuration et son déploiement sont nécessaires. Si le service est absent ou indisponible, les sauvegardes Telegra.ph et l’import manuel restent disponibles dans les options. La disponibilité publique du relais n’est pas déduite des seuls tests locaux.
 
-Le dialogue de sauvegarde présente deux actions principales, un nom facultatif et un résultat limité au QR et à la copie du lien. Les URLs de partage utilisent l’adresse publique d’EvPortal ; aucun champ d’adresse ou code manuel n’occupe ce dialogue. Les essais locaux doivent tenir compte du fait que le téléphone ouvre la version publique.
+Dans **Paramètres → Sauvegardes**, les actions **Exporter une sauvegarde**, **Importer une sauvegarde** et **Recevoir depuis mon téléphone** sont réunies. L’export ouvre la création avec nom facultatif, le QR, la copie du lien et l’historique ; le fichier JSON reste dans ses options. L’import présente les sauvegardes disponibles, puis un aperçu avant confirmation ; le code, le lien et le fichier JSON restent dans ses options. Le tableau principal garde ses seuls outils quotidiens. Les URLs de partage utilisent l’adresse publique d’EvPortal ; aucun champ d’adresse ou code manuel n’occupe ce dialogue. Les essais locaux doivent tenir compte du fait que le téléphone ouvre la version publique.
 
 ## Effacement des sauvegardes
 
@@ -66,7 +66,7 @@ L’API Telegra.ph ne fournit pas de suppression définitive de page. EvPortal u
 
 ## Plein écran Tesla
 
-Le plein écran web standard ne reproduit pas nécessairement le passage dans l’environnement Théâtre du véhicule. Le bouton Tesla reprend le principe de la version historique : ouvrir le parcours YouTube qui redirige vers l’adresse d’EvPortal. Il faut ensuite choisir « Accéder au site » ou « Go to site ». Le chemin de retour conserve le déploiement utilisé, y compris un sous-dossier GitHub Pages et le code d’un partage. L’entrée « Ouvrir le mode Théâtre Tesla » dans les réglages couvre les navigateurs qui ne s’identifient pas comme Tesla. [Parcours décrit dans la FAQ myTesla](https://mytesla.nu/).
+Le plein écran web standard ne reproduit pas nécessairement le passage dans l’environnement Théâtre du véhicule. Le bouton Tesla reprend le principe de la version historique : ouvrir le parcours YouTube qui redirige vers l’adresse d’EvPortal. Il faut ensuite choisir « Accéder au site » ou « Go to site ». Le chemin de retour conserve le déploiement utilisé, y compris un sous-dossier GitHub Pages et le code d’un partage. L’entrée « Ouvrir le mode Théâtre Tesla » dans les paramètres couvre les navigateurs qui ne s’identifient pas comme Tesla. [Parcours décrit dans la FAQ myTesla](https://mytesla.nu/).
 
 Ce comportement doit être essayé sur la Tesla concernée : il dépend du logiciel et n’est pas une API officielle Tesla. Un test Chromium permet de vérifier la construction et le déclenchement de l’URL, mais pas l’entrée effective dans le Théâtre d’un véhicule.
 
@@ -78,7 +78,7 @@ La recette sur véhicule doit noter le modèle, la version logicielle, la régio
 
 Le titre et la description doivent dire ce que fait le produit : des raccourcis personnalisables pour Tesla et véhicules électriques, avec recharge, navigation et divertissement. Ils ne doivent pas promettre que tous les services sont lisibles sur tous les véhicules.
 
-La nouvelle [page d’aide](../aide.html) est accessible depuis les réglages : déplacement des raccourcis, transfert téléphone → véhicule, différences entre ouverture d’un lien et lecture vidéo, limites du plein écran, essai local sur téléphone et récupération d’une sauvegarde. Elle possède son titre, sa canonical et une entrée au sitemap, qui contient désormais deux pages. Les catégories internes ne sont pas présentées comme autant de pages indexables.
+La nouvelle [page d’aide](../aide.html) est accessible depuis les paramètres : déplacement des raccourcis, transfert téléphone → véhicule, différences entre ouverture d’un lien et lecture vidéo, limites du plein écran, essai local sur téléphone et récupération d’une sauvegarde. Elle possède son titre, sa canonical et une entrée au sitemap, qui contient désormais deux pages. Les catégories internes ne sont pas présentées comme autant de pages indexables.
 
 Les raccourcis restent de vrais liens avec un nom accessible. L’aide doit pouvoir être lue par les visiteurs et les robots ; aucun texte accumulé hors écran n’est nécessaire pour conserver un tableau simple. Google peut réécrire la description dans ses résultats ; les balises servent à décrire correctement la page, sans garantir une position. [Liens explorables](https://developers.google.com/search/docs/crawling-indexing/links-crawlable), [descriptions dans les résultats](https://developers.google.com/search/docs/appearance/snippet).
 
@@ -88,13 +88,15 @@ Sur GitHub Pages projet, `EvPortal/robots.txt` n’est pas le `robots.txt` de la
 
 Les améliorations doivent réduire les gestes ou faciliter la récupération d’une configuration. Elles ne justifient pas d’ajouter du texte permanent à l’écran.
 
-| Priorité | Proposition | Bénéfice | Effort indicatif |
-| --- | --- | --- | --- |
-| P1 | Annuler la dernière suppression ou le dernier import | Récupérer son tableau après une mauvaise manipulation. | 1–2 jours |
-| P1 | Masquer des catégories et choisir « Favoris » comme accueil | Limiter les choix aux services réellement utilisés. | 1–2 jours |
-| P2 | Profils « quotidien » et « voyage » | Changer de sélection sans reconstruire ses liens. | 2–4 jours |
-| P2 | Réglage discret de la taille des raccourcis | Adapter la densité à l’écran après essais tactiles. | 1–2 jours |
-| P2 | Signaler un lien depuis son raccourci | Faire remonter une destination inaccessible sans encombrer l’accueil. | 1 jour |
+| Priorité | Proposition | Comportement proposé |
+| --- | --- | --- |
+| P1 | Annuler une suppression | Un bouton temporaire restaure le raccourci ou la catégorie, son emplacement, ses favoris et ses compteurs, sans demander confirmation avant la suppression. |
+| P1 | Choisir l’accueil | Un réglage « Favoris », « Recharge » ou « Dernière catégorie » complète la mémorisation actuelle. |
+| P1 | Raccourcis Standard / Grands | Agrandir les logos et les zones tactiles tout en gardant les rangées centrées ; le choix reste dans les paramètres. |
+| P2 | Profils « quotidien » et « voyage » | Retrouver deux sélections de raccourcis sans refaire leur organisation. |
+| P2 | Accueil disponible hors connexion | Garder l’interface et les icônes visibles après une première visite ; les services externes nécessitent toujours une connexion. |
+
+Ces propositions restent à implémenter. Le réglage de taille s’inspire du choix de taille du texte déjà proposé par Tesla ; le cache local répond aux variations de connexion, sans permettre de consulter hors connexion les sites externes. [Manuel Tesla — Écran tactile](https://www.tesla.com/ownersmanual/model3/fr_fr/GUID-518C51C1-E9AC-4A68-AE12-07F4FF8C881E.html), [Tesla — Connectivité](https://www.tesla.com/fr_fr/support/connectivity).
 
 La maintenance doit prévoir un contrôle périodique des liens hors du véhicule, sans requêtes de contrôle à chaque ouverture du portail. La recette sur Tesla avec un téléphone doit valider le déplacement tactile, le plein écran, les nouveaux onglets et l’import par code ou lien. Ces vérifications ne nécessitent pas de nouveaux éléments dans le tableau.
 
@@ -110,9 +112,9 @@ La recette de l’interface révisée doit couvrir le classement « Tous » apr�
 
 La recette de référence du 10 septembre, avant les nouvelles suppressions directes et adresses aléatoires, confirmait **59 tests unitaires réussis**, **9 groupes de vérifications navigateur**, **9 groupes d’interactions** et **3 groupes de vérification du partage**. Les interactions utilisaient Chromium complet en mode headless : déplacement à la souris, événements tactiles, clavier, ouverture réelle des nouveaux onglets au clic, au clic central et au toucher, compteurs, catégories, thème et changement de langue avec passage de droite à gauche. Le navigateur headless-shell plantait lors du clic central ; la recette d’interactions utilise donc `channel: 'chromium'`.
 
-Le complément du 11 septembre est validé par **65 tests unitaires**, **10 groupes d’interactions** et **3 groupes de partage dans Chromium**. Les contrôles couvrent la suppression sans dialogue et sa persistance, la confirmation de réinitialisation conservée, les 16 octets issus du générateur cryptographique, la réservation sans données personnelles, le refus d’un chemin sans identifiant aléatoire, l’écriture finale, les échecs et délais dépassés, les titres lisibles, les anciennes sauvegardes et le QR réellement décodé. Les requêtes Telegra.ph sont simulées : aucune page de test n’a été publiée.
+La recette précédente du 11 septembre, avant le regroupement des sauvegardes dans les paramètres, était validée par **65 tests unitaires**, **10 groupes d’interactions** et **3 groupes de partage dans Chromium**. Les contrôles couvrent la suppression sans dialogue et sa persistance, la confirmation de réinitialisation conservée, les 16 octets issus du générateur cryptographique, la réservation sans données personnelles, le refus d’un chemin sans identifiant aléatoire, l’écriture finale, les échecs et délais dépassés, les titres lisibles, les anciennes sauvegardes et le QR réellement décodé. Les requêtes Telegra.ph sont simulées : aucune page de test n’a été publiée.
 
-Le partage a été publié et réimporté avec une API simulée : aucune donnée n’a été publiée sur Telegra.ph pendant la recette. Le QR a été décodé et comparé au lien copié ; le code affiché et copié, le collage du lien EvPortal dans l’import, l’aperçu avant remplacement et l’absence du jeton dans le contenu partagé ont été vérifiés. Un changement vers l’arabe pendant une publication conserve le bouton désactivé et ne relance pas la requête. L’historique déjà chargé se traduit ensuite en allemand, y compris les libellés accessibles, sans nouvel appel réseau ni modification des noms personnels.
+Le partage a été publié et réimporté avec une API simulée : aucune donnée n’a été publiée sur Telegra.ph pendant la recette. Le QR a été décodé et comparé au lien copié ; le collage du lien EvPortal dans l’import, l’aperçu avant remplacement et l’absence du jeton dans le contenu partagé ont été vérifiés. Un changement vers l’arabe pendant une publication conserve le bouton désactivé et ne relance pas la requête. L’historique déjà chargé se traduit ensuite en allemand, y compris les libellés accessibles, sans nouvel appel réseau ni modification des noms personnels.
 
 La recette `npm run test:i18n` passe dans les **huit langues sur six largeurs**, soit **48 vues de 320 à 1 920 px**. Elle contrôle les catégories sans défilement horizontal, les erreurs d’import, le partage, l’aide, les deux thèmes, la persistance de la langue et la direction du texte. Les captures françaises, allemandes et arabes ont également été inspectées. La recette navigateur comprend quatre audits axe en clair/sombre et sur mobile/ordinateur, sans violation WCAG A/AA détectée dans ces vues. Les captures et rapports sont dans `test-results/`. Ces contrôles ne constituent pas un audit exhaustif ni un essai physique sur une Tesla.
 

@@ -1,6 +1,6 @@
 # EvPortal
 
-EvPortal est un lanceur de sites pour l’écran d’une Tesla ou d’un véhicule électrique : de grands raccourcis, un logo et un nom. La navigation reste courte et tactile ; les réglages et les explications s’ouvrent à la demande.
+EvPortal est un lanceur de sites pour l’écran d’une Tesla ou d’un véhicule électrique : de grands raccourcis, un logo et un nom. La navigation reste courte et tactile ; les paramètres et les explications s’ouvrent à la demande.
 
 **[Ouvrir EvPortal](https://drslid.github.io/EvPortal/)** · [Aide](aide.html) · [Signaler un problème](https://github.com/drslid/EvPortal/issues) · [Audit et propositions d’évolution](docs/AUDIT-AMELIORATIONS.md)
 
@@ -19,9 +19,9 @@ Le projet utilise HTML, CSS et JavaScript natifs : aucun compte EvPortal, aucune
 - **Catégories personnelles** : jusqu’à cinq catégories créées, avec un nom de 16 caractères maximum ; anciennes configurations préservées.
 - **Navigation visible** : les catégories se répartissent sur plusieurs lignes si nécessaire, sans défilement horizontal.
 - **Recherche, favoris et thèmes** : accès aux services habituels et choix clair ou sombre. Les raccourcis ouvrent les services dans un nouvel onglet.
-- **Huit langues** : anglais, français, espagnol, allemand, italien, russe, arabe et portugais ; interface et aide traduites, présentation de droite à gauche en arabe.
+- **Huit langues** : anglais, français, espagnol, allemand, italien, russe, arabe et portugais ; interface et aide traduites, noms natifs et drapeaux dans le sélecteur, présentation de droite à gauche en arabe.
 - **Sauvegarde locale** : catégories, liens, ordre, favoris, compteurs d’ouverture et préférences restent dans la configuration de l’appareil.
-- **Sauvegardes simples** : créez une sauvegarde Telegra.ph, retrouvez son QR code ou copiez son lien ; « Mes sauvegardes » permet aussi d’en effacer le contenu.
+- **Sauvegardes regroupées** : « Exporter une sauvegarde », « Importer une sauvegarde » et la réception depuis un téléphone sont réunis dans Paramètres → Sauvegardes. QR, lien et fichiers JSON restent disponibles.
 - **Réception depuis un téléphone** : la Tesla affiche un QR de réception, le téléphone le scanne et envoie ses raccourcis. Le transfert direct nécessite le relais configuré.
 - **Import avec aperçu** : anciennes configurations Telegra.ph et fichiers JSON pris en charge ; remplacement après confirmation.
 - **Plein écran Tesla** : retour au lancement par la redirection YouTube utilisée par la version historique ; l’API Fullscreen classique reste disponible pour les autres navigateurs.
@@ -35,22 +35,24 @@ Le projet utilise HTML, CSS et JavaScript natifs : aucun compte EvPortal, aucune
 
 ### Du téléphone à la Tesla
 
-1. Dans la Tesla, ouvrez **Partager → Recevoir depuis mon téléphone**.
+1. Dans la Tesla, ouvrez **Paramètres → Sauvegardes → Recevoir depuis mon téléphone**.
 2. Scannez le QR de réception avec le téléphone.
-3. Sur le téléphone, choisissez les raccourcis à envoyer ou une sauvegarde Telegra.ph, puis envoyez-les.
+3. Sur le téléphone, choisissez les raccourcis à envoyer ou une sauvegarde, puis envoyez-les.
 4. Vérifiez la proposition reçue sur la Tesla et touchez **Utiliser ces raccourcis**.
 
-Le transfert est chiffré et valable cinq minutes. Les options des réglages permettent d’annuler le dernier transfert appliqué sur cet appareil. Il s’agit d’un transfert ponctuel, sans synchronisation automatique. Ce parcours nécessite le service de réception configuré ; son fonctionnement et sa mise en service sont décrits dans [la documentation d’appairage](docs/APPAIRAGE-TELEPHONE-TESLA.md).
+Le transfert est chiffré et valable cinq minutes. Les options des paramètres permettent d’annuler le dernier transfert appliqué sur cet appareil. Il s’agit d’un transfert ponctuel, sans synchronisation automatique. Ce parcours nécessite le service de réception configuré ; son fonctionnement et sa mise en service sont décrits dans [la documentation d’appairage](docs/APPAIRAGE-TELEPHONE-TESLA.md).
 
-### Créer et gérer mes sauvegardes
+### Exporter et gérer mes sauvegardes
 
-Dans **Partager**, touchez **Créer ma sauvegarde**. L’option **Nommer la sauvegarde** est facultative. Le résultat présente un QR code et **Copier le lien**, sans adresse technique ni code à saisir dans ce dialogue. Les QR codes et liens de sauvegarde pointent vers l’adresse publique d’EvPortal.
+Ouvrez **Paramètres → Sauvegardes → Exporter une sauvegarde**, puis touchez **Créer ma sauvegarde**. L’option **Nommer la sauvegarde** est facultative. Le résultat présente un QR code et **Copier le lien**, sans adresse technique ni code à saisir dans ce dialogue. Les QR codes et liens de sauvegarde pointent vers l’adresse publique d’EvPortal.
 
 **Mes sauvegardes** charge l’historique du compte présent dans ce navigateur dès son ouverture. Touchez un nom pour retrouver le QR correspondant. La corbeille efface le contenu de la sauvegarde sans confirmation ; en cas d’échec, la ligne reste visible pour réessayer. Telegra.ph ne propose pas de suppression définitive de page par son API : EvPortal remplace les données par un message neutre, efface les informations d’auteur et remplace le titre, puis masque l’entrée. L’adresse de la page continue d’exister.
 
 Les nouveaux liens utilisent un identifiant aléatoire difficile à deviner. Une sauvegarde Telegra.ph reste **publique et non chiffrée** ; toute personne disposant du lien peut lire son contenu tant qu’il n’est pas effacé. Le jeton du compte et le reste du stockage du navigateur ne sont pas publiés. Les anciennes sauvegardes restent accessibles avec leur adresse d’origine jusqu’à leur effacement explicite.
 
-L’import manuel des anciens liens et les fichiers JSON restent disponibles dans les options des réglages. Le téléchargement JSON permet aussi de sauvegarder les configurations qui dépassent les limites du transfert direct ou de Telegra.ph.
+Dans le même groupe **Sauvegardes**, **Importer une sauvegarde** affiche les sauvegardes disponibles dans ce navigateur. Choisissez-en une, vérifiez l’aperçu puis confirmez. **Plus d’options** permet aussi de saisir un ancien code ou lien, ou de choisir un fichier JSON.
+
+Le téléchargement JSON se trouve dans **Exporter une sauvegarde → Plus d’options**. Il permet aussi de conserver les configurations qui dépassent les limites du transfert direct ou de Telegra.ph.
 
 ### Anciennes configurations
 
@@ -68,7 +70,7 @@ EvPortal ouvre des sites web. La présence d'un service dans le catalogue indiqu
 
 Tesla indique que les options de divertissement dépendent du véhicule et de la région et présente le Théâtre pour un usage en stationnement, avec une connexion adaptée. Consultez le [manuel Tesla correspondant au véhicule](https://www.tesla.com/ownersmanual/modely/fr_fr/GUID-79A49D40-A028-435B-A7F6-8E48846AB9E9.html). Utilisez le portail de divertissement à l'arrêt.
 
-Dans une Tesla, le bouton plein écran utilise le lancement via YouTube avec une URL de retour vers EvPortal, comme dans la version historique. Choisissez « Accéder au site » ou « Go to site » sur YouTube pour revenir au portail en mode Théâtre. Le même parcours est décrit par [myTesla](https://mytesla.nu/). Si le navigateur n’est pas reconnu comme une Tesla, l’entrée « Ouvrir le mode Théâtre Tesla » reste accessible dans les réglages.
+Dans une Tesla, le bouton plein écran utilise le lancement via YouTube avec une URL de retour vers EvPortal, comme dans la version historique. Choisissez « Accéder au site » ou « Go to site » sur YouTube pour revenir au portail en mode Théâtre. Le même parcours est décrit par [myTesla](https://mytesla.nu/). Si le navigateur n’est pas reconnu comme une Tesla, l’entrée « Ouvrir le mode Théâtre Tesla » reste accessible dans Paramètres.
 
 Ce mécanisme dépend du navigateur et du logiciel du véhicule ; un essai sur Tesla est nécessaire pour valider son résultat. Il ne s’agit pas d’une API officielle Tesla. Sur les autres navigateurs, le bouton utilise l’[API Fullscreen](https://developer.mozilla.org/en-US/docs/Web/API/Fullscreen_API) lorsqu’elle est disponible. L’ajout à l’écran d’accueil dépend également du navigateur. Le manifeste ne fournit pas de mode hors connexion complet : les services externes nécessitent Internet et aucun service worker de cache n’est inclus.
 
@@ -76,7 +78,7 @@ Ce mécanisme dépend du navigateur et du logiciel du véhicule ; un essai sur T
 
 La configuration est stockée dans le `localStorage` du navigateur, sous la clé `evportal.state.v2`. Les informations du compte Telegra.ph restent séparées sous `evportal.telegraph.v1`. Effacer les données du site ou changer de navigateur peut faire perdre la personnalisation : un partage Telegra.ph ou un export JSON permet de la retrouver. Si le stockage est bloqué ou une sauvegarde est illisible, un message explique la situation et l'export reste disponible pour préserver la session.
 
-La langue se choisit dans les réglages et reste enregistrée sur cet appareil, séparément de la configuration partagée. Au premier lancement, la langue du navigateur est utilisée lorsqu’elle est prise en charge. Changer de langue adapte les libellés, les dialogues, les erreurs et l’aide ; vos noms de raccourcis et de catégories personnels restent conservés. Le sélecteur affiche les langues dans leur écriture d’origine. Les deux modes de thème disponibles sont clair et sombre.
+La langue se choisit dans Paramètres et reste enregistrée sur cet appareil, séparément de la configuration partagée. Au premier lancement, la langue du navigateur est utilisée lorsqu’elle est prise en charge. Changer de langue adapte les libellés, les dialogues, les erreurs et l’aide ; vos noms de raccourcis et de catégories personnels restent conservés. Le sélecteur affiche les langues dans leur écriture d’origine, accompagnées de drapeaux. Les deux modes de thème disponibles sont clair et sombre.
 
 Le classement « Tous » utilise un compteur d’ouvertures par raccourci, associé à son identifiant et conservé après rechargement. Ce compteur reste dans la configuration locale et ses sauvegardes ; aucun service d’analyse d’audience n’est nécessaire. Le glisser-déposer est désactivé dans cette vue automatique. Les catégories et les favoris gardent leur ordre manuel.
 

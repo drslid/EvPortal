@@ -89,15 +89,18 @@ const file = (data) => ({ name: 'configuration.json', mimeType: 'application/jso
 
     const downloading = page.waitForEvent('download');
     await page.locator('#settingsButton').click();
-    await page.locator('#settingsDialog details').evaluate(node => node.open = true);
+    await page.locator('#shareButton').click();
+    await page.locator('#exportConfigButton').evaluate(button => { button.closest('details').open = true; });
     await page.locator('#exportConfigButton').click();
     const download = await downloading;
     const exported = JSON.parse(await fs.readFile(await download.path(), 'utf8'));
     assert.equal(exported.version, 2);
     assert.ok(!JSON.stringify(exported).includes('do-not-export'));
     const snapshot = await page.evaluate(() => localStorage.getItem('evportal.state.v2'));
+    if (await page.locator('#shareDialog').isVisible()) await page.locator('#shareDialog [data-close-dialog]').first().click();
     if (!await page.locator('#settingsDialog').isVisible()) await page.locator('#settingsButton').click();
     await page.locator('#importConfigButton').click();
+    await page.locator('#importFile').evaluate(input => { for (let node = input.parentElement; node; node = node.parentElement) if (node.tagName === 'DETAILS') node.open = true; });
     await page.locator('#importFile').setInputFiles(file({ pages: ['unsafe'], unsafe: [{ name: 'Unsafe', url: 'javascript:alert(1)', order: 1 }] }));
     await page.waitForFunction(() => document.querySelector('#importError').textContent.length > 0);
     assert.equal(await page.locator('#confirmImportButton').isVisible(), false);

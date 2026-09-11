@@ -4,7 +4,7 @@
 
 ## Quatre gestes, aucune saisie
 
-1. **Tesla :** toucher « Recevoir du téléphone » ; un QR apparaît.
+1. **Tesla :** ouvrir **Paramètres → Sauvegardes → Recevoir depuis mon téléphone** ; un QR apparaît.
 2. **Téléphone :** scanner ce QR ; EvPortal ouvre la session de transfert.
 3. **Téléphone :** toucher « Envoyer mes raccourcis ».
 4. **Tesla :** toucher « Appliquer » après réception automatique et aperçu compact.

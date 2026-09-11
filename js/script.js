@@ -772,7 +772,7 @@ document.addEventListener('DOMContentLoaded', function () {
         announce(t('pair.undone'));
     });
 
-    $('importConfigButton').addEventListener('click', function () { openImport(); });
+    $('importConfigButton').addEventListener('click', chooseSavedBackup);
     $('importFile').addEventListener('change', async function () {
         const attempt = ++importAttempt;
         if (importAbort) importAbort.abort();
@@ -842,7 +842,8 @@ document.addEventListener('DOMContentLoaded', function () {
         window.history.replaceState(null, '', url.pathname + url.search + url.hash);
     });
     $('exportConfigButton').addEventListener('click', function () {
-        if ($('settingsDialog')) closeDialog($('settingsDialog'));
+        const dialog = this.closest('dialog');
+        if (dialog) closeDialog(dialog);
         try {
             const blob = new Blob([JSON.stringify(Core.normalizeState(state), null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);

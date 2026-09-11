@@ -22,7 +22,7 @@ await receiver.goto('http://127.0.0.1:4187/');
 await receiver.evaluate(()=>{const previous=JSON.parse(localStorage.getItem('evportal.state.v2')); previous.categories[0].label='Older recovery'; localStorage.setItem('evportal.previous-transfer.v1',JSON.stringify(previous));});
 await receiver.reload();
 const recoveryBefore=await receiver.evaluate(()=>localStorage.getItem('evportal.previous-transfer.v1'));
-await receiver.locator('#shareButton').click();
+await receiver.locator('#settingsButton').click();
 await receiver.screenshot({path:path.join(results, 'evportal-share-desktop.png')});
 await receiver.locator('#pairReceiveButton').click();
 await receiver.locator('#pairReceiveQRCode').waitFor({state:'visible'});
@@ -70,6 +70,7 @@ for(const viewport of [{width:320,height:740},{width:390,height:844},{width:1440
  await receiver.setViewportSize(viewport);
  for(const language of ['fr','de','ar']) {
   await receiver.evaluate(lang=>EVI18n.setLanguage(lang),language);
+  if (!await receiver.locator('#settingsDialog').isVisible()) await receiver.locator('#settingsButton').click();
   await receiver.locator('#shareButton').click();
   const sizes=await receiver.locator('#shareDialog').evaluate(d=>({w:d.clientWidth,scroll:d.scrollWidth}));
   assert.ok(sizes.scroll<=sizes.w+1,JSON.stringify({viewport,language,sizes}));

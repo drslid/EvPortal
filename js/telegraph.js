@@ -324,6 +324,11 @@
 
         $('shareButton').addEventListener('click', function () {
             error('');
+            const settings = $('settingsDialog');
+            if (settings && settings.open) {
+                if (typeof settings.close === 'function') settings.close();
+                else settings.removeAttribute('open');
+            }
             if (typeof dialog.showModal === 'function') { if (!dialog.open) dialog.showModal(); }
             else dialog.setAttribute('open', '');
             if ($('shareHistory') && $('shareHistory').open) refreshHistory(0);
