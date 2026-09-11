@@ -4,13 +4,19 @@
   "private": true,
   "description": "Portail de raccourcis personnalisables pour Tesla et véhicules électriques.",
   "scripts": {
+    "dev": "node scripts/dev.cjs",
     "test": "node --test tests/*.test.js",
     "test:browser": "node scripts/browser-smoke.cjs",
+    "test:catalog": "node scripts/catalog-smoke.cjs",
     "check:links": "node scripts/check-links.mjs",
     "test:interactions": "node scripts/interaction-smoke.cjs",
     "test:share": "node scripts/telegraph-smoke.cjs",
+    "test:pairing": "node scripts/pairing-smoke.cjs",
+    "test:pairing:live": "node scripts/pairing-live-smoke.cjs",
+    "test:relay": "npm --prefix relay test",
     "build:locales": "node scripts/build-locales.cjs",
-    "test:i18n": "node scripts/i18n-smoke.cjs"
+    "test:i18n": "node scripts/i18n-smoke.cjs",
+    "test:production": "node scripts/production-smoke.cjs"
   },
   "devDependencies": {
     "axe-core": "4.13.0",

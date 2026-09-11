@@ -68,7 +68,7 @@
   "app.shortcutGone": "Este acceso directo se eliminó en otra pestaña. Cierra el formulario e inténtalo de nuevo.",
   "app.shortcutLimit": "Se ha alcanzado el límite de 5.000 accesos directos.",
   "app.shortcutFieldsInvalid": "Revisa el nombre (máximo 100 caracteres) y la descripción (máximo 300).",
-  "app.shortcutDuplicate": "Este acceso directo ya existe en esta categoría.",
+  "app.shortcutDuplicate": "Este enlace ya existe. Edita sus categorías para mostrarlo en otro lugar.",
   "app.shortcutChanged": "Acceso directo actualizado.",
   "app.shortcutAdded": "Acceso directo añadido.",
   "app.alreadyPresentNamed": "Ya añadido: {name}",
@@ -120,5 +120,6 @@
   "app.icon.news": "Noticias",
   "app.icon.weather": "Tiempo",
   "app.icon.productivity": "Herramientas",
-  "app.icon.folder": "Carpeta"
+  "app.icon.folder": "Carpeta",
+  "app.otherCategories": "Otras categorías"
 }

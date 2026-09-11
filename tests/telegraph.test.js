@@ -7,6 +7,7 @@ const Core = require('../js/state.js');
 const Telegraph = require('../js/telegraph.js');
 const TOKEN = 'a'.repeat(60);
 const OTHER_TOKEN = 'b'.repeat(60);
+const REMOVED_CONTENT = [{ tag: 'p', children: ['EvPortal backup removed.'] }];
 
 function state() {
     return Core.normalizeState({ version: 2, theme: 'dark', activeCategory: 'cinema', categories: [
@@ -223,7 +224,7 @@ test('a timed-out publication aborts and recommends checking history before crea
     const client = Telegraph.createClient({ storage: storage({ config: JSON.stringify({ accesstoken: TOKEN }) }), timeoutMs: 5,
         fetch: async (_, options) => { signal = options.signal; return new Promise(() => {}); }
     });
-    await assert.rejects(client.publish(state(), Telegraph.PUBLIC_URL), /Mes partages/);
+    await assert.rejects(client.publish(state(), Telegraph.PUBLIC_URL), /Mes sauvegardes/);
     assert.equal(signal.aborted, true);
 });
 
@@ -314,7 +315,70 @@ test('a final-write timeout preserves the account and recommends checking histor
         return new Promise(() => {});
     });
     const client = Telegraph.createClient({ storage: saved, fetch: api.fetch, timeoutMs: 5 });
-    await assert.rejects(client.publish(state(), Telegraph.PUBLIC_URL), /Mes partages/);
+    await assert.rejects(client.publish(state(), Telegraph.PUBLIC_URL), /Mes sauvegardes/);
     assert.equal(signal.aborted, true);
     assert.equal(JSON.parse(saved.getItem('config')).accesstoken, TOKEN);
+});
+
+test('deleting a backup replaces its content and clears its author with the existing account and hides stale history', async () => {
+    const saved = storage({ config: JSON.stringify({ accesstoken: TOKEN }) });
+    const api = fakeAPI(call => call.method === 'getPageList'
+        ? reply({ total_count: 1, pages: [{ path: 'Old-09-09', title: 'My backup' }] })
+        : reply({ path: call.parameters.path, title: 'Deleted Page', content: [{ children: ['EvPortal backup removed.'], attrs: {}, tag: 'p' }], author_name: '', author_url: '' }));
+    const client = Telegraph.createClient({ storage: saved, fetch: api.fetch });
+    assert.deepEqual(await client.removePage('Old-09-09'), { path: 'Old-09-09' });
+    assert.equal(api.calls[0].method, 'editPage');
+    assert.deepEqual(api.calls[0].parameters, { access_token: TOKEN, path: 'Old-09-09', title: 'Deleted Page', author_name: '', author_url: '', content: JSON.stringify(REMOVED_CONTENT), return_content: 'true' });
+    assert.equal((await client.listPages()).pages.length, 0);
+    assert.equal(JSON.parse(saved.getItem('config')).accesstoken, TOKEN);
+    assert.equal(api.calls.some(call => call.method === 'createAccount'), false);
+});
+
+test('deletion validates the path and never creates an account', async () => {
+    const api = fakeAPI();
+    const anonymous = Telegraph.createClient({ storage: storage(), fetch: api.fetch });
+    await assert.rejects(anonymous.removePage('Old-09-09'), /compte/);
+    const client = Telegraph.createClient({ storage: storage({ config: JSON.stringify({ accesstoken: TOKEN }) }), fetch: api.fetch });
+    await assert.rejects(client.removePage('https://evil.example/page'));
+    await assert.rejects(client.removePage('../other'));
+    assert.equal(api.calls.length, 0);
+});
+
+test('concurrent deletion requests share one request and failed deletion remains available to retry', async () => {
+    let release;
+    let fail = true;
+    const gate = new Promise(resolve => { release = resolve; });
+    const api = fakeAPI(async call => {
+        if (call.method === 'getPageList') return reply({ total_count: 1, pages: [{ path: 'Old-09-09', title: 'My backup' }] });
+        await gate;
+        return fail ? { ok: false } : reply({ path: call.parameters.path, title: 'Deleted Page', content: REMOVED_CONTENT });
+    });
+    const client = Telegraph.createClient({ storage: storage({ config: JSON.stringify({ accesstoken: TOKEN }) }), fetch: api.fetch });
+    const first = client.removePage('Old-09-09');
+    const second = client.removePage('Old-09-09');
+    assert.equal(first, second);
+    assert.equal(api.calls.length, 1);
+    release();
+    await assert.rejects(first);
+    assert.equal((await client.listPages()).pages.length, 1, 'A failure must not hide the backup');
+    fail = false;
+    await client.removePage('Old-09-09');
+    assert.equal((await client.listPages()).pages.length, 0);
+});
+
+test('deletion requires a response confirming only the replacement message, erased author and the matching page', async () => {
+    for (const result of [
+        { path: 'Old-09-09', title: 'Deleted Page', content: [] },
+        { path: 'Old-09-09', title: 'Deleted Page', content: [...REMOVED_CONTENT, 'private content'] },
+        { path: 'Old-09-09', title: 'Deleted Page', content: [{ ...REMOVED_CONTENT[0], attrs: { href: 'https://example.org/private' } }] },
+        { path: 'Other-09-09', title: 'Deleted Page', content: REMOVED_CONTENT },
+        { path: 'Old-09-09', title: 'My backup', content: REMOVED_CONTENT },
+        { path: 'Old-09-09', title: 'Deleted Page', content: ['private content'] },
+        { path: 'Old-09-09', title: 'Deleted Page', content: REMOVED_CONTENT, author_name: 'old author' },
+        { path: 'Old-09-09', title: 'Deleted Page', content: REMOVED_CONTENT, author_url: 'https://example.org/private' }
+    ]) {
+        const api = fakeAPI(() => reply(result));
+        const client = Telegraph.createClient({ storage: storage({ config: JSON.stringify({ accesstoken: TOKEN }) }), fetch: api.fetch });
+        await assert.rejects(client.removePage('Old-09-09'), /illisible/);
+    }
 });

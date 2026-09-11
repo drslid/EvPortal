@@ -1,0 +1,21 @@
+{
+  "name": "evportal-pairing-relay",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Temporary encrypted phone-to-Tesla transfers for EvPortal",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "wrangler dev --ip 127.0.0.1 --port 8787",
+    "test": "node --test test/*.test.js",
+    "test:live": "node scripts/smoke.mjs",
+    "check": "wrangler deploy --dry-run --outdir .dry-run",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "miniflare": "5.20260911.0-alpha",
+    "wrangler": "4.131.1"
+  }
+}

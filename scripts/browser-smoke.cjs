@@ -40,7 +40,7 @@ const file = (data) => ({ name: 'configuration.json', mimeType: 'application/jso
     const requests = [];
     page.on('request', req => requests.push(req.url()));
     await page.goto(url, { waitUntil: 'networkidle' });
-    const total = await page.evaluate(() => EV_CATALOG.categories.reduce((sum, c) => sum + c.shortcuts.length, 0));
+    const total = await page.evaluate(() => EVState.catalogServices(EV_CATALOG, { market: EVPreferences.suggestMarket(navigator.language), includeOptional: false }).length);
     assert.equal(Number(await page.locator('#shortcutTotal').textContent()), total);
     assert.equal(await page.locator('h1').count(), 1);
     assert.equal(requests.filter(req => new URL(req).origin !== origin).length, 0);
@@ -89,15 +89,18 @@ const file = (data) => ({ name: 'configuration.json', mimeType: 'application/jso
 
     const downloading = page.waitForEvent('download');
     await page.locator('#settingsButton').click();
-    await page.locator('#settingsDialog details').evaluate(node => node.open = true);
+    await page.locator('#shareButton').click();
+    await page.locator('#exportConfigButton').evaluate(button => { button.closest('details').open = true; });
     await page.locator('#exportConfigButton').click();
     const download = await downloading;
     const exported = JSON.parse(await fs.readFile(await download.path(), 'utf8'));
     assert.equal(exported.version, 2);
     assert.ok(!JSON.stringify(exported).includes('do-not-export'));
     const snapshot = await page.evaluate(() => localStorage.getItem('evportal.state.v2'));
+    if (await page.locator('#shareDialog').isVisible()) await page.locator('#shareDialog [data-close-dialog]').first().click();
     if (!await page.locator('#settingsDialog').isVisible()) await page.locator('#settingsButton').click();
     await page.locator('#importConfigButton').click();
+    await page.locator('#importFile').evaluate(input => { for (let node = input.parentElement; node; node = node.parentElement) if (node.tagName === 'DETAILS') node.open = true; });
     await page.locator('#importFile').setInputFiles(file({ pages: ['unsafe'], unsafe: [{ name: 'Unsafe', url: 'javascript:alert(1)', order: 1 }] }));
     await page.waitForFunction(() => document.querySelector('#importError').textContent.length > 0);
     assert.equal(await page.locator('#confirmImportButton').isVisible(), false);
@@ -126,7 +129,7 @@ const file = (data) => ({ name: 'configuration.json', mimeType: 'application/jso
     assert.equal(Number(await page.locator('#shortcutTotal').textContent()), 3);
     await page.locator('#editModeToggle').click();
     await page.locator('#settingsButton').click();
-    await page.locator('#settingsDialog details').evaluate(node => node.open = true);
+    await page.locator('#resetButton').evaluate(button => { button.closest('details').open = true; });
     page.once('dialog', dialog => dialog.accept());
     await page.locator('#resetButton').click();
     assert.equal(Number(await page.locator('#shortcutTotal').textContent()), total);
@@ -182,6 +185,67 @@ const file = (data) => ({ name: 'configuration.json', mimeType: 'application/jso
     assert.equal(Number(await remotePage.locator('#shortcutTotal').textContent()), 2);
     assert.equal(new URL(remotePage.url()).search, '');
     check('Ancien partage proposé sans requête automatique, import Telegra.ph simulé avec confirmation');
+
+    const preferencesContext = await context();
+    const preferencesPage = await preferencesContext.newPage();
+    await preferencesPage.goto(url, { waitUntil: 'networkidle' });
+    const installedIDs = () => preferencesPage.evaluate(() => JSON.parse(localStorage.getItem(EVState.STORAGE_KEY)).categories.flatMap(category => category.shortcuts).map(shortcut => shortcut.serviceId));
+    assert.equal((await installedIDs()).includes('github'), false, 'GitHub is available on demand, not installed by default');
+    await preferencesPage.locator('#editModeToggle').click();
+    await preferencesPage.getByRole('button', { name: 'Ajouter Netflix aux favoris', exact: true }).click();
+    await preferencesPage.locator('#editModeToggle').click();
+    await preferencesPage.locator('#catalogButton').click();
+    await preferencesPage.locator('#catalogSearch').fill('Crave');
+    assert.equal(await preferencesPage.locator('.catalog-item[data-service-id="crave"]').count(), 0);
+    await preferencesPage.locator('#catalogMarketToggle').check();
+    assert.equal(await preferencesPage.getByRole('button', { name: 'Ajouter Crave', exact: true }).isVisible(), true);
+    await preferencesPage.locator('#catalogMarketToggle').uncheck();
+    assert.equal(await preferencesPage.locator('.catalog-item[data-service-id="crave"]').count(), 0);
+    await preferencesPage.locator('#catalogDialog [data-close-dialog]').click();
+    const beforeCountry = await preferencesPage.evaluate(() => localStorage.getItem(EVState.STORAGE_KEY));
+    await preferencesPage.locator('#settingsButton').click();
+    await preferencesPage.locator('#catalogPreferences').evaluate(details => { details.open = true; });
+    assert.equal(await preferencesPage.locator('#marketSelect').inputValue(), 'FR');
+    await preferencesPage.locator('#marketSelect').selectOption('CA');
+    assert.equal(await preferencesPage.evaluate(() => localStorage.getItem(EVState.STORAGE_KEY)), beforeCountry, 'Country changes suggestions without rewriting installed shortcuts');
+    await preferencesPage.locator('#homeFavoritesToggle').check();
+    await preferencesPage.locator('#categoryVisibilityOptions input[value="cinema"]').uncheck();
+    await preferencesPage.locator('#settingsDialog [data-close-dialog]').first().click();
+    assert.equal(await preferencesPage.locator('#menu [data-category="cinema"]').count(), 0);
+    await preferencesPage.locator('[data-category="all"]').click();
+    assert.equal(await preferencesPage.locator('#content .shortcut-name', { hasText: /^Netflix$/ }).count(), 1);
+    await preferencesPage.locator('[data-category="favorites"]').click();
+    assert.equal(await preferencesPage.locator('#content .shortcut-name').textContent(), 'Netflix');
+    await preferencesPage.locator('[data-category="all"]').click();
+    await preferencesPage.reload({ waitUntil: 'networkidle' });
+    assert.equal(await preferencesPage.locator('#sectionTitle').textContent(), 'Mes favoris');
+    assert.equal(await preferencesPage.locator('#menu [data-category="cinema"]').count(), 0);
+    await preferencesPage.locator('#catalogButton').click();
+    await preferencesPage.locator('#catalogSearch').fill('Crave');
+    assert.equal(await preferencesPage.getByRole('button', { name: 'Ajouter Crave', exact: true }).isVisible(), true);
+    await preferencesPage.locator('#catalogSearch').fill('GitHub');
+    await preferencesPage.getByRole('button', { name: 'Ajouter GitHub', exact: true }).click();
+    assert.equal((await installedIDs()).filter(id => id === 'github').length, 1);
+    assert.equal(await preferencesPage.getByRole('button', { name: 'Déjà présent : GitHub', exact: true }).isDisabled(), true);
+    await preferencesPage.locator('#catalogDialog [data-close-dialog]').click();
+    await preferencesPage.locator('#settingsButton').click();
+    assert.equal(await preferencesPage.locator('#marketSelect').inputValue(), 'CA');
+    const localPreferences = await preferencesPage.evaluate(() => localStorage.getItem(EVPreferences.STORAGE_KEY));
+    await preferencesPage.locator('#languageSelect').selectOption('en');
+    assert.equal(await preferencesPage.locator('#marketSelect').inputValue(), 'CA');
+    assert.equal(await preferencesPage.evaluate(() => localStorage.getItem(EVPreferences.STORAGE_KEY)), localPreferences);
+    await preferencesPage.locator('#languageSelect').selectOption('fr');
+    await preferencesPage.locator('#shareButton').click();
+    await preferencesPage.locator('#exportConfigButton').evaluate(button => { button.closest('details').open = true; });
+    const preferencesDownload = preferencesPage.waitForEvent('download');
+    await preferencesPage.locator('#exportConfigButton').click();
+    const portableJSON = await fs.readFile(await (await preferencesDownload).path(), 'utf8');
+    const telegraphContent = await preferencesPage.evaluate(() => EVTelegraph.contentForState(JSON.parse(localStorage.getItem(EVState.STORAGE_KEY))));
+    for (const key of ['homeFavorites', 'market', 'hiddenCategoryIds']) {
+        assert.equal(portableJSON.includes('"' + key + '":'), false, 'JSON excludes device preference ' + key);
+        assert.equal(telegraphContent.includes('\\"' + key + '\\":'), false, 'Telegra.ph excludes device preference ' + key);
+    }
+    check('Pays indépendant de la langue, catalogue international à la demande, GitHub optionnel, catégories masquées sans perte, accueil Favoris local et préférences absentes des exports');
 
     // Accessibility and layout checks on a clean dashboard, in both themes.
     const visualContext = await context();

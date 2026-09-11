@@ -68,7 +68,7 @@
   "app.shortcutGone": "Questo collegamento è stato eliminato in un’altra scheda. Chiudi il modulo e riprova.",
   "app.shortcutLimit": "È stato raggiunto il limite di 5.000 collegamenti.",
   "app.shortcutFieldsInvalid": "Controlla il nome (massimo 100 caratteri) e la descrizione (massimo 300).",
-  "app.shortcutDuplicate": "Questo collegamento esiste già in questa categoria.",
+  "app.shortcutDuplicate": "Questo link esiste già. Modifica le sue categorie per mostrarlo altrove.",
   "app.shortcutChanged": "Collegamento modificato.",
   "app.shortcutAdded": "Collegamento aggiunto.",
   "app.alreadyPresentNamed": "Già presente: {name}",
@@ -120,5 +120,6 @@
   "app.icon.news": "Notizie",
   "app.icon.weather": "Meteo",
   "app.icon.productivity": "Strumenti",
-  "app.icon.folder": "Cartella"
+  "app.icon.folder": "Cartella",
+  "app.otherCategories": "Altre categorie"
 }

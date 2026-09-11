@@ -68,7 +68,7 @@
   "app.shortcutGone": "Este atalho foi eliminado noutro separador. Fecha o formulário e tenta novamente.",
   "app.shortcutLimit": "Foi atingido o limite de 5 000 atalhos.",
   "app.shortcutFieldsInvalid": "Verifica o nome (até 100 caracteres) e a descrição (até 300).",
-  "app.shortcutDuplicate": "Este atalho já existe nesta categoria.",
+  "app.shortcutDuplicate": "Esta ligação já existe. Altera as suas categorias para a mostrar noutros locais.",
   "app.shortcutChanged": "Atalho alterado.",
   "app.shortcutAdded": "Atalho adicionado.",
   "app.alreadyPresentNamed": "Já adicionado: {name}",
@@ -120,5 +120,6 @@
   "app.icon.news": "Notícias",
   "app.icon.weather": "Tempo",
   "app.icon.productivity": "Ferramentas",
-  "app.icon.folder": "Pasta"
+  "app.icon.folder": "Pasta",
+  "app.otherCategories": "Outras categorias"
 }

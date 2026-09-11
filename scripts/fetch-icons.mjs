@@ -28,6 +28,7 @@ const pngSignature = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
 const iconDomains = {
   "afp.com": "www.afp.com",
   "arte.tv": "www.arte.tv",
+  "app.electricitymaps.com": "electricitymaps.com",
   "driver.chargepoint.com": "chargepoint.com",
   "play.qobuz.com": "qobuz.com",
   "stations.go-electra.com": "go-electra.com",
@@ -36,6 +37,18 @@ const iconDomains = {
 };
 // Account landing pages can expose a generic Google icon instead of the app.
 const directSources = {
+  "fast.com": "https://fast.com/assets/favicons/favicon-96x96.png",
+  "fr.wikivoyage.org": "https://fr.wikivoyage.org/static/favicon/wikivoyage.ico",
+  "justwatch.com": "https://www.justwatch.com/appassets/favicon.ico",
+  "lightningmaps.org": "https://www.lightningmaps.org/Images/favicon.ico",
+  "littlealchemy2.com": "https://littlealchemy2.com/static/img/icon-96x96.png",
+  "mynoise.net": "https://mynoise.net/Pix/Favicon/favicon-96x96.png",
+  "onf.ca": "https://dkyhanv6paotz.cloudfront.net/onfca-prod/norman/static/favicon.ba446bfbed40.ico",
+  "plus.nasa.gov": "https://plus.nasa.gov/wp-content/uploads/2023/03/cropped-nasa-png-placeholder.png?w=32",
+  "radioparadise.com": "https://radioparadise.com/favicon-32x32.png",
+  "somafm.com": "https://somafm.com/favicon-32x32.png",
+  "techmeme.com": "https://www.techmeme.com/img/favicon.ico",
+  "zoom.earth": "https://zoom.earth/assets/images/icon-96.1.png",
   "calendar.google.com": "https://calendar.google.com/googlecalendar/images/favicons_2020q4/calendar_31.ico",
   "docs.google.com": "https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico",
   "drive.google.com": "https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png",

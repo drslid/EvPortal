@@ -68,7 +68,7 @@
   "app.shortcutGone": "Diese Verknüpfung wurde in einem anderen Tab gelöscht. Schließe das Formular und versuche es erneut.",
   "app.shortcutLimit": "Das Limit von 5.000 Verknüpfungen ist erreicht.",
   "app.shortcutFieldsInvalid": "Prüfe den Namen (maximal 100 Zeichen) und die Beschreibung (maximal 300).",
-  "app.shortcutDuplicate": "Diese Verknüpfung ist bereits in dieser Kategorie.",
+  "app.shortcutDuplicate": "Dieser Link ist bereits vorhanden. Bearbeite seine Kategorien, um ihn auch an anderer Stelle anzuzeigen.",
   "app.shortcutChanged": "Verknüpfung geändert.",
   "app.shortcutAdded": "Verknüpfung hinzugefügt.",
   "app.alreadyPresentNamed": "Bereits vorhanden: {name}",
@@ -120,5 +120,6 @@
   "app.icon.news": "Aktuelles",
   "app.icon.weather": "Wetter",
   "app.icon.productivity": "Werkzeuge",
-  "app.icon.folder": "Ordner"
+  "app.icon.folder": "Ordner",
+  "app.otherCategories": "Weitere Kategorien"
 }

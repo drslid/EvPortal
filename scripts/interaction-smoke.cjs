@@ -148,7 +148,7 @@ const errors = [];
     await deletion.locator('[data-category="all"]').click();
     assert.deepEqual(await ids(deletion), []);
     await deletion.locator('#settingsButton').click();
-    await deletion.locator('#settingsDialog details').evaluate(details => details.open = true);
+    await deletion.locator('#resetButton').evaluate(button => { button.closest('details').open = true; });
     await deletion.locator('#resetButton').click();
     assert.equal(dialogs.length, 1);
     assert.equal(dialogs[0].type, 'confirm');

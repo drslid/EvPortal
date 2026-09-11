@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
         <title data-i18n="help.title">Aide EvPortal — Raccourcis et plein écran Tesla</title>
-    <meta name="description" data-i18n-content="help.description" content="Organisez vos raccourcis EvPortal, transférez-les du téléphone à la Tesla avec Telegra.ph et découvrez les langues et le plein écran.">
+    <meta name="description" data-i18n-content="help.description" content="Organisez vos raccourcis EvPortal, exportez ou importez une sauvegarde et transférez vos raccourcis du téléphone à la Tesla par QR code.">
     <meta name="theme-color" content="#111213">
     <link rel="canonical" href="https://drslid.github.io/EvPortal/aide.html">
     <link rel="icon" href="./img/favicon.ico">
@@ -18,50 +18,54 @@
         <a data-i18n="help.back" class="back-link" href="./">Retour aux raccourcis</a>
         <div class="settings-row">
         <label data-i18n="help.language" for="languageSelect">Langue</label>
-            <select id="languageSelect" data-i18n-aria-label="help.language" aria-label="Langue">
-                <option value="en" lang="en">English</option>
-                <option value="fr" lang="fr" selected>Français</option>
-                <option value="es" lang="es">Español</option>
-                <option value="de" lang="de">Deutsch</option>
-                <option value="it" lang="it">Italiano</option>
-                <option value="ru" lang="ru">Русский</option>
-                <option value="ar" lang="ar">العربية</option>
-                <option value="pt" lang="pt">Português</option>
+            <select id="languageSelect" dir="ltr" data-i18n-aria-label="help.language" aria-label="Langue">
+                <option value="en" lang="en">🇬🇧 English</option>
+                <option value="fr" lang="fr" selected>🇫🇷 Français</option>
+                <option value="es" lang="es">🇪🇸 Español</option>
+                <option value="de" lang="de">🇩🇪 Deutsch</option>
+                <option value="it" lang="it">🇮🇹 Italiano</option>
+                <option value="ru" lang="ru">🇷🇺 Русский</option>
+                <option value="ar" lang="ar">🇸🇦 العربية</option>
+                <option value="pt" lang="pt">🇵🇹 Português</option>
             </select>
         </div>
         <h1 data-i18n="help.heading">Votre écran. Vos raccourcis.</h1>
-        <p data-i18n="help.intro">Touchez un raccourci pour ouvrir le service dans un nouvel onglet. Le bouton de thème en haut permet de choisir le mode clair ou sombre. Les huit langues sont disponibles dans les réglages ; l’arabe s’affiche de droite à gauche.</p>
+        <p data-i18n="help.intro">Touchez un raccourci pour ouvrir le service dans un nouvel onglet. Le bouton de thème en haut permet de choisir le mode clair ou sombre. Les huit langues sont disponibles dans Paramètres, avec leurs noms et drapeaux ; l’arabe s’affiche de droite à gauche.</p>
         <h2 data-i18n="help.organizeHeading">Organiser les raccourcis</h2>
         <p data-i18n="help.ranking">« Tous » affiche d’abord les raccourcis les plus ouverts. À égalité, votre ordre manuel est conservé. Le classement reste enregistré après rechargement.</p>
         <p data-i18n="help.dragging">Dans une catégorie ou « Favoris », touchez « Modifier » puis déplacez les raccourcis avec leur poignée. L’étoile ajoute un favori et le crayon permet de modifier. Touchez « Terminer » quand vous avez fini. « Tous » conserve son classement automatique.</p>
         <p data-i18n="help.keyboard">Au clavier, sélectionnez une poignée puis appuyez sur Espace, utilisez les flèches et validez avec Entrée. Échap annule.</p>
         <h2 data-i18n="help.addHeading">Ajouter un raccourci ou une catégorie</h2>
         <p data-i18n="help.adding">Le bouton « + » ouvre le catalogue et propose de créer un raccourci ou une catégorie. « Déjà présent » indique un service déjà ajouté. La loupe recherche dans tous vos raccourcis.</p>
-        <p data-i18n="help.categories">Créez jusqu’à cinq catégories personnelles avec un nom de 16 caractères maximum et une icône au choix. Le crayon permet de les modifier. Les anciennes catégories dépassant ces limites sont conservées. Toutes les catégories restent visibles sans défilement horizontal.</p>
+        <p data-i18n="help.categories">Créez jusqu’à cinq catégories personnelles avec un nom de 16 caractères maximum et une icône au choix. Le crayon permet de les modifier. Les anciennes catégories dépassant ces limites sont conservées. Les catégories affichées se répartissent sans défilement horizontal.</p>
+        <p data-i18n="help.sharedServices">Un service peut apparaître dans plusieurs catégories avec un seul favori et un seul compteur ; Tous ne l’affiche qu’une fois. Dans Modifier, ouvrez Autres catégories pour choisir où il apparaît. Supprimer une catégorie conserve les services encore présents dans une autre catégorie.</p>
+        <h2 data-i18n="help.preferencesHeading">Choisir son catalogue et son accueil</h2>
+        <p data-i18n="help.preferences">Dans Paramètres → Catalogue et accueil, choisissez votre pays, les catégories à afficher et l’ouverture sur vos favoris. Le pays adapte les suggestions dans Ajouter ; il ne supprime pas vos raccourcis. Voir tous les pays élargit le catalogue. Une catégorie masquée conserve ses raccourcis dans Tous et Favoris. Ces choix restent sur cet appareil et ne sont pas transmis dans les sauvegardes ou par QR. Le pays initial est suggéré par la région du navigateur, sans demander votre position.</p>
         <h2 data-i18n="help.transferHeading">Du téléphone à la Tesla</h2>
         <ol>
-        <li data-i18n="help.stepPrepare">Sur le téléphone, ouvrez EvPortal et préparez vos raccourcis.</li>
-        <li data-i18n="help.stepPublish">Touchez « Partager », nommez la sauvegarde puis créez le lien et le QR code.</li>
-        <li data-i18n="help.stepCode">Conservez le code Telegra.ph affiché ou copiez le lien.</li>
-        <li data-i18n="help.stepImport">Sur la Tesla, ouvrez Réglages → Importer depuis Telegra.ph et saisissez le code ou le lien.</li>
-        <li data-i18n="help.stepApply">Chargez les raccourcis, vérifiez l’aperçu puis confirmez leur utilisation.</li>
+        <li data-i18n="help.stepPrepare">Dans la Tesla, ouvrez Paramètres → Sauvegardes → Recevoir depuis mon téléphone.</li>
+        <li data-i18n="help.stepPublish">Scannez le QR code affiché dans la Tesla avec votre téléphone.</li>
+        <li data-i18n="help.stepCode">Sur le téléphone, choisissez ses raccourcis ou une sauvegarde, puis envoyez-les.</li>
+        <li data-i18n="help.stepImport">Dans la Tesla, vérifiez les raccourcis reçus avant de les utiliser.</li>
+        <li data-i18n="help.stepApply">Confirmez sur la Tesla. Les options des paramètres permettent d’annuler le dernier transfert.</li>
         </ol>
-        <p data-i18n="help.qr">Le QR code se scanne avec un téléphone. Pour importer sur la Tesla, utilisez le code ou le lien.</p>
-        <p data-i18n="help.snapshot">Un partage est un instantané : après de nouvelles modifications, créez un nouveau partage et importez-le sur l’autre appareil. Il n’y a pas de synchronisation automatique.</p>
-        <p data-i18n="help.public">La sauvegarde Telegra.ph est publique. « Mes liens partagés » retrouve les publications du compte présent dans ce navigateur. L’import accepte aussi les anciens liens et les fichiers JSON.</p>
+        <p data-i18n="help.qr">Le QR de réception transfère vers la Tesla. Le QR d’une sauvegarde ouvre cette sauvegarde sur le téléphone.</p>
+        <p data-i18n="help.snapshot">Le transfert direct est chiffré et valable cinq minutes, lorsque le service de réception est configuré. Il transmet un instantané, sans synchronisation automatique. Si le service est indisponible, utilisez une sauvegarde Telegra.ph.</p>
+        <h2 data-i18n="help.backupHeading">Mes sauvegardes</h2>
+        <p data-i18n="help.public">Dans Paramètres → Sauvegardes → Exporter une sauvegarde, touchez Créer ma sauvegarde. Le nom est facultatif. Scannez le QR ou copiez le lien. Mes sauvegardes permet de retrouver un QR ou d’effacer une sauvegarde sans confirmation. Les options permettent aussi d’enregistrer un fichier JSON. La sauvegarde Telegra.ph est publique ; son adresse reste existante après effacement.</p>
         <h2 data-i18n="help.fullscreenHeading">Plein écran Tesla</h2>
         <p data-i18n="help.fullscreen">À l’arrêt, touchez « Plein écran ». Sur YouTube, choisissez « Accéder au site » ou « Go to site » pour revenir à EvPortal dans le mode Théâtre. Les raccourcis demandent un nouvel onglet, dont le comportement dépend du navigateur du véhicule.</p>
-        <p data-i18n="help.fullscreenFallback">Si la Tesla n’est pas reconnue, choisissez « Ouvrir le mode Théâtre Tesla » dans les réglages. Sur ordinateur, le bouton utilise le plein écran classique. La redirection peut évoluer avec les mises à jour du véhicule ou de YouTube.</p>
+        <p data-i18n="help.fullscreenFallback">Si la Tesla n’est pas reconnue, choisissez « Ouvrir le mode Théâtre Tesla » dans Paramètres. Sur ordinateur, le bouton utilise le plein écran classique. La redirection peut évoluer avec les mises à jour du véhicule ou de YouTube.</p>
         <p data-i18n="help.compatibility">L’ouverture d’un site ne garantit pas la lecture vidéo : pays, compte, abonnement et navigateur peuvent la limiter. Le divertissement s’utilise à l’arrêt.</p>
         <p>
         <a data-i18n="help.teslaManual" href="https://www.tesla.com/ownersmanual/modely/fr_fr/GUID-79A49D40-A028-435B-A7F6-8E48846AB9E9.html" target="_blank" rel="noopener noreferrer">Manuel Tesla</a>
         ·
         <a data-i18n="help.myTesla" href="https://mytesla.nu/" target="_blank" rel="noopener noreferrer">Méthode décrite par myTesla</a>
         </p>
-        <h2 data-i18n="help.storageHeading">Retrouver mes réglages</h2>
-        <p data-i18n="help.storage">Vos raccourcis, favoris et préférences sont enregistrés dans ce navigateur. Les anciennes configurations sont reprises sur la même adresse. Le navigateur et le Théâtre peuvent avoir des stockages distincts ; importez votre partage dans chacun. Effacer les données du site nécessite une restauration depuis un partage ou un fichier JSON.</p>
+        <h2 data-i18n="help.storageHeading">Importer une sauvegarde</h2>
+        <p data-i18n="help.storage">Pour restaurer vos raccourcis, ouvrez Paramètres → Sauvegardes → Importer une sauvegarde. Choisissez une sauvegarde de ce navigateur, ou ouvrez Plus d’options pour saisir un lien, un code ou choisir un fichier JSON. Vérifiez l’aperçu avant de confirmer. Vos raccourcis et préférences restent enregistrés dans ce navigateur ; le navigateur Tesla et le Théâtre peuvent avoir des stockages distincts.</p>
         <h2 data-i18n="help.previewHeading">Tester un aperçu local</h2>
-        <p data-i18n="help.preview">Le téléphone et la Tesla doivent pouvoir accéder au même aperçu. « localhost » désigne chaque appareil séparément. Dans « Adresse d’EvPortal », renseignez une adresse joignable depuis les appareils concernés. L’adresse publique affiche la version publiée, qui peut différer de cet aperçu.</p>
+        <p data-i18n="help.preview">Les QR codes ouvrent toujours l’adresse publique d’EvPortal. Un aperçu local peut donc différer de ce que voit le téléphone. Les essais de transfert demandent une version et un service accessibles aux deux appareils.</p>
         <h2 data-i18n="help.privacyHeading">À propos et confidentialité</h2>
         <p data-i18n="help.privacy">EvPortal est gratuit, sans affiliation avec Tesla. Logos et traductions sont embarqués. Les compteurs d’ouvertures restent dans votre configuration, sans outil d’analyse d’audience. Telegra.ph est contacté à votre demande ; le jeton du compte reste séparé du partage. Les sites ouverts appliquent leur propre politique.</p>
         <div class="help-footer">

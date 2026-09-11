@@ -1,15 +1,23 @@
 # Envoyer ses raccourcis du téléphone vers la Tesla
 
-**Proposition d’évolution, non implémentée.** L’objectif est de transférer une configuration sans saisir d’adresse ni de code dans la Tesla. La recommandation est un QR de réception affiché par la voiture, associé à un petit relais temporaire. Les sauvegardes Telegra.ph existantes resteraient disponibles.
+**Le relais et son protocole sont implémentés dans [relay/](../relay/README.md).** Leur disponibilité dans le portail dépend du déploiement du Worker et de la configuration de son adresse. Le bouton de réception reste masqué tant que cette adresse n’est pas configurée ; les sauvegardes Telegra.ph restent accessibles. Le parcours permet de transférer une configuration sans saisir d’adresse ni de code dans la Tesla, au moyen d’un QR de réception et d’un relais temporaire. Les sauvegardes Telegra.ph existantes restent disponibles.
 
 ## Quatre gestes, aucune saisie
 
-1. **Tesla :** toucher « Recevoir du téléphone » ; un QR apparaît.
+1. **Tesla :** ouvrir **Paramètres → Sauvegardes → Recevoir depuis mon téléphone** ; un QR apparaît.
 2. **Téléphone :** scanner ce QR ; EvPortal ouvre la session de transfert.
 3. **Téléphone :** toucher « Envoyer mes raccourcis ».
 4. **Tesla :** toucher « Appliquer » après réception automatique et aperçu compact.
 
-La validation finale évite de remplacer involontairement une configuration. La version précédente serait conservée localement pour permettre une annulation. Les deux appareils doivent disposer d’un accès Internet, sans obligation d’utiliser le même réseau Wi-Fi.
+La validation finale évite de remplacer involontairement une configuration. Les deux appareils doivent disposer d’un accès Internet, sans obligation d’utiliser le même réseau Wi-Fi.
+
+Le QR de réception utilise l’adresse du portail actuellement ouvert, sans reprendre les paramètres d’un ancien import. Le téléphone rejoint ainsi la même version et le même relais que l’écran récepteur. Les QR de sauvegarde Telegra.ph continuent à utiliser l’adresse publique d’EvPortal.
+
+### Essai de développement
+
+Depuis la racine du projet, `npm run dev` sert le portail avec un vrai relais local configuré. `npm run test:pairing:live` ouvre deux navigateurs isolés, décode le QR et suit directement son adresse, sans remplacer `js/config.js` ni réécrire le lien. Un serveur statique seul ne configure pas le relais : si `pairingRelayURL` est vide, le message « Transfert direct indisponible » est attendu.
+
+L’adresse `localhost` convient à deux navigateurs sur le même ordinateur. Pour scanner depuis un téléphone physique ou recevoir dans la Tesla, le portail et le relais doivent être accessibles en HTTPS par les deux appareils ; l’adresse locale de l’ordinateur ne suffit pas.
 
 ```mermaid
 sequenceDiagram
@@ -20,8 +28,8 @@ sequenceDiagram
     T-->>P: QR scanné avec le téléphone
     P->>R: Envoyer la configuration chiffrée
     T->>R: Attendre puis récupérer le transfert
-    T->>T: Valider et appliquer
     T->>R: Confirmer la réception et supprimer
+    T->>T: Valider et appliquer
 ```
 
 ## Deux options
@@ -33,13 +41,13 @@ sequenceDiagram
 
 GitHub Pages sert des fichiers HTML, CSS et JavaScript : il ne fournit pas lui-même le canal de retour entre les appareils. Un QR transporte l’adresse de la session ; il ne suffit pas à acheminer ensuite les données du téléphone vers la voiture. [Documentation GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages)
 
-## Architecture proposée
+## Architecture retenue
 
-Un Worker avec un Durable Object pourrait gérer chaque session. Elle aurait une **durée fixe de cinq minutes**, un identifiant imprévisible et deux jetons aux droits distincts : envoyer une fois côté téléphone, recevoir côté Tesla. Aucun jeton de compte Telegra.ph ne figurerait dans le QR. Taille des données et tentatives seraient limitées ; chaque requête contrôlerait l’expiration. Un accusé de réception déclencherait la suppression, complétée par un nettoyage programmé. [TTL des Durable Objects](https://developers.cloudflare.com/durable-objects/examples/durable-object-ttl/)
+Un Worker avec un Durable Object SQLite gère chaque session. Elle a une **durée fixe de cinq minutes**, un identifiant imprévisible et deux jetons aux droits distincts : envoyer une fois côté téléphone, recevoir côté Tesla. Seules les empreintes des jetons sont stockées. Aucun jeton de compte Telegra.ph ne figure dans le QR. Taille des données et tentatives sont limitées ; chaque requête contrôle l’expiration. Un accusé de réception supprime le transfert actif, complété par un nettoyage programmé. [TTL des Durable Objects](https://developers.cloudflare.com/durable-objects/examples/durable-object-ttl/)
 
-Le chiffrement **AES-GCM avant transfert** est souhaité : clé générée sur la Tesla, transmise au téléphone dans le fragment du lien QR et conservée uniquement côté navigateurs. Le relais stockerait le contenu chiffré. La disponibilité de Web Crypto et le parcours complet restent à vérifier **sur une Tesla physique**. [Web Crypto](https://www.w3.org/TR/webcrypto/#aes-gcm)
+Le chiffrement **AES-GCM 256 bits avant transfert** utilise une clé générée sur la Tesla, transmise au téléphone dans le fragment du lien QR et conservée uniquement côté navigateurs. Le relais stocke le contenu chiffré, jamais cette clé. La configuration est limitée à 64 Kio avant chiffrement ; au-delà, utiliser un fichier JSON. La disponibilité de Web Crypto et le parcours complet restent à vérifier **sur une Tesla physique**. [Web Crypto](https://www.w3.org/TR/webcrypto/#aes-gcm)
 
-Une interrogation HTTP espacée, arrêtée à expiration, suffit pour une première version. Workers KV seul est moins adapté : sa cohérence différée peut retarder la visibilité des changements de plus de 60 secondes et ne garantit pas les opérations atomiques souhaitées. [Cohérence de KV](https://developers.cloudflare.com/kv/concepts/how-kv-works/)
+Une interrogation HTTP espacée, arrêtée à expiration, assure la réception. Les transactions du Durable Object empêchent deux dépôts distincts concurrents ; une répétition identique reste acceptée pour les reprises réseau. Workers KV seul est moins adapté : sa cohérence différée peut retarder les changements de plus de 60 secondes. [Cohérence de KV](https://developers.cloudflare.com/kv/concepts/how-kv-works/)
 
 ## Pourquoi conserver Telegra.ph comme sauvegarde
 

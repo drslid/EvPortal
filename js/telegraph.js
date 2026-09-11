@@ -23,6 +23,15 @@
     const PUBLIC_URL = 'https://drslid.github.io/EvPortal/';
     const MAX_CONTENT_BYTES = 64 * 1024;
     const TIMEOUT_MS = 15000;
+    const REMOVED_TEXT = 'EvPortal backup removed.';
+
+    function isRemovedContent(content) {
+        if (!Array.isArray(content) || content.length !== 1) return false;
+        const node = content[0];
+        return node && node.tag === 'p' && Array.isArray(node.children) && node.children.length === 1 &&
+            node.children[0] === REMOVED_TEXT && (!node.attrs || (typeof node.attrs === 'object' && Object.keys(node.attrs).length === 0)) &&
+            Object.keys(node).every(function (key) { return key === 'tag' || key === 'children' || key === 'attrs'; });
+    }
 
     // The random identifier becomes the page path; never fall back to Math.random.
     function randomPageTitle(cryptoAPI) {
@@ -110,6 +119,8 @@
         let publication = null;
         let accountCreation = null;
         let historyRequest = null;
+        const deletions = new Map();
+        const removedPages = new Set();
         const timeoutMs = options.timeoutMs === undefined ? TIMEOUT_MS : options.timeoutMs;
         const cryptoAPI = options.crypto === undefined ? root.crypto : options.crypto;
 
@@ -223,7 +234,7 @@
             if (historyRequest) return historyRequest;
             historyRequest = request('getPageList', { access_token: account.token, offset: String(offset), limit: '200' }).then(function (result) {
                 if (!Array.isArray(result.pages) || !Number.isSafeInteger(result.total_count) || result.total_count < 0) throw localizedError('share.badHistory');
-                const pages = result.pages.filter(function (page) { return page && page.title !== 'Deleted Page' && !(page.author_name === 'EvPortal (pending)' && /^EVP-[a-f0-9]{32}$/.test(page.title || '')); }).map(function (page) {
+                const pages = result.pages.filter(function (page) { return page && !removedPages.has(page.path) && page.title !== 'Deleted Page' && !(page.author_name === 'EvPortal (pending)' && /^EVP-[a-f0-9]{32}$/.test(page.title || '')); }).map(function (page) {
                     return { path: Core.telegraphPath(page.path), title: typeof page.title === 'string' ? page.title.slice(0, 256) : 'EvPortal' };
                 });
                 return { pages: pages, total: result.total_count, nextOffset: offset + result.pages.length };
@@ -231,7 +242,28 @@
             return historyRequest;
         }
 
-        return { publish: publish, listPages: listPages };
+        function removePage(value) {
+            let path;
+            try { path = Core.telegraphPath(value); }
+            catch (failure) { return Promise.reject(failure); }
+            if (!account.token) return Promise.reject(localizedError('share.noAccount'));
+            if (deletions.has(path)) return deletions.get(path);
+            const deletion = request('editPage', {
+                access_token: account.token, path: path, title: 'Deleted Page',
+                author_name: '', author_url: '',
+                content: JSON.stringify([{ tag: 'p', children: [REMOVED_TEXT] }]), return_content: 'true'
+            }).then(function (result) {
+                if (result.path !== path || result.title !== 'Deleted Page' || !isRemovedContent(result.content) || result.author_name || result.author_url) {
+                    throw localizedError('share.badResponse');
+                }
+                removedPages.add(path);
+                return { path: path };
+            }).finally(function () { deletions.delete(path); });
+            deletions.set(path, deletion);
+            return deletion;
+        }
+
+        return { publish: publish, listPages: listPages, removePage: removePage };
     }
 
     function init(options) {
@@ -249,9 +281,10 @@
         let historyLoading = false;
         let currentShareURL = '';
         const announce = typeof options.announce === 'function' ? options.announce : function () {};
-        const baseInput = $('shareBaseURL');
-        if (baseInput && !baseInput.value) baseInput.value = defaultBaseURL(root.location.href);
-
+        function publishLabel(key) {
+            const button = $('sharePublishButton');
+            if (button) (button.querySelector('[data-i18n]') || button.querySelector('span') || button).textContent = t(key);
+        }
         let lastError = null;
         function error(message) {
             lastError = message;
@@ -259,27 +292,17 @@
                 ? t(message.i18nKey, message.i18nParams) : (message && message.message || message || '');
         }
 
-        function updatePreviewNote() {
-            const note = $('sharePreviewNote');
-            if (!note) return;
-            const local = isLoopback(root.location.href);
-            note.hidden = !local;
-            if (local) {
-                let production = false;
-                try { production = normalizeBaseURL(baseInput.value) === PUBLIC_URL; } catch (_) { /* Editing in progress. */ }
-                note.textContent = t(production ? 'share.localPreviewOld' : 'share.localPreview');
-                const advanced = baseInput && baseInput.closest('details');
-                if (advanced) advanced.open = true;
-            }
+        function clearShare() {
+            selectedPath = null;
+            currentShareURL = '';
+            if ($('shareResult')) $('shareResult').hidden = true;
+            if ($('shareQRCode')) $('shareQRCode').replaceChildren();
         }
 
         function displayShare(path) {
-            const url = shareURL(baseInput ? baseInput.value : defaultBaseURL(root.location.href), path);
+            const url = shareURL(PUBLIC_URL, path);
             selectedPath = path;
             currentShareURL = url;
-            if ($('shareCode')) $('shareCode').value = path;
-            const link = $('shareLink');
-            if (link) { link.href = url; link.textContent = url; }
             const qr = $('shareQRCode');
             if (qr) {
                 qr.replaceChildren();
@@ -301,9 +324,14 @@
 
         $('shareButton').addEventListener('click', function () {
             error('');
-            updatePreviewNote();
+            const settings = $('settingsDialog');
+            if (settings && settings.open) {
+                if (typeof settings.close === 'function') settings.close();
+                else settings.removeAttribute('open');
+            }
             if (typeof dialog.showModal === 'function') { if (!dialog.open) dialog.showModal(); }
             else dialog.setAttribute('open', '');
+            if ($('shareHistory') && $('shareHistory').open) refreshHistory(0);
         });
 
         async function publish(event) {
@@ -313,32 +341,25 @@
             error('');
             if ($('shareResult')) $('shareResult').hidden = true;
             const button = $('sharePublishButton');
-            if (button) { button.disabled = true; button.textContent = t('share.publishing'); }
+            if (button) { button.disabled = true; publishLabel('share.publishing'); }
             dialog.setAttribute('aria-busy', 'true');
             try {
-                const result = await client.publish(options.getState(), baseInput ? baseInput.value : defaultBaseURL(root.location.href), $('shareTitle') ? $('shareTitle').value : 'EvPortal');
+                const title = $('shareTitle') && $('shareTitle').value.trim() || t('static.defaultBackup');
+                const result = await client.publish(options.getState(), PUBLIC_URL, title);
                 displayShare(result.path);
                 if (result.warning) error(localizedError('share.sessionOnly'));
                 announce(t('share.created'));
+                if ($('shareHistory') && $('shareHistory').open) refreshHistory(0);
                 if ($('shareResult')) $('shareResult').scrollIntoView({ block: 'nearest' });
             } catch (failure) { error(failure); }
             finally {
                 pending = false;
                 dialog.removeAttribute('aria-busy');
-                if (button) { button.disabled = false; button.textContent = t('share.publish'); }
+                if (button) { button.disabled = false; publishLabel('share.publish'); }
             }
         }
         if ($('shareForm')) $('shareForm').addEventListener('submit', publish);
         else if ($('sharePublishButton')) $('sharePublishButton').addEventListener('click', publish);
-
-        if (baseInput) baseInput.addEventListener('input', function () {
-            updatePreviewNote();
-            if (selectedPath) {
-                error('');
-                try { displayShare(selectedPath); }
-                catch (_) { currentShareURL = ''; if ($('shareResult')) $('shareResult').hidden = true; }
-            }
-        });
 
         async function copyShareText(text, buttonID, successKey) {
             if (!text) return;
@@ -367,10 +388,6 @@
         if ($('shareCopyButton')) $('shareCopyButton').addEventListener('click', function () {
             copyShareText(currentShareURL, 'shareCopyButton', 'share.linkCopied');
         });
-        if ($('shareCopyCodeButton')) $('shareCopyCodeButton').addEventListener('click', function () {
-            copyShareText(selectedPath, 'shareCopyCodeButton', 'share.codeCopied');
-        });
-
         async function refreshHistory(offset) {
             if (historyLoading) return;
             historyLoading = true;
@@ -388,20 +405,47 @@
                 result.pages.forEach(function (page) {
                     const row = doc.createElement('div');
                     row.className = 'share-history-row';
+                    row.dataset.sharePath = page.path;
                     const select = doc.createElement('button');
                     select.type = 'button';
                     select.className = 'button button-secondary';
                     select.textContent = page.title || page.path;
-                    select.addEventListener('click', function () { error(''); try { displayShare(page.path); } catch (failure) { error(failure); } });
-                    const open = doc.createElement('a');
-                    open.className = 'button button-quiet';
-                    open.dataset.i18n = 'share.import';
-                    open.textContent = t('share.import');
-                    open.setAttribute('data-i18n-aria-label', 'share.importNamed');
-                    open.dataset.i18nParams = JSON.stringify({ name: page.title || page.path });
-                    open.setAttribute('aria-label', t('share.importNamed', { name: page.title || page.path }));
-                    open.href = shareURL(root.location.href, page.path);
-                    row.append(select, open);
+                    select.addEventListener('click', function () {
+                        error('');
+                        try {
+                            displayShare(page.path);
+                            if ($('shareResult')) $('shareResult').scrollIntoView({ block: 'nearest' });
+                        } catch (failure) { error(failure); }
+                    });
+                    const remove = doc.createElement('button');
+                    remove.type = 'button';
+                    remove.className = 'icon-button danger share-delete';
+                    remove.setAttribute('data-i18n-aria-label', 'share.deleteNamed');
+                    remove.dataset.i18nParams = JSON.stringify({ name: page.title || page.path });
+                    remove.setAttribute('aria-label', t('share.deleteNamed', { name: page.title || page.path }));
+                    const svg = doc.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                    svg.setAttribute('class', 'icon');
+                    svg.setAttribute('aria-hidden', 'true');
+                    svg.setAttribute('viewBox', '0 0 24 24');
+                    const drawing = doc.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    drawing.setAttribute('d', 'M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7');
+                    svg.appendChild(drawing);
+                    remove.appendChild(svg);
+                    remove.addEventListener('click', async function () {
+                        if (remove.disabled) return;
+                        remove.disabled = true;
+                        error('');
+                        try {
+                            await client.removePage(page.path);
+                            pages.querySelectorAll('.share-history-row').forEach(function (entry) {
+                                if (entry.dataset.sharePath === page.path) entry.remove();
+                            });
+                            if (selectedPath === page.path) clearShare();
+                            if (!pages.childElementCount) { pages.dataset.i18n = 'share.empty'; pages.textContent = t('share.empty'); }
+                            announce(t('share.deleted'));
+                        } catch (failure) { error(failure); remove.disabled = false; }
+                    });
+                    row.append(select, remove);
                     pages.appendChild(row);
                 });
                 if (result.nextOffset < result.total && result.nextOffset > (offset || 0)) {
@@ -419,16 +463,17 @@
             finally { historyLoading = false; pages.removeAttribute('aria-busy'); if (button) button.disabled = false; }
         }
         if ($('shareRefreshButton')) $('shareRefreshButton').addEventListener('click', function () { refreshHistory(0); });
+        if ($('shareHistory')) $('shareHistory').addEventListener('toggle', function () {
+            if ($('shareHistory').open) refreshHistory(0);
+        });
         root.addEventListener('evportal:languagechange', function () {
-            updatePreviewNote();
             if (lastError) error(lastError);
-            if ($('sharePublishButton')) $('sharePublishButton').textContent = t(pending ? 'share.publishing' : 'share.publish');
+            publishLabel(pending ? 'share.publishing' : 'share.publish');
             if ($('shareQRCode')) $('shareQRCode').setAttribute('aria-label', t('share.qrLabel'));
             if (root.EVI18n) root.EVI18n.translateDOM(dialog);
             // Static annotations must not replace the in-progress label.
-            if (pending && $('sharePublishButton')) $('sharePublishButton').textContent = t('share.publishing');
+            if (pending) publishLabel('share.publishing');
         });
-        updatePreviewNote();
         return client;
     }
 

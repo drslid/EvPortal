@@ -61,7 +61,15 @@
         return value;
     }
 
-    function normalizeShortcut(raw, seenIDs) {
+    function categoryList(value, categoryIDs, fallback) {
+        if (value === undefined) return (fallback || []).slice();
+        if (!Array.isArray(value) || value.length > MAX_CATEGORIES || value.some(function (value) {
+            return typeof value !== 'string' || !categoryIDs.has(value);
+        })) throw new Error(t('state.invalidCategory'));
+        return Array.from(new Set(value));
+    }
+
+    function normalizeShortcut(raw, seenIDs, ownerID, categoryIDs, seenServiceIDs) {
         if (!isObject(raw)) throw new Error(t('state.shortcutObject'));
         const shortcutID = validateID(raw.id, 'link');
         if (seenIDs.has(shortcutID)) throw new Error(t('state.duplicateShortcut'));
@@ -73,7 +81,9 @@
         if (raw.clickCount !== undefined && (!Number.isSafeInteger(raw.clickCount) || raw.clickCount < 0)) {
             throw new Error(t('state.invalidCount'));
         }
-        return {
+        const categoryIds = categoryList(raw.categoryIds, categoryIDs, [ownerID]);
+        if (!categoryIds.includes(ownerID)) categoryIds.unshift(ownerID);
+        const result = {
             id: shortcutID,
             name: string(raw.name, t('state.shortcutName'), 100, true),
             url: normalizeURL(raw.url),
@@ -81,8 +91,15 @@
             tag: string(raw.tag, t('state.shortcutTag'), 50, false),
             color: raw.color || '#5476ee',
             favorite: raw.favorite || false,
-            clickCount: raw.clickCount === undefined ? 0 : raw.clickCount
+            clickCount: raw.clickCount === undefined ? 0 : raw.clickCount,
+            categoryIds: categoryIds
         };
+        if (raw.serviceId !== undefined) {
+            result.serviceId = validateID(raw.serviceId, 'service');
+            if (seenServiceIDs.has(result.serviceId)) throw new Error(t('state.duplicateShortcut'));
+            seenServiceIDs.add(result.serviceId);
+        }
+        return result;
     }
 
     function normalizeState(raw) {
@@ -92,8 +109,9 @@
         if (raw.categories.length > MAX_CATEGORIES) throw new Error(t('state.tooManyCategories'));
         const categoryIDs = new Set();
         const shortcutIDs = new Set();
+        const serviceIDs = new Set();
         let count = 0;
-        const categories = raw.categories.map(function (category) {
+        const prepared = raw.categories.map(function (category) {
             if (!isObject(category) || !Array.isArray(category.shortcuts)) throw new Error(t('state.invalidCategory'));
             const categoryID = validateID(category.id, 'category');
             if (['all', 'favorites'].includes(categoryID) || categoryIDs.has(categoryID)) throw new Error(t('state.reservedCategory'));
@@ -101,12 +119,17 @@
             categoryIDs.add(categoryID);
             count += category.shortcuts.length;
             if (count > MAX_SHORTCUTS) throw new Error(t('state.tooManyShortcuts'));
+            return { source: category, id: categoryID };
+        });
+        const categories = prepared.map(function (entry) {
+            const category = entry.source;
+            const categoryID = entry.id;
             return {
                 id: categoryID,
                 label: string(category.label, t('state.categoryName'), 80, true),
                 icon: category.icon === undefined ? (CATEGORY_ICONS.includes(categoryID) ? categoryID : 'folder') : category.icon,
                 description: string(category.description, t('state.categoryDescription'), 240, false),
-                shortcuts: category.shortcuts.map(function (shortcut) { return normalizeShortcut(shortcut, shortcutIDs); })
+                shortcuts: category.shortcuts.map(function (shortcut) { return normalizeShortcut(shortcut, shortcutIDs, categoryID, categoryIDs, serviceIDs); })
             };
         });
         if (raw.theme !== undefined && !['auto', 'light', 'dark'].includes(raw.theme)) throw new Error(t('state.invalidTheme'));
@@ -130,13 +153,46 @@
         };
     }
 
-    function fromCatalog(catalog) {
+    function catalogServices(catalog, options) {
+        const settings = options || {};
+        const market = settings.market || 'ALL';
+        const seen = new Set();
+        return catalog.categories.flatMap(function (category) {
+            return category.shortcuts.filter(function (shortcut) {
+                const serviceID = shortcut.serviceId;
+                if (serviceID && seen.has(serviceID)) return false;
+                if (serviceID) seen.add(serviceID);
+                return (settings.includeOptional !== false || shortcut.defaultIncluded !== false)
+                    && (market === 'ALL' || !shortcut.countries || !shortcut.countries.length || shortcut.countries.includes(market));
+            }).map(function (shortcut) { return { category: category, shortcut: shortcut }; });
+        });
+    }
+
+    function catalogShortcut(shortcut, categoryID) {
+        const copy = Object.assign({}, shortcut);
+        copy.categoryIds = (shortcut.categoryIds || [categoryID]).slice();
+        if (shortcut.serviceId) copy.serviceId = shortcut.serviceId;
+        return copy;
+    }
+
+    function fromCatalog(catalog, options) {
+        const entries = catalogServices(catalog, Object.assign({}, options, { includeOptional: false }));
+        const included = new Set();
+        entries.forEach(function (entry) {
+            included.add(entry.category.id);
+            (entry.shortcut.categoryIds || []).forEach(function (categoryID) { included.add(categoryID); });
+        });
+        const categories = catalog.categories.filter(function (category) { return included.has(category.id); }).map(function (category) {
+            return Object.assign({}, category, { shortcuts: entries.filter(function (entry) {
+                return entry.category.id === category.id;
+            }).map(function (entry) { return catalogShortcut(entry.shortcut, category.id); }) });
+        });
         return normalizeState({
             version: 2,
             catalogVersion: catalog.version,
             theme: 'auto',
-            activeCategory: catalog.categories.some(function (category) { return category.id === 'cinema'; }) ? 'cinema' : (catalog.categories[0]?.id || 'all'),
-            categories: catalog.categories
+            activeCategory: categories.some(function (category) { return category.id === 'cinema'; }) ? 'cinema' : (categories[0]?.id || 'all'),
+            categories: categories
         });
     }
 
@@ -220,11 +276,83 @@
                 }
             });
         });
+        const existingCategories = new Set(next.categories.map(function (category) { return category.id; }));
+        const positions = new Map(next.shortcutOrder.map(function (value, index) { return [value, index]; }));
+        const mergedIDs = new Map();
+        catalogServices(catalog).forEach(function (service) {
+            const definition = service.shortcut;
+            const serviceID = definition.serviceId;
+            if (!serviceID) return;
+            const desired = Array.from(new Set([service.category.id].concat(definition.categoryIds || [])));
+            const sourceCategories = new Set(desired.concat(definition.legacyCategoryIds || []));
+            const aliases = [{ name: definition.name, url: definition.url }].concat(definition.legacyAliases || []).map(function (alias) {
+                return { name: alias.name, url: normalizeURL(alias.url) };
+            });
+            const entries = allShortcutEntries(next).filter(function (entry) {
+                return sourceCategories.has(entry.category.id) && aliases.some(function (alias) {
+                    return entry.shortcut.name === alias.name && entry.shortcut.url === alias.url;
+                });
+            });
+            // Explicit service identity marks an already migrated tile. Do not
+            // undo later user edits to its memberships on every application load.
+            const legacy = entries.filter(function (entry) { return entry.shortcut.serviceId === undefined; });
+            if (!legacy.length) return;
+            const installed = entries.find(function (entry) { return entry.shortcut.serviceId === serviceID; });
+            // A renamed or relocated identified tile already owns this service.
+            // Preserve unrelated legacy-looking personal entries instead of
+            // assigning the same catalogue identity to a second physical record.
+            if (!installed && allShortcutEntries(next).some(function (entry) { return entry.shortcut.serviceId === serviceID; })) return;
+            const candidates = legacy.concat(installed ? [installed] : []);
+            candidates.sort(function (a, b) { return positions.get(a.shortcut.id) - positions.get(b.shortcut.id); });
+            const keeper = installed || candidates[0];
+            const before = JSON.stringify(keeper.shortcut);
+            const count = candidates.reduce(function (total, entry) {
+                return Math.min(Number.MAX_SAFE_INTEGER, total + entry.shortcut.clickCount);
+            }, 0);
+            const memberships = new Set();
+            candidates.forEach(function (entry) {
+                entry.shortcut.categoryIds.forEach(function (categoryID) {
+                    // A legacy-only primary category (e.g. Gulli in Cinema) is
+                    // replaced only when its new canonical owner already exists.
+                    if (!sourceCategories.has(categoryID) || desired.includes(categoryID)
+                        || !existingCategories.has(service.category.id)) memberships.add(categoryID);
+                });
+            });
+            desired.forEach(function (categoryID) { if (existingCategories.has(categoryID)) memberships.add(categoryID); });
+            const target = next.categories.find(function (category) { return category.id === service.category.id; }) || keeper.category;
+            memberships.add(target.id);
+            keeper.shortcut.favorite = candidates.some(function (entry) { return entry.shortcut.favorite; });
+            keeper.shortcut.clickCount = count;
+            keeper.shortcut.categoryIds = Array.from(memberships);
+            if (!installed) {
+                keeper.shortcut.name = definition.name;
+                keeper.shortcut.url = normalizeURL(definition.url);
+            }
+            const withoutIdentity = JSON.stringify(keeper.shortcut);
+            keeper.shortcut.serviceId = serviceID;
+            candidates.forEach(function (entry) {
+                if (entry === keeper) return;
+                entry.category.shortcuts = entry.category.shortcuts.filter(function (shortcut) { return shortcut.id !== entry.shortcut.id; });
+                mergedIDs.set(entry.shortcut.id, keeper.shortcut.id);
+                updates += 1;
+            });
+            if (target !== keeper.category) {
+                keeper.category.shortcuts = keeper.category.shortcuts.filter(function (shortcut) { return shortcut.id !== keeper.shortcut.id; });
+                target.shortcuts.push(keeper.shortcut);
+            }
+            if (before !== withoutIdentity || target !== keeper.category) updates += 1;
+        });
+        const ordered = new Set();
+        next.shortcutOrder = next.shortcutOrder.map(function (value) { return mergedIDs.get(value) || value; }).filter(function (value) {
+            if (ordered.has(value)) return false;
+            ordered.add(value);
+            return true;
+        });
         next.catalogVersion = catalog.version;
-        return { state: next, updates: updates };
+        return { state: normalizeState(next), updates: updates };
     }
 
-    function loadState(storage, catalog) {
+    function loadState(storage, catalog, options) {
         let raw;
         try {
             if (!storage) throw new Error(t('state.storageUnavailable'));
@@ -247,10 +375,10 @@
                 const updated = applyCatalogUpdates(fromLegacy(legacy, catalog), catalog);
                 return Object.assign(updated, { source: 'legacy', locked: false, warning: '' });
             }
-            return { state: fromCatalog(catalog), updates: 0, source: 'new', locked: false, warning: '' };
+            return { state: fromCatalog(catalog, options), updates: 0, source: 'new', locked: false, warning: '' };
         } catch (_) {
             return {
-                state: fromCatalog(catalog), updates: 0, source: 'recovery', locked: true,
+                state: fromCatalog(catalog, options), updates: 0, source: 'recovery', locked: true,
                 warning: t('state.storageWarning')
             };
         }
@@ -277,6 +405,109 @@
         }).length < MAX_CUSTOM_CATEGORIES;
     }
 
+    // Canonical entries retain the original object references. Membership views
+    // never copy a shortcut, so favorites, usage and edits have one source of truth.
+    function allShortcutEntries(state) {
+        const seen = new Set();
+        return state.categories.flatMap(function (category) {
+            return category.shortcuts.filter(function (shortcut) {
+                if (seen.has(shortcut.id)) return false;
+                seen.add(shortcut.id);
+                return true;
+            }).map(function (shortcut) { return { shortcut: shortcut, category: category }; });
+        });
+    }
+
+    function getShortcutEntry(state, shortcutID) {
+        return allShortcutEntries(state).find(function (entry) { return entry.shortcut.id === shortcutID; }) || null;
+    }
+
+    function shortcutsForCategory(state, categoryID) {
+        const positions = new Map((state.shortcutOrder || []).map(function (value, position) { return [value, position]; }));
+        return allShortcutEntries(state).filter(function (entry) {
+            return categoryID === 'all' || (categoryID === 'favorites' ? entry.shortcut.favorite
+                : (entry.shortcut.categoryIds || [entry.category.id]).includes(categoryID));
+        }).sort(function (a, b) {
+            return (positions.get(a.shortcut.id) ?? Infinity) - (positions.get(b.shortcut.id) ?? Infinity);
+        });
+    }
+
+    function addShortcut(state, ownerID, shortcut) {
+        const next = normalizeState(state);
+        const category = next.categories.find(function (item) { return item.id === ownerID; });
+        if (!category) throw new Error(t('state.missingCategory'));
+        category.shortcuts.push(Object.assign({}, shortcut));
+        return normalizeState(next);
+    }
+
+    function addCatalogService(state, catalog, serviceID) {
+        const next = normalizeState(state);
+        const service = catalogServices(catalog).find(function (entry) { return entry.shortcut.serviceId === serviceID; });
+        if (!service) throw new Error(t('state.invalidID'));
+        if (allShortcutEntries(next).some(function (entry) { return entry.shortcut.serviceId === serviceID; })) return next;
+        const memberships = Array.from(new Set([service.category.id].concat(service.shortcut.categoryIds || [])));
+        memberships.forEach(function (categoryID) {
+            if (next.categories.some(function (category) { return category.id === categoryID; })) return;
+            const definition = catalog.categories.find(function (category) { return category.id === categoryID; });
+            if (!definition) throw new Error(t('state.missingCategory'));
+            next.categories.push(Object.assign({}, definition, { shortcuts: [] }));
+        });
+        const shortcut = catalogShortcut(service.shortcut, service.category.id);
+        shortcut.categoryIds = memberships;
+        if (allShortcutEntries(next).some(function (entry) { return entry.shortcut.id === shortcut.id; })) shortcut.id = id('link');
+        return addShortcut(next, service.category.id, shortcut);
+    }
+
+    function updateShortcut(state, shortcutID, patch, ownerID) {
+        const next = normalizeState(state);
+        const entry = getShortcutEntry(next, shortcutID);
+        if (!entry || !isObject(patch)) throw new Error(t('state.invalidID'));
+        // Tile identity is immutable. A different destination becomes a personal
+        // shortcut, so the original catalogue service can be installed again.
+        if (patch.id !== undefined && patch.id !== shortcutID) throw new Error(t('state.invalidID'));
+        const changedURL = patch.url !== undefined && normalizeURL(patch.url) !== entry.shortcut.url;
+        let owner = entry.category;
+        if (patch.categoryIds !== undefined || ownerID !== undefined) {
+            const memberships = categoryList(patch.categoryIds === undefined ? entry.shortcut.categoryIds : patch.categoryIds, new Set(next.categories.map(function (category) { return category.id; })));
+            if (!memberships.length) throw new Error(t('state.missingCategory'));
+            if (ownerID !== undefined && !memberships.includes(ownerID)) throw new Error(t('state.missingCategory'));
+            const targetID = ownerID === undefined ? (memberships.includes(owner.id) ? owner.id : memberships[0]) : ownerID;
+            if (targetID !== owner.id) {
+                owner.shortcuts = owner.shortcuts.filter(function (item) { return item.id !== shortcutID; });
+                owner = next.categories.find(function (category) { return category.id === targetID; });
+                owner.shortcuts.push(entry.shortcut);
+            }
+        }
+        Object.assign(entry.shortcut, patch, { id: shortcutID });
+        if (changedURL) delete entry.shortcut.serviceId;
+        return normalizeState(next);
+    }
+
+    function removeShortcut(state, shortcutID) {
+        const next = normalizeState(state);
+        next.categories.forEach(function (category) {
+            category.shortcuts = category.shortcuts.filter(function (shortcut) { return shortcut.id !== shortcutID; });
+        });
+        return normalizeState(next);
+    }
+
+    function removeCategory(state, categoryID) {
+        const next = normalizeState(state);
+        const removed = next.categories.find(function (category) { return category.id === categoryID; });
+        if (!removed) return next;
+        next.categories = next.categories.filter(function (category) { return category.id !== categoryID; });
+        allShortcutEntries(next).forEach(function (entry) {
+            entry.shortcut.categoryIds = entry.shortcut.categoryIds.filter(function (value) { return value !== categoryID; });
+        });
+        removed.shortcuts.forEach(function (shortcut) {
+            shortcut.categoryIds = shortcut.categoryIds.filter(function (value) { return value !== categoryID; });
+            const owner = next.categories.find(function (category) { return shortcut.categoryIds.includes(category.id); });
+            if (owner) owner.shortcuts.push(shortcut);
+        });
+        if (next.activeCategory === categoryID) next.activeCategory = 'all';
+        return normalizeState(next);
+    }
+
     function recordShortcutClick(state, shortcutID) {
         const next = normalizeState(state);
         for (const category of next.categories) {
@@ -291,9 +522,7 @@
 
     function rankShortcuts(state) {
         const positions = new Map((state.shortcutOrder || []).map(function (value, position) { return [value, position]; }));
-        return state.categories.flatMap(function (category) {
-            return category.shortcuts.map(function (shortcut) { return { shortcut: shortcut, category: category }; });
-        }).sort(function (a, b) {
+        return allShortcutEntries(state).sort(function (a, b) {
             return (b.shortcut.clickCount || 0) - (a.shortcut.clickCount || 0)
                 || (positions.get(a.shortcut.id) ?? Infinity) - (positions.get(b.shortcut.id) ?? Infinity);
         });
@@ -348,5 +577,5 @@
         return path;
     }
 
-    return { STORAGE_KEY, MAX_FILE_BYTES, MAX_CATEGORIES, MAX_CUSTOM_CATEGORIES, MAX_NEW_CATEGORY_NAME, CATEGORY_ICONS, MAX_SHORTCUTS, id, normalizeURL, normalizeText, normalizeState, fromCatalog, fromLegacy, parseImport, applyCatalogUpdates, loadState, saveState, matches, canCreateCategory, recordShortcutClick, rankShortcuts, move, reorderShortcuts, telegraphPath, telegraphImportPath };
+    return { STORAGE_KEY, MAX_FILE_BYTES, MAX_CATEGORIES, MAX_CUSTOM_CATEGORIES, MAX_NEW_CATEGORY_NAME, CATEGORY_ICONS, MAX_SHORTCUTS, id, normalizeURL, normalizeText, normalizeState, catalogServices, fromCatalog, fromLegacy, parseImport, applyCatalogUpdates, loadState, saveState, matches, canCreateCategory, allShortcutEntries, getShortcutEntry, shortcutsForCategory, addShortcut, addCatalogService, updateShortcut, removeShortcut, removeCategory, recordShortcutClick, rankShortcuts, move, reorderShortcuts, telegraphPath, telegraphImportPath };
 }));

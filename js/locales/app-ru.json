@@ -68,7 +68,7 @@
   "app.shortcutGone": "Ссылка удалена в другой вкладке. Закройте форму и повторите попытку.",
   "app.shortcutLimit": "Достигнут лимит в 5 000 ссылок.",
   "app.shortcutFieldsInvalid": "Проверьте название (до 100 символов) и описание (до 300).",
-  "app.shortcutDuplicate": "Эта ссылка уже есть в категории.",
+  "app.shortcutDuplicate": "Эта ссылка уже существует. Измените её категории, чтобы показывать её в других разделах.",
   "app.shortcutChanged": "Ссылка изменена.",
   "app.shortcutAdded": "Ссылка добавлена.",
   "app.alreadyPresentNamed": "Уже добавлено: {name}",
@@ -120,5 +120,6 @@
   "app.icon.news": "Новости",
   "app.icon.weather": "Погода",
   "app.icon.productivity": "Инструменты",
-  "app.icon.folder": "Папка"
+  "app.icon.folder": "Папка",
+  "app.otherCategories": "Другие категории"
 }
