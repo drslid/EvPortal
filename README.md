@@ -48,7 +48,7 @@ Ces préférences restent propres à cet appareil : elles ne sont pas ajoutées 
 3. Sur le téléphone, choisissez les raccourcis à envoyer ou une sauvegarde, puis envoyez-les.
 4. Vérifiez la proposition reçue sur la Tesla et touchez **Utiliser ces raccourcis**.
 
-Le transfert est chiffré et valable cinq minutes. Les options des paramètres permettent d’annuler le dernier transfert appliqué sur cet appareil. Il s’agit d’un transfert ponctuel, sans synchronisation automatique. Ce parcours nécessite le service de réception configuré ; son fonctionnement et sa mise en service sont décrits dans [la documentation d’appairage](docs/APPAIRAGE-TELEPHONE-TESLA.md).
+Le transfert est chiffré et valable cinq minutes. Les options des paramètres permettent d’annuler le dernier transfert appliqué sur cet appareil. Il s’agit d’un transfert ponctuel, sans synchronisation automatique. Le bouton de réception apparaît lorsque le service de réception est configuré ; son fonctionnement et sa mise en service sont décrits dans [la documentation d’appairage](docs/APPAIRAGE-TELEPHONE-TESLA.md).
 
 ### Exporter et gérer mes sauvegardes
 
@@ -173,6 +173,10 @@ npm run test:i18n
 Les scripts navigateur démarrent leur propre serveur local temporaire. La recette d’interactions peut aussi être lancée avec `node scripts/interaction-smoke.cjs`. Sur une machine Linux qui ne possède pas les bibliothèques nécessaires à Chromium, utilisez `npx playwright install --with-deps chromium`. Playwright et axe servent uniquement aux vérifications ; les bibliothèques utilisées par le portail sont embarquées dans le site. Complétez cette recette par un essai sur le véhicule visé.
 
 Le relais nécessite Node.js 22 ou supérieur. Pour tester le transfert complet avec le vrai moteur Cloudflare local, démarrez `npm run dev`, puis lancez `npm run test:pairing:live` dans un autre terminal. Cette recette ouvre deux navigateurs isolés, décode le QR, vérifie l’envoi chiffré, le refus d’une écriture lorsque le stockage est plein, la validation explicite et l’annulation après rechargement ou changement d’onglet. Elle vérifie aussi le dialogue de partage sur mobile et en arabe. Elle utilise la configuration fournie par le serveur de développement et ouvre directement l’adresse décodée du QR, sans substitution de configuration ou d’URL ; la configuration publique reste intacte.
+
+### Vérifier la publication
+
+Après publication sur GitHub Pages, `npm run test:production -- --frontend-only` contrôle le catalogue, les réglages et les sauvegardes réellement servis, et indique si la réception QR est inactive. Lorsque le relais public est configuré, `npm run test:production` vérifie un transfert chiffré avec deux navigateurs isolés et des données synthétiques : QR suivi sans modification, aperçu, application et suppression de la session. Aucune sauvegarde Telegra.ph réelle n’est publiée.
 
 ### Faire évoluer le catalogue
 

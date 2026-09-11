@@ -184,6 +184,12 @@
         const senderDialog = $('pairSendDialog');
         if (!receiverDialog || !senderDialog || receiverDialog.dataset.initialized) return null;
         receiverDialog.dataset.initialized = 'true';
+        // Only expose reception when this deployment has a configured relay.
+        // The local development server supplies its own configuration.
+        try {
+            relayURL(root.EV_CONFIG && root.EV_CONFIG.pairingRelayURL);
+            $('pairReceiveButton').hidden = false;
+        } catch (_) { $('pairReceiveButton').hidden = true; }
         let client;
         let receiver = null;
         let receiverKey = '';

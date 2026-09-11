@@ -98,9 +98,14 @@ let browser;
         assert.equal(await page.locator('#marketSelect option[value="MX"]').textContent(), dictionaries[language]['prefs.country.MX']);
         assert.ok(await page.locator('#settingsDialog').evaluate(dialog => dialog.scrollWidth <= dialog.clientWidth + 1), language + ' preferences overflow');
         const marketBeforeLanguage = await page.locator('#marketSelect').inputValue();
-        for (const id of ['shareButton', 'importConfigButton', 'pairReceiveButton']) {
+        for (const id of ['shareButton', 'importConfigButton']) {
             assert.equal(await page.locator('#backupSettings #' + id).isVisible(), true, 'Backup actions stay together in Settings');
         }
+        const receptionConfigured = await page.evaluate(() => {
+            try { EVPairing.relayURL(window.EV_CONFIG && EV_CONFIG.pairingRelayURL); return true; }
+            catch (_) { return false; }
+        });
+        assert.equal(await page.locator('#backupSettings #pairReceiveButton').isVisible(), receptionConfigured, 'Reception is only offered when this deployment has a relay');
         assert.equal(await page.locator('#shareButton span').textContent(), dictionaries[language]['static.exportBackup']);
         assert.equal(await page.locator('#importConfigButton span').textContent(), dictionaries[language]['static.importBackup']);
         assert.equal(await page.locator('#settingsTitle').textContent(), dictionaries[language]['static.settings']);

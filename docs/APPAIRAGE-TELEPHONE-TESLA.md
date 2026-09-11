@@ -1,6 +1,6 @@
 # Envoyer ses raccourcis du téléphone vers la Tesla
 
-**Le relais et son protocole sont implémentés dans [relay/](../relay/README.md).** Leur disponibilité dans le portail dépend du déploiement du Worker et de la configuration de son adresse. Le parcours permet de transférer une configuration sans saisir d’adresse ni de code dans la Tesla, au moyen d’un QR de réception et d’un relais temporaire. Les sauvegardes Telegra.ph existantes restent disponibles.
+**Le relais et son protocole sont implémentés dans [relay/](../relay/README.md).** Leur disponibilité dans le portail dépend du déploiement du Worker et de la configuration de son adresse. Le bouton de réception reste masqué tant que cette adresse n’est pas configurée ; les sauvegardes Telegra.ph restent accessibles. Le parcours permet de transférer une configuration sans saisir d’adresse ni de code dans la Tesla, au moyen d’un QR de réception et d’un relais temporaire. Les sauvegardes Telegra.ph existantes restent disponibles.
 
 ## Quatre gestes, aucune saisie
 

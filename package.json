@@ -15,7 +15,8 @@
     "test:pairing:live": "node scripts/pairing-live-smoke.cjs",
     "test:relay": "npm --prefix relay test",
     "build:locales": "node scripts/build-locales.cjs",
-    "test:i18n": "node scripts/i18n-smoke.cjs"
+    "test:i18n": "node scripts/i18n-smoke.cjs",
+    "test:production": "node scripts/production-smoke.cjs"
   },
   "devDependencies": {
     "axe-core": "4.13.0",
