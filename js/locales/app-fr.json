@@ -68,7 +68,7 @@
   "app.shortcutGone": "Ce raccourci a été supprimé dans un autre onglet. Fermez ce formulaire puis réessayez.",
   "app.shortcutLimit": "La limite de 5 000 raccourcis est atteinte.",
   "app.shortcutFieldsInvalid": "Vérifiez le nom (100 caractères maximum) et la description (300 maximum).",
-  "app.shortcutDuplicate": "Ce raccourci existe déjà dans cette catégorie.",
+  "app.shortcutDuplicate": "Ce lien existe déjà. Modifiez ses catégories pour l’afficher ailleurs.",
   "app.shortcutChanged": "Raccourci modifié.",
   "app.shortcutAdded": "Raccourci ajouté.",
   "app.alreadyPresentNamed": "Déjà présent : {name}",
@@ -120,5 +120,6 @@
   "app.icon.news": "Actualités",
   "app.icon.weather": "Météo",
   "app.icon.productivity": "Outils",
-  "app.icon.folder": "Dossier"
+  "app.icon.folder": "Dossier",
+  "app.otherCategories": "Autres catégories"
 }

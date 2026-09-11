@@ -68,7 +68,7 @@
   "app.shortcutGone": "حُذف هذا الاختصار في علامة تبويب أخرى. أغلق النموذج وحاول مجددًا.",
   "app.shortcutLimit": "تم بلوغ الحد الأقصى البالغ 5000 اختصار.",
   "app.shortcutFieldsInvalid": "تحقق من الاسم (100 حرف كحد أقصى) والوصف (300 حرف كحد أقصى).",
-  "app.shortcutDuplicate": "هذا الاختصار موجود بالفعل في هذه الفئة.",
+  "app.shortcutDuplicate": "هذا الرابط موجود بالفعل. عدّل فئاته لعرضه في مكان آخر.",
   "app.shortcutChanged": "تم تعديل الاختصار.",
   "app.shortcutAdded": "تمت إضافة الاختصار.",
   "app.alreadyPresentNamed": "موجود بالفعل: {name}",
@@ -120,5 +120,6 @@
   "app.icon.news": "أخبار",
   "app.icon.weather": "الطقس",
   "app.icon.productivity": "أدوات",
-  "app.icon.folder": "مجلد"
+  "app.icon.folder": "مجلد",
+  "app.otherCategories": "فئات أخرى"
 }

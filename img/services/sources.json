@@ -79,6 +79,16 @@
     "height": 48,
     "sha256": "6251226932a3e45f9066a38cd1a8a2674fa8e7ba4668c5f42321c022d902eed5"
   },
+  "app.electricitymaps.com": {
+    "file": "app.electricitymaps.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=electricitymaps.com&sz=64",
+    "original": "https://framerusercontent.com/images/FbZlpGyuE1bituit1KQkDcmsg.png",
+    "downloaded": "2026-09-11",
+    "bytes": 373,
+    "width": 64,
+    "height": 64,
+    "sha256": "57e53f0a2a121dc3468cf993a7ec23caf12e33888cd2bda4e6db6149ccbc1d1f"
+  },
   "app.plex.tv": {
     "file": "app.plex.tv.png",
     "source": "https://www.google.com/s2/favicons?domain=app.plex.tv&sz=64",
@@ -98,6 +108,16 @@
     "width": 16,
     "height": 16,
     "sha256": "c8a29d704cf77c6533e8605323bed2d37f1b637d67e8139b7fc3a2e6f1bf3d31"
+  },
+  "atlasobscura.com": {
+    "file": "atlasobscura.com.png",
+    "source": "https://www.google.com/s2/favicons?domain=atlasobscura.com&sz=64",
+    "original": "https://img.atlasobscura.com/1ZVcn5iAtU804x_VPZUvnk5m2eEaQ5_E041HX0AZXBc/sm:1/scp:1/aHR0cHM6Ly9zMy5h/bWF6b25hd3MuY29t/L2F0bGFzLWRldi9t/aXNjL2ljb25zL2Fw/cGxlLXRvdWNoLWlj/b24tMTE0eDExNC1w/cmVjb21wb3NlZC5w/bmc",
+    "downloaded": "2026-09-11",
+    "bytes": 1067,
+    "width": 64,
+    "height": 64,
+    "sha256": "90fe72aa00e37a3f4a080f085d090048bc366d5172265a2d79e719e4c85c0a29"
   },
   "automobile-propre.com": {
     "file": "automobile-propre.com.png",
@@ -369,6 +389,16 @@
     "height": 64,
     "sha256": "b12cd8c58adacef99311c4f2fc9f9aaabf51a48a013e3b3440641c6db5e2a5cc"
   },
+  "fast.com": {
+    "file": "fast.com.png",
+    "source": "https://fast.com/assets/favicons/favicon-96x96.png",
+    "original": "https://fast.com/assets/favicons/favicon-96x96.png",
+    "downloaded": "2026-09-11",
+    "bytes": 7754,
+    "width": 96,
+    "height": 96,
+    "sha256": "0239a1f48b10f42fc58b60a3c3a3b637466930bff655c443ff607795ff968d6f"
+  },
   "fastnedcharging.com": {
     "file": "fastnedcharging.com.png",
     "source": "https://www.google.com/s2/favicons?domain=fastnedcharging.com&sz=64",
@@ -408,6 +438,16 @@
     "width": 64,
     "height": 64,
     "sha256": "22b3066d098a7e7b1e49eb8bc5e4b5b1072b33b2b00830fb54d98be0cff15b54"
+  },
+  "fr.wikivoyage.org": {
+    "file": "fr.wikivoyage.org.ico",
+    "source": "https://fr.wikivoyage.org/static/favicon/wikivoyage.ico",
+    "original": "https://fr.wikivoyage.org/static/favicon/wikivoyage.ico",
+    "downloaded": "2026-09-11",
+    "bytes": 1075,
+    "width": 48,
+    "height": 48,
+    "sha256": "517ce41eac8d1f42a249df74db20402eb6e72f58982304b5634846b494da2c78"
   },
   "france.tv": {
     "file": "france.tv.png",
@@ -539,6 +579,16 @@
     "height": 64,
     "sha256": "14944d4d9797046851230c86861c965216e966bfd30483035b07f62ad06bbe08"
   },
+  "justwatch.com": {
+    "file": "justwatch.com.ico",
+    "source": "https://www.justwatch.com/appassets/favicon.ico",
+    "original": "https://www.justwatch.com/appassets/favicon.ico",
+    "downloaded": "2026-09-11",
+    "bytes": 4286,
+    "width": 32,
+    "height": 32,
+    "sha256": "879c1445c5189cd9f729978d4cdc48c7da759de66ef7b8b1d08c211f5e212636"
+  },
   "kick.com": {
     "file": "kick.com.png",
     "source": "https://www.google.com/s2/favicons?domain=kick.com&sz=64",
@@ -609,6 +659,16 @@
     "height": 64,
     "sha256": "3a61879c6883d9aaa579a462f656ca59e061fc4232b861ed95beac4ced9c0704"
   },
+  "lightningmaps.org": {
+    "file": "lightningmaps.org.ico",
+    "source": "https://www.lightningmaps.org/Images/favicon.ico",
+    "original": "https://www.lightningmaps.org/Images/favicon.ico",
+    "downloaded": "2026-09-11",
+    "bytes": 4286,
+    "width": 32,
+    "height": 32,
+    "sha256": "bce6f6e8cb24aa2cc8a8c0489b462990fcdcd0a4085d55d297aa2add4ea8bdf1"
+  },
   "linkedin.com": {
     "file": "linkedin.com.png",
     "source": "https://www.google.com/s2/favicons?domain=linkedin.com&sz=64",
@@ -628,6 +688,16 @@
     "width": 48,
     "height": 48,
     "sha256": "156fc04e5db0c171d5964d8bfc159bcede0ba8c7c0d4686030b53ce0005128e5"
+  },
+  "littlealchemy2.com": {
+    "file": "littlealchemy2.com.png",
+    "source": "https://littlealchemy2.com/static/img/icon-96x96.png",
+    "original": "https://littlealchemy2.com/static/img/icon-96x96.png",
+    "downloaded": "2026-09-11",
+    "bytes": 2750,
+    "width": 96,
+    "height": 96,
+    "sha256": "1051f9e63dd6fa57a3034d908745a2ec5ef2aa2c8fb3b7f658bf322a8997c83b"
   },
   "liveone.com": {
     "file": "liveone.com.png",
@@ -759,6 +829,26 @@
     "height": 64,
     "sha256": "161f4059a3d0b6008199910ee43dd52851f3f51f6b0314d7bf6abfc6c4352e80"
   },
+  "mynoise.net": {
+    "file": "mynoise.net.png",
+    "source": "https://mynoise.net/Pix/Favicon/favicon-96x96.png",
+    "original": "https://mynoise.net/Pix/Favicon/favicon-96x96.png",
+    "downloaded": "2026-09-11",
+    "bytes": 2792,
+    "width": 96,
+    "height": 96,
+    "sha256": "95377650a4faab1e36b53aad53bf4e89fe83793205ac38416e5e54f8d502b9d0"
+  },
+  "neal.fun": {
+    "file": "neal.fun.png",
+    "source": "https://www.google.com/s2/favicons?domain=neal.fun&sz=64",
+    "original": "https://neal.fun/favicons/home.png",
+    "downloaded": "2026-09-11",
+    "bytes": 1064,
+    "width": 64,
+    "height": 64,
+    "sha256": "6275b1322e3fd3ca58280c71ff2312d9893d72237fcb4b84f0ecd217d6c9fe30"
+  },
   "netflix.com": {
     "file": "netflix.com.png",
     "source": "https://www.google.com/s2/favicons?domain=netflix.com&sz=64",
@@ -798,6 +888,16 @@
     "width": 64,
     "height": 64,
     "sha256": "33a03200b71055b3eafcd46496b977612b1e28f828bdc2eaf1f8c78035ccc6ab"
+  },
+  "onf.ca": {
+    "file": "onf.ca.ico",
+    "source": "https://dkyhanv6paotz.cloudfront.net/onfca-prod/norman/static/favicon.ba446bfbed40.ico",
+    "original": "https://dkyhanv6paotz.cloudfront.net/onfca-prod/norman/static/favicon.ba446bfbed40.ico",
+    "downloaded": "2026-09-11",
+    "bytes": 19518,
+    "width": 128,
+    "height": 128,
+    "sha256": "65c21d9bd10229305e4c711d64efe2317cd70841ac747f2c71304c6017aac323"
   },
   "open.spotify.com": {
     "file": "open.spotify.com.png",
@@ -909,6 +1009,16 @@
     "height": 64,
     "sha256": "dea16ce991bc8aace69f4c110a7a968209d2a2d0ada50e0002248f54c452ce45"
   },
+  "plus.nasa.gov": {
+    "file": "plus.nasa.gov.png",
+    "source": "https://plus.nasa.gov/wp-content/uploads/2023/03/cropped-nasa-png-placeholder.png?w=32",
+    "original": "https://plus.nasa.gov/wp-content/uploads/2023/03/cropped-nasa-png-placeholder.png?w=32",
+    "downloaded": "2026-09-11",
+    "bytes": 1585,
+    "width": 32,
+    "height": 32,
+    "sha256": "37d00a467079a3a510e71786981f917712125180b1fac38a5d1204c7455234e1"
+  },
   "pluto.tv": {
     "file": "pluto.tv.png",
     "source": "https://www.google.com/s2/favicons?domain=pluto.tv&sz=64",
@@ -958,6 +1068,16 @@
     "width": 48,
     "height": 48,
     "sha256": "d230947fdc6dd831c379484faceaddb36d574f82a1be763f0b38bce41153b813"
+  },
+  "radioparadise.com": {
+    "file": "radioparadise.com.png",
+    "source": "https://radioparadise.com/favicon-32x32.png",
+    "original": "https://radioparadise.com/favicon-32x32.png",
+    "downloaded": "2026-09-11",
+    "bytes": 966,
+    "width": 32,
+    "height": 32,
+    "sha256": "ed47f4d33375de5a17883b6e7cc662324a4309a7f26e1521e8f2a8b2418984a4"
   },
   "rakuten.tv": {
     "file": "rakuten.tv.png",
@@ -1019,6 +1139,16 @@
     "height": 32,
     "sha256": "9e56c0f26a16c176cfe707bbc19cb49dd3bd2638956961b0c6c450ef5a97f39f"
   },
+  "somafm.com": {
+    "file": "somafm.com.png",
+    "source": "https://somafm.com/favicon-32x32.png",
+    "original": "https://somafm.com/favicon-32x32.png",
+    "downloaded": "2026-09-11",
+    "bytes": 2608,
+    "width": 32,
+    "height": 32,
+    "sha256": "de46819a3bb60c697cceb5f76d67d0d7c728adee41ba1735c57ce8b924fe4417"
+  },
   "soundcloud.com": {
     "file": "soundcloud.com.jpg",
     "source": "https://www.google.com/s2/favicons?domain=soundcloud.com&sz=64",
@@ -1068,6 +1198,16 @@
     "width": 16,
     "height": 16,
     "sha256": "000c69cde7b35d620d332d26867729265b256e543e60f3f99bc4165b61947a74"
+  },
+  "techmeme.com": {
+    "file": "techmeme.com.ico",
+    "source": "https://www.techmeme.com/img/favicon.ico",
+    "original": "https://www.techmeme.com/img/favicon.ico",
+    "downloaded": "2026-09-11",
+    "bytes": 318,
+    "width": 16,
+    "height": 16,
+    "sha256": "0764279eb8e01701cc969ce20655104fc85ebd6894c16d08431f7c415316041a"
   },
   "tesla.com": {
     "file": "tesla.com.png",
@@ -1278,5 +1418,15 @@
     "width": 64,
     "height": 64,
     "sha256": "f4727a0fe90f724e5a7ba8d2facab29f516f81922beefb7d12ddc75e22cefb55"
+  },
+  "zoom.earth": {
+    "file": "zoom.earth.png",
+    "source": "https://zoom.earth/assets/images/icon-96.1.png",
+    "original": "https://zoom.earth/assets/images/icon-96.1.png",
+    "downloaded": "2026-09-11",
+    "bytes": 9712,
+    "width": 96,
+    "height": 96,
+    "sha256": "a029b612fafca3d6d90ca63a84fde76858fed68c95f3a6a82ddaf98389bb250c"
   }
 }

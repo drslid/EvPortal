@@ -11,7 +11,7 @@
   "help.keyboard": "Con la tastiera, seleziona una maniglia, premi Spazio, sposta con le frecce e conferma con Invio. Esc annulla.",
   "help.addHeading": "Aggiungere una scorciatoia o una categoria",
   "help.adding": "Il pulsante + apre il catalogo e permette di creare una scorciatoia o una categoria. Già presente indica un servizio già aggiunto. La lente cerca in tutte le tue scorciatoie.",
-  "help.categories": "Crea fino a cinque categorie personali con nomi di massimo 16 caratteri e un’icona a scelta. Usa la matita per modificarle. Le categorie precedenti che superano questi limiti vengono conservate. Tutte le categorie restano visibili senza scorrimento orizzontale.",
+  "help.categories": "Crea fino a cinque categorie personali con nomi di massimo 16 caratteri e un’icona a scelta. Usa la matita per modificarle. Le categorie precedenti che superano questi limiti vengono conservate. Le categorie visibili si dispongono senza scorrimento orizzontale.",
   "help.transferHeading": "Dal telefono alla Tesla",
   "help.stepPrepare": "Nella Tesla, apri Impostazioni → Backup → Ricevi dal mio telefono.",
   "help.stepPublish": "Scansiona con il telefono il codice QR mostrato nella Tesla.",
@@ -36,5 +36,8 @@
   "help.source": "Codice sorgente",
   "help.report": "Segnala un problema",
   "help.license": "EvPortal · Licenza MIT",
-  "help.backupHeading": "I miei backup"
+  "help.backupHeading": "I miei backup",
+  "help.preferencesHeading": "Scegliere il catalogo e la pagina iniziale",
+  "help.preferences": "In Impostazioni → Catalogo e pagina iniziale, scegli il paese, le categorie visibili e se aprire i preferiti all’avvio. Il paese adatta i suggerimenti in Aggiungi; non elimina le tue scorciatoie. Mostra tutti i paesi amplia il catalogo. Le scorciatoie di una categoria nascosta restano in Tutti e Preferiti. Queste scelte rimangono sul dispositivo e non sono incluse nei backup o nei trasferimenti QR. Il paese iniziale è suggerito dalla regione del browser, senza richiedere la posizione.",
+  "help.sharedServices": "Un servizio può apparire in più categorie con un solo stato di preferito e un solo contatore; Tutti lo mostra una volta sola. In Modifica, apri Altre categorie per scegliere dove appare. Eliminare una categoria conserva i servizi presenti anche in un’altra categoria."
 }

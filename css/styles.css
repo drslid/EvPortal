@@ -103,3 +103,13 @@ dialog{width:min(510px,calc(100% - 32px));max-height:calc(100dvh - 40px);padding
 
 @font-face{font-family:'EVPortal Flag Emoji';src:url('../fonts/evportal-flags.woff2') format('woff2'),url('../fonts/evportal-flags.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap;unicode-range:U+1F1E6-1F1FF}
 #languageSelect{font-family:'EVPortal Flag Emoji',-apple-system,BlinkMacSystemFont,"Segoe UI","Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
+
+.preference-check,.category-check{display:flex;align-items:center;gap:12px;min-height:48px;margin:0;color:var(--text);cursor:pointer}
+.preference-check input,.category-check input{appearance:auto;flex:0 0 22px;width:22px;height:22px;min-height:0;padding:0;margin:0;accent-color:var(--accent)}
+.preference-check>span,.category-check>span{min-width:0;overflow-wrap:anywhere}
+#catalogPreferences{margin:0 0 14px}#catalogPreferences>select{margin-bottom:0}
+.category-visibility{border:0;padding:0;margin:20px 0 0;min-width:0}.category-visibility legend{padding:0;margin-bottom:8px;font-size:14px;color:var(--muted)}
+.category-checks{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px}.category-check{font-size:14px;padding:6px 0}
+.catalog-market-toggle{font-size:14px;margin:8px 0 12px;color:var(--muted)}
+#shortcutAdditionalOptions{margin:6px 0 14px}
+@media(max-width:360px){.category-checks{grid-template-columns:1fr}}

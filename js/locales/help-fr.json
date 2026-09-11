@@ -11,7 +11,7 @@
   "help.keyboard": "Au clavier, sélectionnez une poignée puis appuyez sur Espace, utilisez les flèches et validez avec Entrée. Échap annule.",
   "help.addHeading": "Ajouter un raccourci ou une catégorie",
   "help.adding": "Le bouton « + » ouvre le catalogue et propose de créer un raccourci ou une catégorie. « Déjà présent » indique un service déjà ajouté. La loupe recherche dans tous vos raccourcis.",
-  "help.categories": "Créez jusqu’à cinq catégories personnelles avec un nom de 16 caractères maximum et une icône au choix. Le crayon permet de les modifier. Les anciennes catégories dépassant ces limites sont conservées. Toutes les catégories restent visibles sans défilement horizontal.",
+  "help.categories": "Créez jusqu’à cinq catégories personnelles avec un nom de 16 caractères maximum et une icône au choix. Le crayon permet de les modifier. Les anciennes catégories dépassant ces limites sont conservées. Les catégories affichées se répartissent sans défilement horizontal.",
   "help.transferHeading": "Du téléphone à la Tesla",
   "help.stepPrepare": "Dans la Tesla, ouvrez Paramètres → Sauvegardes → Recevoir depuis mon téléphone.",
   "help.stepPublish": "Scannez le QR code affiché dans la Tesla avec votre téléphone.",
@@ -36,5 +36,8 @@
   "help.source": "Code source",
   "help.report": "Signaler un problème",
   "help.license": "EvPortal · Licence MIT",
-  "help.backupHeading": "Mes sauvegardes"
+  "help.backupHeading": "Mes sauvegardes",
+  "help.preferencesHeading": "Choisir son catalogue et son accueil",
+  "help.preferences": "Dans Paramètres → Catalogue et accueil, choisissez votre pays, les catégories à afficher et l’ouverture sur vos favoris. Le pays adapte les suggestions dans Ajouter ; il ne supprime pas vos raccourcis. Voir tous les pays élargit le catalogue. Une catégorie masquée conserve ses raccourcis dans Tous et Favoris. Ces choix restent sur cet appareil et ne sont pas transmis dans les sauvegardes ou par QR. Le pays initial est suggéré par la région du navigateur, sans demander votre position.",
+  "help.sharedServices": "Un service peut apparaître dans plusieurs catégories avec un seul favori et un seul compteur ; Tous ne l’affiche qu’une fois. Dans Modifier, ouvrez Autres catégories pour choisir où il apparaît. Supprimer une catégorie conserve les services encore présents dans une autre catégorie."
 }

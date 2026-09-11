@@ -58,6 +58,7 @@
     <script src="./js/i18n.js" defer></script>
     <script src="./js/catalog.js" defer></script>
     <script src="./js/state.js" defer></script>
+    <script src="./js/preferences.js" defer></script>
     <script src="./js/icons.js" defer></script>
     <script src="./js/vendor/Sortable.min.js" defer></script>
     <script src="./js/vendor/qrcode.min.js" defer></script>
@@ -134,6 +135,12 @@
                 </div>
                 <button id="pairReceiveButton" class="full-width receive-settings-button" type="button"><svg class="icon" aria-hidden="true"><use href="#icon-share"/></svg><span data-i18n="pair.receiveButton">Recevoir du téléphone</span></button>
             </section>
+            <details id="catalogPreferences"><summary data-i18n="prefs.title">Catalogue et accueil</summary>
+                <label for="marketSelect" data-i18n="prefs.country">Pays</label><select id="marketSelect" aria-describedby="marketHint"></select><p id="marketHint" class="field-help" data-i18n="prefs.marketHint">Le pays adapte la sélection proposée dans Ajouter.</p>
+                <label class="preference-check"><input id="homeFavoritesToggle" type="checkbox"><span data-i18n="prefs.homeFavorites">Ouvrir sur mes favoris</span></label>
+                <fieldset class="category-visibility"><legend data-i18n="prefs.visibleCategories">Catégories affichées</legend><div id="categoryVisibilityOptions" class="category-checks"></div></fieldset>
+                <p class="field-help" data-i18n="prefs.categoriesHint">Les raccourcis restent accessibles dans Tous et Favoris.</p>
+            </details>
             <button id="addShortcutButton" type="button" data-i18n="static.createShortcut">Créer un raccourci</button>
             <button id="addPageButton" type="button" data-i18n="static.createCategory">Créer une catégorie</button>
             <button id="teslaFullscreenButton" type="button" data-i18n="static.theater">Ouvrir le mode Théâtre Tesla</button>
@@ -147,7 +154,7 @@
     </dialog>
     <dialog id="shortcutDialog" aria-labelledby="shortcutDialogTitle">
         <div class="dialog-heading"><h2 id="shortcutDialogTitle" data-i18n="static.newShortcut">Nouveau raccourci</h2><button type="button" class="icon-button" data-close-dialog aria-label="Fermer" data-i18n-aria-label="static.close">×</button></div>
-        <form id="addShortcutForm"><label for="shortcutName" data-i18n="static.name">Nom</label><input id="shortcutName" type="text" placeholder="Mon service" data-i18n-placeholder="static.servicePlaceholder" required maxlength="100"><label for="shortcutURL" data-i18n="static.website">Adresse du site</label><input id="shortcutURL" type="url" dir="ltr" placeholder="https://exemple.fr" data-i18n-placeholder="static.urlPlaceholder" required maxlength="2048"><label for="shortcutCategory" data-i18n="static.category">Catégorie</label><select id="shortcutCategory" required></select><input id="shortcutDescription" type="hidden" value=""><p id="shortcutFormError" class="form-error" role="alert"></p><div class="dialog-actions"><button type="button" data-close-dialog data-i18n="static.cancel">Annuler</button><button class="primary-button" type="submit" data-i18n="static.add">Ajouter</button></div></form>
+        <form id="addShortcutForm"><label for="shortcutName" data-i18n="static.name">Nom</label><input id="shortcutName" type="text" placeholder="Mon service" data-i18n-placeholder="static.servicePlaceholder" required maxlength="100"><label for="shortcutURL" data-i18n="static.website">Adresse du site</label><input id="shortcutURL" type="url" dir="ltr" placeholder="https://exemple.fr" data-i18n-placeholder="static.urlPlaceholder" required maxlength="2048"><label for="shortcutCategory" data-i18n="static.category">Catégorie</label><select id="shortcutCategory" required></select><details id="shortcutAdditionalOptions"><summary data-i18n="app.otherCategories">Autres catégories</summary><div id="shortcutAdditionalCategories" class="category-checks"></div></details><input id="shortcutDescription" type="hidden" value=""><p id="shortcutFormError" class="form-error" role="alert"></p><div class="dialog-actions"><button type="button" data-close-dialog data-i18n="static.cancel">Annuler</button><button class="primary-button" type="submit" data-i18n="static.add">Ajouter</button></div></form>
     </dialog>
     <dialog id="importDialog" aria-labelledby="importDialogTitle">
         <div class="dialog-heading"><h2 id="importDialogTitle" data-i18n="static.importBackup">Importer une sauvegarde</h2><button type="button" class="icon-button" data-close-dialog aria-label="Fermer" data-i18n-aria-label="static.close">×</button></div>
@@ -197,7 +204,7 @@
     <dialog id="catalogDialog" class="catalog-dialog" aria-labelledby="catalogDialogTitle">
         <div class="dialog-heading"><h2 id="catalogDialogTitle" data-i18n="static.addShortcuts">Ajouter des raccourcis</h2><button type="button" class="icon-button" data-close-dialog aria-label="Fermer" data-i18n-aria-label="static.close">×</button></div>
         <div class="catalog-quick-actions"><button id="catalogCustomButton" class="primary-button" type="button"><svg class="icon" aria-hidden="true"><use href="#icon-plus"/></svg><span data-i18n="static.createShortcut">Créer un raccourci</span></button><button id="catalogCategoryButton" type="button"><svg class="icon" aria-hidden="true"><use href="#icon-folder"/></svg><span data-i18n="static.createCategory">Créer une catégorie</span></button></div><p id="catalogStatus" class="field-help" role="status"></p>
-        <label class="visually-hidden" for="catalogSearch" data-i18n="static.searchService">Rechercher un service</label><input id="catalogSearch" type="search" placeholder="Rechercher…" data-i18n-placeholder="static.searchPlaceholder" maxlength="150"><div id="catalogContent" class="catalog-content"></div>
+        <label class="visually-hidden" for="catalogSearch" data-i18n="static.searchService">Rechercher un service</label><input id="catalogSearch" type="search" placeholder="Rechercher…" data-i18n-placeholder="static.searchPlaceholder" maxlength="150"><label class="preference-check catalog-market-toggle"><input id="catalogMarketToggle" type="checkbox"><span data-i18n="prefs.showAllMarkets">Voir tous les pays</span></label><div id="catalogContent" class="catalog-content"></div>
     </dialog>
 </body>
 </html>

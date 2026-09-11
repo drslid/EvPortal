@@ -11,7 +11,7 @@
   "help.keyboard": "Con el teclado, selecciona un asa, pulsa Espacio, desplázate con las flechas y confirma con Intro. Escape cancela.",
   "help.addHeading": "Añadir un acceso directo o una categoría",
   "help.adding": "El botón + abre el catálogo y permite crear un acceso directo o una categoría. Ya añadido indica un servicio que ya está en tu panel. La lupa busca en todos tus accesos directos.",
-  "help.categories": "Crea hasta cinco categorías personales con nombres de un máximo de 16 caracteres y el icono que prefieras. Usa el lápiz para editarlas. Las categorías antiguas que superen estos límites se conservan. Todas las categorías permanecen visibles sin desplazamiento horizontal.",
+  "help.categories": "Crea hasta cinco categorías personales con nombres de un máximo de 16 caracteres y el icono que prefieras. Usa el lápiz para editarlas. Las categorías antiguas que superen estos límites se conservan. Las categorías visibles se distribuyen sin desplazamiento horizontal.",
   "help.transferHeading": "Del teléfono al Tesla",
   "help.stepPrepare": "En el Tesla, abre Ajustes → Copias de seguridad → Recibir desde mi teléfono.",
   "help.stepPublish": "Escanea con tu teléfono el código QR que aparece en el Tesla.",
@@ -36,5 +36,8 @@
   "help.source": "Código fuente",
   "help.report": "Informar de un problema",
   "help.license": "EvPortal · Licencia MIT",
-  "help.backupHeading": "Mis copias"
+  "help.backupHeading": "Mis copias",
+  "help.preferencesHeading": "Elegir el catálogo y la pantalla de inicio",
+  "help.preferences": "En Ajustes → Catálogo e inicio, elige tu país, las categorías visibles y si quieres abrir tus favoritos al inicio. El país adapta las sugerencias en Añadir; no elimina tus accesos directos. Ver todos los países amplía el catálogo. Los accesos de una categoría oculta siguen en Todos y Favoritos. Estas opciones se quedan en este dispositivo y no se incluyen en copias ni transferencias QR. El país inicial se sugiere según la región del navegador, sin pedir tu ubicación.",
+  "help.sharedServices": "Un servicio puede aparecer en varias categorías con un único favorito y contador; Todos lo muestra una sola vez. En Editar, abre Otras categorías para elegir dónde aparece. Al eliminar una categoría se conservan los servicios presentes en otra categoría."
 }

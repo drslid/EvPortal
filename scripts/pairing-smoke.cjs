@@ -31,11 +31,12 @@ let nextTTL = 300000, nextID = 1, dropNextSendResponse = false, browser;
     async function context(state, mobile) {
         const context = await browser.newContext({ viewport: mobile ? { width: 390, height: 844 } : { width: 1280, height: 900 }, locale: 'fr-FR', isMobile: Boolean(mobile), hasTouch: Boolean(mobile), reducedMotion: 'reduce' });
         context.on('page', page => page.on('pageerror', error => pageErrors.push(error.message)));
-        await context.addInitScript(initial => {
+        await context.addInitScript(({ initial, mobile }) => {
             if (!/^https?:$/.test(location.protocol)) return;
             if (!localStorage.getItem('evportal.state.v2')) localStorage.setItem('evportal.state.v2', JSON.stringify(initial));
             localStorage.setItem('evportal.telegraph.v1', JSON.stringify({ version: 1, accessToken: 'private-account-token-not-for-relay' }));
-        }, state);
+            if (!localStorage.getItem('evportal.preferences.v1')) localStorage.setItem('evportal.preferences.v1', JSON.stringify({ version: 1, market: mobile ? 'CA' : 'FR', homeFavorites: Boolean(mobile), hiddenCategoryIds: mobile ? ['personal'] : [] }));
+        }, { initial: state, mobile: Boolean(mobile) });
         await context.route('**/*', async route => {
             const request = route.request(), url = new URL(request.url());
             if (url.origin === origin && url.pathname.endsWith('/js/config.js')) return route.fulfill({ contentType: 'text/javascript', body: 'window.EV_CONFIG=Object.freeze({pairingRelayURL:' + JSON.stringify(relay) + '});' });
@@ -92,6 +93,7 @@ let nextTTL = 300000, nextID = 1, dropNextSendResponse = false, browser;
     assert.equal(credentials.token, firstSession.sendToken);
     assert.equal(credentials.receiveToken, undefined);
     const original = await receiver.evaluate(() => localStorage.getItem(EVState.STORAGE_KEY));
+    const receiverPreferences = await receiver.evaluate(() => localStorage.getItem(EVPreferences.STORAGE_KEY));
     const phoneContext = await context(fixture('Téléphone initial'), true);
     const phone = await phoneContext.newPage();
     await phone.goto(appURL, { waitUntil: 'networkidle' });
@@ -125,6 +127,8 @@ let nextTTL = 300000, nextID = 1, dropNextSendResponse = false, browser;
     assert.equal(applied.categories[0].shortcuts[0].clickCount, 9);
     assert.equal(applied.categories[0].icon, 'charging');
     assert.equal(applied.account, undefined);
+    assert.equal(await receiver.evaluate(() => localStorage.getItem(EVPreferences.STORAGE_KEY)), receiverPreferences, 'Phone country, home and hidden categories never replace receiver preferences');
+    for (const key of ['market', 'homeFavorites', 'hiddenCategoryIds']) assert.equal(Object.hasOwn(applied, key), false);
     assert.equal(await receiver.locator('#pairReceiveDialog').evaluate(dialog => dialog.open), false);
     await receiver.waitForFunction(() => document.querySelector('#statusMessage').textContent.includes('transférés'));
     assert.equal(firstSession.deleted, true);

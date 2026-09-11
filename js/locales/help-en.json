@@ -11,7 +11,7 @@
   "help.keyboard": "With a keyboard, focus a handle, press Space, move with the arrow keys, then confirm with Enter. Escape cancels.",
   "help.addHeading": "Add a shortcut or category",
   "help.adding": "The + button opens the catalogue and lets you create a shortcut or category. Already added marks a service already on your dashboard. Search looks through all your shortcuts.",
-  "help.categories": "Create up to five personal categories with names of up to 16 characters and an icon of your choice. Use the pencil to edit them. Existing categories exceeding these limits are kept. All categories remain visible without horizontal scrolling.",
+  "help.categories": "Create up to five personal categories with names of up to 16 characters and an icon of your choice. Use the pencil to edit them. Existing categories exceeding these limits are kept. Visible categories fit without horizontal scrolling.",
   "help.transferHeading": "From phone to Tesla",
   "help.stepPrepare": "In the Tesla, open Settings → Backups → Receive from my phone.",
   "help.stepPublish": "Scan the QR code displayed in the Tesla with your phone.",
@@ -36,5 +36,8 @@
   "help.source": "Source code",
   "help.report": "Report a problem",
   "help.license": "EvPortal · MIT License",
-  "help.backupHeading": "My backups"
+  "help.backupHeading": "My backups",
+  "help.preferencesHeading": "Choose your catalog and home screen",
+  "help.preferences": "In Settings → Catalog and home, choose your country, visible categories, and whether to start on your favorites. The country adjusts suggestions in Add; it does not remove your shortcuts. Show all countries expands the catalog. Shortcuts from a hidden category remain in All and Favorites. These choices stay on this device and are not included in backups or QR transfers. The initial country suggestion uses your browser’s region without requesting your location.",
+  "help.sharedServices": "A service can appear in several categories with one favorite status and one counter; All shows it only once. In Edit, open Other categories to choose where it appears. Deleting a category keeps services that also belong to another category."
 }

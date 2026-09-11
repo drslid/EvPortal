@@ -60,7 +60,7 @@ const otherTab=await car.newPage();
 await otherTab.goto('http://127.0.0.1:4187/');
 await otherTab.evaluate(()=>{const previous=JSON.parse(localStorage.getItem('evportal.previous-transfer.v1')); previous.categories[0].label='Updated recovery'; localStorage.setItem('evportal.previous-transfer.v1',JSON.stringify(previous));});
 await receiver.locator('#settingsButton').click();
-await receiver.locator('#settingsDialog details').evaluate(d=>d.open=true);
+await receiver.locator('#undoTransferButton').evaluate(button=>{button.closest('details').open=true;});
 await receiver.locator('#undoTransferButton').click();
 assert.equal(await receiver.evaluate(()=>JSON.parse(localStorage.getItem('evportal.state.v2')).categories[0].shortcuts[0].name),'Netflix');
 assert.equal(await receiver.evaluate(()=>JSON.parse(localStorage.getItem('evportal.state.v2')).categories[0].label),'Updated recovery');

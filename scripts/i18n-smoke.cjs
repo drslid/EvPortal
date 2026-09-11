@@ -92,6 +92,12 @@ let browser;
         await page.setViewportSize({ width: 390, height: 844 });
         await page.locator('#settingsButton').click();
         await verifyLanguageOptions(page);
+        await page.locator('#catalogPreferences').evaluate(details => { details.open = true; });
+        assert.equal(await page.locator('#catalogPreferences > summary').textContent(), dictionaries[language]['prefs.title']);
+        assert.equal(await page.locator('#marketSelect option[value="DE"]').textContent(), dictionaries[language]['prefs.country.DE']);
+        assert.equal(await page.locator('#marketSelect option[value="MX"]').textContent(), dictionaries[language]['prefs.country.MX']);
+        assert.ok(await page.locator('#settingsDialog').evaluate(dialog => dialog.scrollWidth <= dialog.clientWidth + 1), language + ' preferences overflow');
+        const marketBeforeLanguage = await page.locator('#marketSelect').inputValue();
         for (const id of ['shareButton', 'importConfigButton', 'pairReceiveButton']) {
             assert.equal(await page.locator('#backupSettings #' + id).isVisible(), true, 'Backup actions stay together in Settings');
         }
@@ -102,6 +108,8 @@ let browser;
         const other = language === 'en' ? 'fr' : 'en';
         await page.locator('#languageSelect').selectOption(other);
         assert.equal(await page.locator('html').getAttribute('lang'), other);
+        assert.equal(await page.locator('#marketSelect').inputValue(), marketBeforeLanguage, 'Interface language never changes the catalog country');
+        assert.equal(await page.locator('#marketSelect option[value="DE"]').textContent(), dictionaries[other]['prefs.country.DE']);
         await page.locator('#languageSelect').selectOption(language);
         assert.equal(await page.evaluate(() => localStorage.getItem(EVState.STORAGE_KEY)), before, 'Language leaves shortcut configuration untouched');
         await page.locator('#importConfigButton').click();

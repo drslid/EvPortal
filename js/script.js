@@ -21,8 +21,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let storage;
     try { storage = window.localStorage; } catch (_) { storage = null; }
-    const loaded = Core.loadState(storage, catalog);
+    let preferenceStore = window.EVPreferences.createPreferences(storage);
+    let preferences = preferenceStore.read();
+    const loaded = Core.loadState(storage, catalog, { market: preferences.market });
     let state = loaded.state;
+    if (preferences.homeFavorites) state.activeCategory = 'favorites';
+    else if (preferences.hiddenCategoryIds.includes(state.activeCategory)) state.activeCategory = 'all';
     let storageLocked = loaded.locked;
     let storageWarningKey = loaded.warning ? 'state.storageWarning' : '';
     let storageWarning = storageWarningKey ? t(storageWarningKey) : '';
@@ -42,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
         previousTransfer = null;
         try {
             const savedTransfer = storage && storage.getItem(PREVIOUS_TRANSFER_KEY);
-            if (savedTransfer) previousTransfer = Core.normalizeState(JSON.parse(savedTransfer));
+            if (savedTransfer) previousTransfer = Core.applyCatalogUpdates(Core.normalizeState(JSON.parse(savedTransfer)), catalog).state;
         } catch (_) { /* A damaged recovery copy must not prevent startup. */ }
         $('undoTransferButton').hidden = !previousTransfer;
     }
@@ -108,10 +112,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function allShortcuts() {
-        const positions = new Map((state.shortcutOrder || []).map(function (id, index) { return [id, index]; }));
-        return state.categories.flatMap(function (category) {
-            return category.shortcuts.map(function (shortcut) { return { category: category, shortcut: shortcut }; });
-        }).sort(function (a, b) { return (positions.get(a.shortcut.id) ?? Infinity) - (positions.get(b.shortcut.id) ?? Infinity); });
+        return Core.shortcutsForCategory(state, 'all');
     }
 
     function selectCategory(categoryID) {
@@ -126,8 +127,48 @@ document.addEventListener('DOMContentLoaded', function () {
         return I18n.category(category, catalog);
     }
 
+    function updatePreferences(changes) {
+        preferences = preferenceStore.patch(changes);
+        if (!preferenceStore.persistent) announce(t('app.storageUnavailable'), true);
+    }
+
+    function renderPreferences() {
+        const country = $('marketSelect');
+        country.replaceChildren();
+        window.EVPreferences.MARKETS.forEach(function (market) {
+            const option = element('option', '', t('prefs.country.' + market));
+            option.value = market;
+            country.append(option);
+        });
+        country.value = preferences.market;
+        $('homeFavoritesToggle').checked = preferences.homeFavorites;
+        const fragment = document.createDocumentFragment();
+        state.categories.forEach(function (category) {
+            const label = element('label', 'category-check');
+            const input = element('input');
+            input.type = 'checkbox';
+            input.value = category.id;
+            input.checked = !preferences.hiddenCategoryIds.includes(category.id);
+            input.addEventListener('change', function () {
+                const hidden = new Set(preferences.hiddenCategoryIds);
+                if (input.checked) hidden.delete(category.id); else hidden.add(category.id);
+                updatePreferences({ hiddenCategoryIds: Array.from(hidden) });
+                render();
+            });
+            label.append(input, element('span', '', categoryLabel(category)));
+            fragment.append(label);
+        });
+        $('categoryVisibilityOptions').replaceChildren(fragment);
+    }
+    $('marketSelect').addEventListener('change', function () { updatePreferences({ market: this.value }); });
+    $('homeFavoritesToggle').addEventListener('change', function () { updatePreferences({ homeFavorites: this.checked }); });
+
     function matchesShortcut(shortcut, category, search) {
-        return Core.matches(shortcut, Object.assign({}, category, { label: categoryLabel(category) }), search);
+        const labels = (shortcut.categoryIds || [category.id]).map(function (id) {
+            const member = state.categories.find(function (item) { return item.id === id; }) || catalog.categories.find(function (item) { return item.id === id; });
+            return member ? categoryLabel(member) : '';
+        });
+        return Core.matches(shortcut, Object.assign({}, category, { label: labels.join(' ') }), search);
     }
 
     function navItem(categoryID, label, categoryIcon) {
@@ -204,8 +245,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function commitOrder(kind, list) {
         if (kind === 'category') {
-            const positions = new Map(Array.from(list.querySelectorAll('.is-sortable-category')).map(function (node, index) { return [node.dataset.categoryId, index]; }));
-            state.categories.sort(function (a, b) { return positions.get(a.id) - positions.get(b.id); });
+            const visibleIDs = Array.from(list.querySelectorAll('.is-sortable-category')).map(function (node) { return node.dataset.categoryId; });
+            const visible = new Set(visibleIDs);
+            const byID = new Map(state.categories.map(function (category) { return [category.id, category]; }));
+            let index = 0;
+            state.categories = state.categories.map(function (category) { return visible.has(category.id) ? byID.get(visibleIDs[index++]) : category; });
         } else {
             state = Core.reorderShortcuts(state, Array.from(list.querySelectorAll('.shortcut')).map(function (node) { return node.dataset.shortcutId; }));
         }
@@ -246,14 +290,14 @@ document.addEventListener('DOMContentLoaded', function () {
         fragment.appendChild(navItem('all', t('app.all')));
         fragment.appendChild(navItem('favorites', t('app.favorites')));
         state.categories.forEach(function (category) {
+            if (preferences.hiddenCategoryIds.includes(category.id)) return;
             const item = navItem(category.id, categoryLabel(category), category.icon);
             item.classList.add('is-sortable-category');
             if (isEditMode) {
                 const controls = element('div', 'category-actions');
                 const edit = action(t('app.editCategory', { name: categoryLabel(category) }), '✎', function () { openCategoryDialog(category); });
                 const remove = action(t('app.deleteCategory', { name: categoryLabel(category) }), '×', function () {
-                    state.categories = state.categories.filter(function (item) { return item.id !== category.id; });
-                    if (state.activeCategory === category.id) state.activeCategory = 'all';
+                    state = Core.removeCategory(state, category.id);
                     persist(t('app.categoryDeleted'));
                     render('nav-' + state.activeCategory);
                 }, 'icon-button danger');
@@ -326,9 +370,9 @@ document.addEventListener('DOMContentLoaded', function () {
             const controls = element('div', 'shortcut-actions');
             const edit = action(t('app.editShortcut', { name: shortcut.name }), '✎', function () { openShortcutDialog(category, shortcut); });
             const remove = action(t('app.deleteShortcut', { name: shortcut.name }), '×', function () {
-                category.shortcuts = category.shortcuts.filter(function (item) { return item.id !== shortcut.id; });
+                state = Core.removeShortcut(state, shortcut.id);
                 persist(t('app.shortcutDeleted'));
-                render('nav-' + category.id);
+                render('nav-' + state.activeCategory);
             }, 'icon-button danger');
             if (state.activeCategory !== 'all') controls.appendChild(dragHandle('shortcut', shortcut.id, shortcut.name));
             controls.append(edit, remove);
@@ -351,7 +395,7 @@ document.addEventListener('DOMContentLoaded', function () {
             title = t('app.myFavorites');
             description = t('app.favoritesDescription');
         } else if (category) {
-            rows = rows.filter(function (row) { return row.category.id === category.id; });
+            rows = Core.shortcutsForCategory(state, category.id);
             title = categoryLabel(category);
             description = t('app.categoryDescription');
         }
@@ -376,6 +420,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function render(focusKey) {
+        if (preferences.hiddenCategoryIds.includes(state.activeCategory)) state.activeCategory = 'all';
         usageNeedsRender = false;
         keyboardDrag = null;
         if (tileSortable) { tileSortable.destroy(); tileSortable = null; }
@@ -455,6 +500,8 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
         selector.value = category ? category.id : (state.categories.some(function (item) { return item.id === state.activeCategory; }) ? state.activeCategory : state.categories[0].id);
+        selector.dataset.previousCategory = selector.value;
+        selector.dataset.previousExplicit = 'false';
         const heading = $('shortcutDialog').querySelector('h2');
         if (heading) heading.textContent = shortcut ? t('app.editShortcutTitle') : t('app.addShortcutTitle');
         const submit = $('addShortcutForm').querySelector('[type="submit"]');
@@ -464,9 +511,43 @@ document.addEventListener('DOMContentLoaded', function () {
             $('shortcutURL').value = shortcut.url;
             $('shortcutDescription').value = shortcut.description;
         }
+        renderAdditionalCategories(shortcut ? (shortcut.categoryIds || [category.id]) : []);
+        $('shortcutAdditionalOptions').open = Boolean(shortcut && (shortcut.categoryIds || []).length > 1);
         openDialog($('shortcutDialog'));
         $('shortcutName').focus();
     }
+
+    function selectedAdditionalCategories() {
+        return Array.from($('shortcutAdditionalCategories').querySelectorAll('input:checked')).map(function (input) { return input.value; });
+    }
+
+    function renderAdditionalCategories(selected) {
+        const primary = $('shortcutCategory').value;
+        const fragment = document.createDocumentFragment();
+        state.categories.forEach(function (category) {
+            if (category.id === primary) return;
+            const label = element('label', 'category-check');
+            const input = element('input');
+            input.type = 'checkbox';
+            input.value = category.id;
+            input.checked = selected.includes(category.id);
+            label.append(input, element('span', '', categoryLabel(category)));
+            fragment.append(label);
+        });
+        $('shortcutAdditionalCategories').replaceChildren(fragment);
+        $('shortcutAdditionalOptions').hidden = state.categories.length < 2;
+    }
+    $('shortcutCategory').addEventListener('change', function () {
+        const selected = selectedAdditionalCategories();
+        const explicitlySelected = selected.includes(this.value);
+        // Existing memberships survive a change of primary category. A new
+        // shortcut keeps only categories the user explicitly selected.
+        if (editingShortcut || this.dataset.previousExplicit === 'true') selected.push(this.dataset.previousCategory);
+        renderAdditionalCategories(selected);
+        this.dataset.previousCategory = this.value;
+        this.dataset.previousExplicit = String(explicitlySelected);
+        $('shortcutAdditionalOptions').open = selectedAdditionalCategories().length > 0;
+    });
 
     function openCategoryDialog(category) {
         editingCategoryID = category ? category.id : null;
@@ -547,25 +628,19 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             const category = state.categories.find(function (item) { return item.id === $('shortcutCategory').value; });
             if (!category) throw new Error(t('app.selectCategory'));
-            const originalCategory = editingShortcut && state.categories.find(function (item) { return item.id === editingShortcut.category.id; });
-            const originalShortcut = originalCategory && originalCategory.shortcuts.find(function (item) { return item.id === editingShortcut.shortcut.id; });
+            const originalEntry = editingShortcut && Core.getShortcutEntry(state, editingShortcut.shortcut.id);
+            const originalShortcut = originalEntry && originalEntry.shortcut;
             if (editingShortcut && !originalShortcut) throw new Error(t('app.shortcutGone'));
             if (!editingShortcut && allShortcuts().length >= Core.MAX_SHORTCUTS) throw new Error(t('app.shortcutLimit'));
             const url = Core.normalizeURL($('shortcutURL').value);
             const name = $('shortcutName').value.trim();
             const description = $('shortcutDescription').value.trim();
             if (!name || name.length > 100 || description.length > 300) throw new Error(t('app.shortcutFieldsInvalid'));
-            if (category.shortcuts.some(function (item) { return item.url === url && (!editingShortcut || item.id !== editingShortcut.shortcut.id); })) throw new Error(t('app.shortcutDuplicate'));
+            if ((!originalShortcut || originalShortcut.url !== url) && allShortcuts().some(function (row) { return row.shortcut.url === url && (!editingShortcut || row.shortcut.id !== editingShortcut.shortcut.id); })) throw new Error(t('app.shortcutDuplicate'));
+            const memberships = [category.id].concat(selectedAdditionalCategories().filter(function (id) { return id !== category.id; }));
             if (editingShortcut) {
-                const shortcut = originalShortcut;
-                shortcut.name = name;
-                shortcut.url = url;
-                shortcut.description = description;
-                if (originalCategory.id !== category.id) {
-                    originalCategory.shortcuts = originalCategory.shortcuts.filter(function (item) { return item.id !== shortcut.id; });
-                    category.shortcuts.push(shortcut);
-                }
-            } else category.shortcuts.push({ id: Core.id('link'), name: name, url: url, description: description, tag: '', color: '#5476ee', favorite: false, clickCount: 0 });
+                state = Core.updateShortcut(state, originalShortcut.id, { name: name, url: url, description: description, categoryIds: memberships }, category.id);
+            } else state = Core.addShortcut(state, category.id, { id: Core.id('link'), name: name, url: url, description: description, categoryIds: memberships, tag: '', color: '#5476ee', favorite: false, clickCount: 0 });
             state.activeCategory = category.id;
             query = '';
             $('searchInput').value = '';
@@ -577,36 +652,40 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function renderCatalog() {
         const search = $('catalogSearch').value.trim();
-        const existing = new Set(allShortcuts().map(function (row) { return row.shortcut.url; }));
+        const installed = allShortcuts();
+        const existingURLs = new Set(installed.map(function (row) { return row.shortcut.url; }));
+        const existingServices = new Set(installed.map(function (row) { return row.shortcut.serviceId; }).filter(Boolean));
+        const entries = Core.catalogServices(catalog, { market: $('catalogMarketToggle').checked ? 'ALL' : preferences.market, includeOptional: true });
         const fragment = document.createDocumentFragment();
         let count = 0;
         let available = 0;
         catalog.categories.forEach(function (category) {
-            const shortcuts = category.shortcuts.filter(function (shortcut) { return matchesShortcut(shortcut, category, search); });
+            const shortcuts = entries.filter(function (entry) { return entry.category.id === category.id && matchesShortcut(entry.shortcut, category, search); }).map(function (entry) { return entry.shortcut; });
             if (!shortcuts.length) return;
             const section = element('section', 'catalog-section');
             section.appendChild(element('h3', '', categoryLabel(category)));
             shortcuts.forEach(function (shortcut) {
                 count += 1;
                 const row = element('div', 'catalog-item');
+                row.dataset.serviceId = shortcut.serviceId;
                 const copy = element('div', 'catalog-copy');
-                copy.append(element('strong', '', shortcut.name), element('p', '', new URL(shortcut.url).hostname));
-                const present = existing.has(Core.normalizeURL(shortcut.url));
+                const memberships = (shortcut.categoryIds || [category.id]).map(function (id) {
+                    const member = catalog.categories.find(function (item) { return item.id === id; });
+                    return member ? categoryLabel(member) : '';
+                }).filter(Boolean);
+                copy.append(element('strong', '', shortcut.name), element('p', '', memberships.length > 1 ? memberships.join(' · ') : new URL(shortcut.url).hostname));
+                const present = existingServices.has(shortcut.serviceId) || existingURLs.has(Core.normalizeURL(shortcut.url));
                 if (!present) available += 1;
                 const add = action(t(present ? 'app.alreadyPresentNamed' : 'app.addNamed', { name: shortcut.name }), present ? t('app.alreadyPresent') : t('app.add'), function () {
-                    if (allShortcuts().length >= Core.MAX_SHORTCUTS) { announce(t('app.shortcutLimit'), true); return; }
-                    let destination = state.categories.find(function (item) { return item.id === category.id; });
-                    if (!destination) {
-                        if (state.categories.length >= Core.MAX_CATEGORIES) { announce(t('app.totalCategoryLimit'), true); return; }
-                        destination = { id: category.id, label: category.label, icon: category.icon || category.id, description: category.description, shortcuts: [] };
-                        state.categories.push(destination);
-                    }
-                    destination.shortcuts.push({ id: Core.id('link'), name: shortcut.name, url: Core.normalizeURL(shortcut.url), description: shortcut.description || '', tag: shortcut.tag || '', color: shortcut.color || '#5476ee', favorite: false, clickCount: 0 });
-                    persist(t('app.addedToCategory', { name: shortcut.name, category: categoryLabel(destination) }));
-                    render();
-                    renderCatalog();
-                    const next = Array.from($('catalogContent').querySelectorAll('.catalog-add')).find(function (button) { return !button.disabled; });
-                    if (next) next.focus({ preventScroll: true });
+                    try {
+                        if (allShortcuts().length >= Core.MAX_SHORTCUTS) throw new Error(t('app.shortcutLimit'));
+                        state = Core.addCatalogService(state, catalog, shortcut.serviceId);
+                        persist(t('app.addedToCategory', { name: shortcut.name, category: categoryLabel(category) }));
+                        render();
+                        renderCatalog();
+                        const next = Array.from($('catalogContent').querySelectorAll('.catalog-add')).find(function (button) { return !button.disabled; });
+                        if (next) next.focus({ preventScroll: true });
+                    } catch (error) { announce(error.message, true); }
                 }, 'button catalog-add' + (present ? ' is-added' : ''));
                 add.disabled = present;
                 row.append(copy, add);
@@ -626,6 +705,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function openCatalog() {
         $('catalogSearch').value = '';
+        $('catalogMarketToggle').checked = false;
         renderCatalog();
         openDialog($('catalogDialog'));
         $('catalogSearch').focus();
@@ -640,6 +720,7 @@ document.addEventListener('DOMContentLoaded', function () {
         openCategoryDialog();
     });
     $('catalogSearch').addEventListener('input', renderCatalog);
+    $('catalogMarketToggle').addEventListener('change', renderCatalog);
 
     function openImport(proposal) {
         backupPickerAttempt += 1;
@@ -861,7 +942,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if ($('settingsDialog')) closeDialog($('settingsDialog'));
         if (!window.confirm(t('app.confirmReset'))) return;
         const theme = state.theme;
-        state = Core.fromCatalog(catalog);
+        state = Core.fromCatalog(catalog, { market: preferences.market });
         state.theme = theme;
         storageLocked = false;
         storageWarningKey = '';
@@ -911,7 +992,7 @@ document.addEventListener('DOMContentLoaded', function () {
         $('fullscreenButton').setAttribute('aria-label', active ? t('app.exitFullscreen') : t('app.enterFullscreen'));
         $('fullscreenButton').title = active ? t('app.exitFullscreen') : t('app.enterFullscreen');
     });
-    if ($('settingsButton')) $('settingsButton').addEventListener('click', function () { openDialog($('settingsDialog')); });
+    if ($('settingsButton')) $('settingsButton').addEventListener('click', function () { renderPreferences(); openDialog($('settingsDialog')); });
     function toggleSearch(show) {
         const panel = $('searchPanel');
         if (!panel) { $('searchInput').focus(); return; }
@@ -931,12 +1012,20 @@ document.addEventListener('DOMContentLoaded', function () {
         if (event.key === 'Escape' && document.activeElement === $('searchInput')) { toggleSearch(false); }
     });
     window.addEventListener('storage', function (event) {
+        if (event.key === window.EVPreferences.STORAGE_KEY || event.key === null) {
+            preferenceStore = window.EVPreferences.createPreferences(storage);
+            preferences = preferenceStore.read();
+            renderPreferences();
+            render();
+            if ($('catalogDialog').open) renderCatalog();
+        }
         if (event.key === PREVIOUS_TRANSFER_KEY || event.key === null) refreshPreviousTransfer();
         if (event.key !== Core.STORAGE_KEY || !event.newValue || storageLocked) return;
         try {
-            state = Core.normalizeState(JSON.parse(event.newValue));
+            state = Core.applyCatalogUpdates(Core.normalizeState(JSON.parse(event.newValue)), catalog).state;
             applyTheme();
             render();
+            if ($('catalogDialog').open) renderCatalog();
             announce(t('app.syncedFromTab'));
         } catch (_) { announce(t('app.unreadableTabState'), true); }
     });
@@ -956,6 +1045,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function refreshLanguage() {
         I18n.translateDOM(document);
+        renderPreferences();
         if ($('languageSelect')) $('languageSelect').value = I18n.language;
         if (storageWarningKey) storageWarning = t(storageWarningKey);
         if (!$('statusMessage').hidden || storageWarning) announce(retranslateMessage(lastAnnouncement), lastAnnouncementIsError);
@@ -983,6 +1073,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if ($(id)) $(id).textContent = retranslateMessage($(id).textContent);
         });
         if ($('catalogDialog').open) renderCatalog();
+        if ($('shortcutDialog').open) renderAdditionalCategories(selectedAdditionalCategories());
         const activeFullscreen = Boolean(document.fullscreenElement);
         const fullscreenLabel = t(activeFullscreen ? 'app.exitFullscreen' : 'app.enterFullscreen');
         $('fullscreenButton').setAttribute('aria-label', fullscreenLabel);

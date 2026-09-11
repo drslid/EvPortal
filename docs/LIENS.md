@@ -1,6 +1,59 @@
 # Audit et entretien du catalogue EvPortal
 
-Audit réalisé le **10 septembre 2026**. Version éditoriale : **2026-09**.
+Version actuelle : **2026-09-curated**, revue le **11 septembre 2026**. Le catalogue contient **147 services uniques**, dont **35 facultatifs** ; les 112 autres sont proposés à la première installation selon le pays choisi. Les contrôles historiques du 10 septembre sont conservés plus bas avec leurs résultats d’origine.
+
+## Sélection du 11 septembre 2026
+
+Chaque service possède un `serviceId` stable, une URL principale et des `categoryIds`. ABRP appartient à Recharge et Navigation, avec Recharge comme propriétaire ; CANAL+ et Pluto TV appartiennent à Cinéma et Télévision, avec Cinéma comme propriétaire. Chaque service est enregistré une seule fois : la présence dans deux catégories ne crée pas un deuxième favori ou compteur de clics. Gulli est déplacé de Cinéma à Télévision.
+
+Pluto TV utilise désormais l’accueil [pluto.tv](https://pluto.tv/), commun au direct et à la demande. Ses anciennes entrées `/fr/`, `/fr/watch/live-tv/` et `/live-tv` sont reconnues explicitement. Les migrations s’appuient sur les anciennes URL et identités connues ; un nom seul n’identifie pas un raccourci personnel.
+
+La catégorie Jeux démarre avec **CrazyGames, 2048, Lichess, Little Alchemy 2 et Infinite Craft**. Les autres jeux, notamment Poki et les portails similaires, restent disponibles dans Ajouter. Tous les réseaux sociaux et les outils de travail Google Drive, Gmail, Google Agenda, GitHub, Notion, Google Docs, Outlook et OneDrive sont facultatifs (`defaultIncluded: false`). DeepL, Wikipédia et FAST.com restent proposés par défaut.
+
+Les préférences de pays filtrent la sélection initiale et les propositions d’Ajouter ; elles ne suppriment aucun raccourci déjà installé. Le choix **Tous les pays** désactive ce filtre. Les pays proposés sont FR, CA, US, MX, BE, GB, DE, ES, IT, PT, AU, NZ et CH. Le catalogue conserve aussi les codes d’autres pays cités par un éditeur, comme les pays africains couverts par TF1+.
+
+### Régions documentées
+
+`countries` constitue une recommandation éditoriale par pays pour cette destination. L’absence de ce champ signifie qu’aucun filtre régional n’a été défini, pas qu’un service est garanti partout. Les droits peuvent varier selon le programme, le compte, le pays de résidence et le voyage en cours.
+
+| Service | Pays recommandés | Source et nuance |
+| --- | --- | --- |
+| Crave | CA | La [fiche publiée par Bell Media](https://play.google.com/store/apps/details?id=ca.bellmedia.cravetv), mise à jour en septembre 2026, précise une disponibilité au Canada uniquement. |
+| STARZ.com | US | Les [conditions du service STARZ](https://resources.starz.com/legal/spi-terms-web-us-en.html) limitent cette plateforme aux États-Unis et territoires couverts. Le bouquet STARZ d’un autre fournisseur, notamment Crave au Canada, est un accès distinct. |
+| iHeartRadio | US, CA, MX, AU, NZ | Liste des cinq pays publiée dans l’[aide officielle iHeart](https://help.iheart.com/hc/en-us/articles/228919427-Is-iHeartRadio-available-in-my-country). |
+| RTBF Auvio | BE | La [RTBF indique que certains contenus sont géobloqués en Belgique](https://support.rtbf.be/hc/fr-fr/articles/15710758810513-Probl%C3%A8mes-de-lecture-avec-le-replay-ou-le-direct). Cela ne concerne pas nécessairement tout le catalogue. Une portabilité européenne existe pour les résidents belges éligibles. |
+| Molotov | FR | L’[assistance Molotov](https://aide.molotov.tv/hc/fr/articles/6042369113105-Acc%C3%A9der-%C3%A0-Molotov-hors-du-territoire-fran%C3%A7ais) documente l’accès en déplacement européen pour les résidents français avec abonnement payant. Les pays de voyage ne sont pas traités comme des pays de résidence. |
+| TF1+ | FR, BE, LU, CH et 22 pays africains | La [liste internationale TF1+](https://help.tf1.fr/hc/fr/articles/19337708703634-La-plateforme-TF1-est-elle-disponible-%C3%A0-l-International), actualisée le 3 août 2026, inclut 26 pays. Les chaînes et programmes peuvent différer selon le pays ; TF1+ n’est donc pas classé « France uniquement ». |
+
+### Quinze nouveaux services
+
+Les liens du tableau sont les destinations officielles consultées. Contrôle HTTP ciblé du 11 septembre : **12 réponses 200 et 3 réponses 403**, aucun 404/410. Les trois protections concernent Electricity Maps, Infinite Craft et Atlas Obscura ; leurs pages ont également été consultées avec le moteur web. Une protection contre un client automatisé ne démontre pas qu’un site est inaccessible au conducteur.
+
+| Catégorie | Service et destination officielle | Usage |
+| --- | --- | --- |
+| Cinéma | [JustWatch](https://www.justwatch.com/fr) | Trouver les plateformes proposant un film ou une série. |
+| Cinéma | [ONF — Office national du film](https://www.onf.ca/) | Documentaires et animation du catalogue canadien. |
+| Musique | [SomaFM](https://somafm.com/) | Radios indépendantes par genre et ambiance, financées par les auditeurs. |
+| Musique | [Radio Paradise](https://radioparadise.com/) | Radio musicale et différents mix. |
+| Musique | [myNoise](https://mynoise.net/) | Ambiances sonores et sons de nature personnalisables. |
+| Télévision | [NASA+](https://plus.nasa.gov/) | Missions spatiales, directs et documentaires. |
+| Recharge | [Electricity Maps](https://app.electricitymaps.com/) | Carte du mix électrique et de l’intensité carbone, pas un tarif de recharge. |
+| Jeux | [Little Alchemy 2](https://littlealchemy2.com/) | Combinaisons d’éléments dans un jeu direct. |
+| Jeux | [Infinite Craft](https://neal.fun/infinite-craft/) | Jeu de combinaisons et de découverte. |
+| Navigation | [Wikivoyage](https://fr.wikivoyage.org/wiki/Accueil) | Guides de voyage collaboratifs. |
+| Navigation | [Atlas Obscura](https://www.atlasobscura.com/) | Lieux insolites et idées d’étapes. |
+| Actualités | [Techmeme](https://www.techmeme.com/) | Sélection de titres technologiques en anglais. |
+| Météo | [Zoom Earth](https://zoom.earth/) | Images satellite, radar et suivi des tempêtes. |
+| Météo | [LightningMaps](https://www.lightningmaps.org/) | Impacts de foudre détectés ; couverture dépendant du réseau de capteurs. |
+| Outils | [FAST.com](https://fast.com/) | Mesure du débit Internet ; le test consomme des données. |
+
+Les quinze logos ont été téléchargés une seule fois pour être servis localement, sans requête externe à chaque affichage. Douze proviennent directement des favicons déclarés par les éditeurs, trois du cache de favicons Google ; l’URL de récupération, l’origine connue, les dimensions, la date et l’empreinte SHA-256 figurent dans `img/services/sources.json`. Les 128 logos existants ont été conservés : 143 domaines sont couverts au total, plusieurs services partageant un domaine.
+
+Les vérifications portent sur les destinations et les fichiers locaux. Elles ne constituent pas un test de lecture avec DRM, de connexion à un compte ni de fonctionnement réel dans le navigateur Tesla.
+
+## Audit historique du 10 septembre 2026
+
+Version éditoriale à cette date : **2026-09**.
 
 Le catalogue passe de **121 raccourcis à 135** : **22 destinations actualisées**, **18 ajouts** et **4 retraits de la sélection par défaut**. Les dix identifiants de catégories historiques restent stables. Chaque service dispose désormais d’un nom lisible et d’une description française ; des indications de compte, de région ou de téléphone complètent les entrées concernées.
 
@@ -22,7 +75,7 @@ Le dernier chemin Deezer `/fr/channels/explore` a également été vérifié sé
 
 ## Destinations mises à jour
 
-Le tableau correspond aux objets `replacements` de `js/catalog.js`. Les URL d’origine sont exactes pour permettre une migration ciblée ; aucun joker de domaine n’est utilisé.
+Le tableau conserve les corrections du 10 septembre. L’entrée Pluto TV a ensuite été réunie sur `https://pluto.tv/`, comme documenté ci-dessus. Les URL d’origine sont exactes pour permettre une migration ciblée ; aucun joker de domaine n’est utilisé.
 
 | Service | Ancienne URL | Nouvelle URL | Justification |
 | --- | --- | --- | --- |

@@ -11,7 +11,7 @@
   "help.keyboard": "Com o teclado, selecione uma pega, prima Espaço, mova com as setas e confirme com Enter. Escape cancela.",
   "help.addHeading": "Adicionar um atalho ou uma categoria",
   "help.adding": "O botão + abre o catálogo e permite criar um atalho ou uma categoria. Já adicionado indica um serviço que já foi adicionado. A lupa pesquisa em todos os seus atalhos.",
-  "help.categories": "Crie até cinco categorias pessoais com nomes de até 16 caracteres e um ícone à escolha. Use o lápis para as editar. As categorias antigas que ultrapassem estes limites são mantidas. Todas as categorias ficam visíveis sem deslocamento horizontal.",
+  "help.categories": "Crie até cinco categorias pessoais com nomes de até 16 caracteres e um ícone à escolha. Use o lápis para as editar. As categorias antigas que ultrapassem estes limites são mantidas. As categorias visíveis distribuem-se sem deslocamento horizontal.",
   "help.transferHeading": "Do telemóvel para o Tesla",
   "help.stepPrepare": "No Tesla, abre Definições → Cópias de segurança → Receber do meu telemóvel.",
   "help.stepPublish": "Lê com o telemóvel o código QR apresentado no Tesla.",
@@ -36,5 +36,8 @@
   "help.source": "Código-fonte",
   "help.report": "Comunicar um problema",
   "help.license": "EvPortal · Licença MIT",
-  "help.backupHeading": "As minhas cópias"
+  "help.backupHeading": "As minhas cópias",
+  "help.preferencesHeading": "Escolher o catálogo e o ecrã inicial",
+  "help.preferences": "Em Definições → Catálogo e início, escolhe o país, as categorias visíveis e se queres abrir os favoritos ao iniciar. O país adapta as sugestões em Adicionar; não elimina os teus atalhos. Ver todos os países alarga o catálogo. Os atalhos de uma categoria oculta continuam em Todos e Favoritos. Estas escolhas ficam neste dispositivo e não são incluídas nas cópias nem nas transferências QR. O país inicial é sugerido pela região do navegador, sem pedir a tua localização.",
+  "help.sharedServices": "Um serviço pode aparecer em várias categorias com um único estado de favorito e contador; Todos apresenta-o uma só vez. Em Editar, abre Outras categorias para escolher onde aparece. Eliminar uma categoria mantém os serviços que também pertencem a outra categoria."
 }
