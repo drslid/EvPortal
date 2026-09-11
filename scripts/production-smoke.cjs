@@ -137,7 +137,11 @@ function matchesResponse(response, method, url) {
     session = await createdResponse.json();
     check(/^[a-f0-9]{32}$/.test(session.id) && /^[a-f0-9]{64}$/.test(session.receiveToken) && /^[a-f0-9]{64}$/.test(session.sendToken), 'Relay returned invalid session credentials');
     for (const value of [session.id, session.receiveToken, session.sendToken]) privateValues.add(value);
-    check(Number.isSafeInteger(session.expiresAt) && session.expiresAt > Date.now() && session.expiresAt <= Date.now() + 300000, 'Relay session expiration is invalid');
+    // Match the deployed client's tolerance for clock differences with the
+    // Worker. Its HTTP Date checks the five-minute maximum with second precision.
+    const relayDate = Date.parse(createdResponse.headers().date);
+    check(Number.isSafeInteger(session.expiresAt) && session.expiresAt > Date.now() && session.expiresAt <= Date.now() + 360000, 'Relay session expiration is invalid');
+    check(Number.isFinite(relayDate) && session.expiresAt > relayDate && session.expiresAt <= relayDate + 301000, 'Relay session exceeds the five-minute server lifetime');
     await receiver.locator('#pairReceiveQRCode').waitFor({ state: 'visible' });
     const pixels = await receiver.locator('#pairReceiveQRCode canvas').evaluate(canvas => ({
         width: canvas.width, height: canvas.height,
