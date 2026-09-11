@@ -58,6 +58,7 @@
     <script src="./js/i18n.js" defer></script>
     <script src="./js/catalog.js" defer></script>
     <script src="./js/state.js" defer></script>
+    <script src="./js/backups.js" defer></script>
     <script src="./js/preferences.js" defer></script>
     <script src="./js/icons.js" defer></script>
     <script src="./js/vendor/Sortable.min.js" defer></script>
@@ -126,25 +127,28 @@
     <dialog id="settingsDialog" aria-labelledby="settingsTitle">
         <div class="dialog-heading"><h2 id="settingsTitle" data-i18n="static.settings">Paramètres</h2><button type="button" class="icon-button" data-close-dialog aria-label="Fermer" data-i18n-aria-label="static.close">×</button></div>
         <div class="settings-list">
-            <div class="language-setting"><label for="languageSelect" data-i18n="static.language">Langue</label><select id="languageSelect" dir="ltr"><option value="en" lang="en">🇬🇧 English</option><option value="fr" lang="fr">🇫🇷 Français</option><option value="es" lang="es">🇪🇸 Español</option><option value="de" lang="de">🇩🇪 Deutsch</option><option value="it" lang="it">🇮🇹 Italiano</option><option value="ru" lang="ru">🇷🇺 Русский</option><option value="ar" lang="ar">🇸🇦 العربية</option><option value="pt" lang="pt">🇵🇹 Português</option></select></div>
-            <section id="backupSettings" class="settings-backups" aria-labelledby="backupSettingsTitle">
-                <h3 id="backupSettingsTitle" data-i18n="static.backups">Sauvegardes</h3>
-                <div class="backup-actions">
-                    <button id="shareButton" type="button"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V3m-5 5 5-5 5 5M4 15v6h16v-6"/></svg><span data-i18n="static.exportBackup">Exporter une sauvegarde</span></button>
-                    <button id="importConfigButton" type="button"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v13m-5-5 5 5 5-5M4 15v6h16v-6"/></svg><span data-i18n="static.importBackup">Importer une sauvegarde</span></button>
-                </div>
-                <button id="pairReceiveButton" class="full-width receive-settings-button" type="button" hidden><svg class="icon" aria-hidden="true"><use href="#icon-share"/></svg><span data-i18n="pair.receiveButton">Recevoir du téléphone</span></button>
-            </section>
+            <p id="categoryVisibilityHint" class="field-help" data-i18n="prefs.categoriesHint">Les raccourcis restent accessibles dans Tous et Favoris.</p>
             <details id="catalogPreferences"><summary data-i18n="prefs.title">Catalogue et accueil</summary>
-                <label for="marketSelect" data-i18n="prefs.country">Pays</label><select id="marketSelect" aria-describedby="marketHint"></select><p id="marketHint" class="field-help" data-i18n="prefs.marketHint">Le pays adapte la sélection proposée dans Ajouter.</p>
+                <label for="marketSelect" data-i18n="prefs.country">Pays du catalogue</label><select id="marketSelect" aria-describedby="marketHint"></select><p id="marketHint" class="field-help" data-i18n="prefs.marketHint">Le pays adapte la sélection proposée dans Ajouter.</p>
                 <label class="preference-check"><input id="homeFavoritesToggle" type="checkbox"><span data-i18n="prefs.homeFavorites">Ouvrir sur mes favoris</span></label>
-                <fieldset class="category-visibility"><legend data-i18n="prefs.visibleCategories">Catégories affichées</legend><div id="categoryVisibilityOptions" class="category-checks"></div></fieldset>
-                <p class="field-help" data-i18n="prefs.categoriesHint">Les raccourcis restent accessibles dans Tous et Favoris.</p>
+                <fieldset class="category-visibility" aria-describedby="categoryVisibilityHint"><legend data-i18n="prefs.visibleCategories">Catégories affichées</legend><div id="categoryVisibilityOptions" class="category-checks"></div></fieldset>
             </details>
+            <div class="language-setting"><label for="languageSelect" data-i18n="static.language">Langue</label><select id="languageSelect" dir="ltr"><option value="en" lang="en">🇬🇧 English</option><option value="fr" lang="fr">🇫🇷 Français</option><option value="es" lang="es">🇪🇸 Español</option><option value="de" lang="de">🇩🇪 Deutsch</option><option value="it" lang="it">🇮🇹 Italiano</option><option value="ru" lang="ru">🇷🇺 Русский</option><option value="ar" lang="ar">🇸🇦 العربية</option><option value="pt" lang="pt">🇵🇹 Português</option></select></div>
+            <section id="backupSettings" class="settings-backups" aria-label="Sauvegardes" data-i18n-aria-label="static.backups">
+                <section class="backup-group" aria-labelledby="backupLinksTitle">
+                    <h3 id="backupLinksTitle" data-i18n="backup.links">Code ou lien</h3>
+                    <div class="backup-actions"><button id="shareButton" type="button"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V3m-5 5 5-5 5 5M4 15v6h16v-6"/></svg><span data-i18n="backup.create">Créer</span></button><button id="importConfigButton" type="button"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span data-i18n="backup.add">Ajouter</span></button></div>
+                </section>
+                <section id="phoneSettings" class="backup-group" aria-labelledby="backupPhoneTitle">
+                    <h3 id="backupPhoneTitle" data-i18n="backup.phone">Téléphone</h3>
+                    <div class="backup-actions"><button id="pairOfferButton" type="button" hidden><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg><span data-i18n="backup.send">Envoyer</span></button><button id="pairReceiveButton" type="button" hidden><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H4m6-6-6 6 6 6"/></svg><span data-i18n="backup.receive">Recevoir</span></button></div>
+                </section>
+                <section class="backup-group" aria-labelledby="backupLibraryTitle"><h3 id="backupLibraryTitle" data-i18n="backup.library">Mes sauvegardes</h3><button id="restoreBackupButton" class="full-width" type="button"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10a8 8 0 1 1 1 8M4 4v6h6M12 8v5l3 2"/></svg><span data-i18n="backup.restore">Restaurer</span></button></section>
+            </section>
             <button id="addShortcutButton" type="button" data-i18n="static.createShortcut">Créer un raccourci</button>
             <button id="addPageButton" type="button" data-i18n="static.createCategory">Créer une catégorie</button>
             <button id="teslaFullscreenButton" type="button" data-i18n="static.theater">Ouvrir le mode Théâtre Tesla</button>
-            <details><summary data-i18n="static.moreOptions">Plus d’options</summary><div class="settings-list"><button id="undoTransferButton" type="button" hidden data-i18n="static.undoTransfer">Annuler le dernier transfert</button><button id="resetButton" class="danger" type="button" data-i18n="static.reset">Réinitialiser les raccourcis</button></div></details>
+            <details><summary data-i18n="static.moreOptions">Plus d’options</summary><div class="settings-list"><button id="undoTransferButton" type="button" hidden data-i18n="backup.undoRestore">Annuler la dernière restauration</button><button id="resetButton" class="danger" type="button" data-i18n="static.reset">Réinitialiser les raccourcis</button></div></details>
             <a class="settings-help" href="./aide.html"><span data-i18n="static.about">Aide &amp; à propos</span><span aria-hidden="true">↗</span></a>
         </div>
     </dialog>
@@ -157,40 +161,53 @@
         <form id="addShortcutForm"><label for="shortcutName" data-i18n="static.name">Nom</label><input id="shortcutName" type="text" placeholder="Mon service" data-i18n-placeholder="static.servicePlaceholder" required maxlength="100"><label for="shortcutURL" data-i18n="static.website">Adresse du site</label><input id="shortcutURL" type="url" dir="ltr" placeholder="https://exemple.fr" data-i18n-placeholder="static.urlPlaceholder" required maxlength="2048"><label for="shortcutCategory" data-i18n="static.category">Catégorie</label><select id="shortcutCategory" required></select><details id="shortcutAdditionalOptions"><summary data-i18n="app.otherCategories">Autres catégories</summary><div id="shortcutAdditionalCategories" class="category-checks"></div></details><input id="shortcutDescription" type="hidden" value=""><p id="shortcutFormError" class="form-error" role="alert"></p><div class="dialog-actions"><button type="button" data-close-dialog data-i18n="static.cancel">Annuler</button><button class="primary-button" type="submit" data-i18n="static.add">Ajouter</button></div></form>
     </dialog>
     <dialog id="importDialog" aria-labelledby="importDialogTitle">
-        <div class="dialog-heading"><h2 id="importDialogTitle" data-i18n="static.importBackup">Importer une sauvegarde</h2><button type="button" class="icon-button" data-close-dialog aria-label="Fermer" data-i18n-aria-label="static.close">×</button></div>
-        <div id="savedBackupPicker" hidden><h3 data-i18n="static.sharedLinks">Mes sauvegardes</h3><div id="savedBackupList" class="saved-backup-list"></div></div>
-        <details id="legacyImportOptions"><summary data-i18n="static.moreOptions">Plus d’options</summary>
-        <form id="telegraphImportForm"><label for="importConfigID" data-i18n="static.shareInput">Code ou lien de partage</label><input id="importConfigID" type="text" dir="ltr" placeholder="Code, lien EvPortal ou Telegra.ph" data-i18n-placeholder="static.codePlaceholder" maxlength="2048" required><button class="primary-button full-width" type="submit" data-i18n="static.load">Charger mes raccourcis</button></form>
+        <div class="dialog-heading"><h2 id="importDialogTitle" data-i18n="backup.addTitle">Ajouter une sauvegarde</h2><button type="button" class="icon-button" data-close-dialog aria-label="Fermer" data-i18n-aria-label="static.close">×</button></div>
+        <p class="field-help" data-i18n="backup.addHint">Ajout à vos sauvegardes, sans modifier vos raccourcis.</p>
+        <form id="telegraphImportForm"><label for="importConfigID" data-i18n="static.shareInput">Code ou lien</label><input id="importConfigID" type="text" dir="ltr" placeholder="Code ou lien EvPortal" data-i18n-placeholder="static.codePlaceholder" maxlength="2048" required><button id="addBackupButton" class="primary-button full-width" type="submit" data-i18n="backup.add">Ajouter</button></form>
         <details class="file-import"><summary data-i18n="static.importJSON">Importer un fichier JSON</summary><label for="importFile" class="visually-hidden" data-i18n="static.jsonFile">Fichier JSON</label><input id="importFile" type="file" accept=".json,application/json"></details>
-        </details>
-        <p id="importError" class="form-error" role="alert"></p><p id="importPreview" class="import-preview" aria-live="polite"></p><div class="dialog-actions"><button type="button" data-close-dialog data-i18n="static.close">Fermer</button><button id="confirmImportButton" class="primary-button" type="button" hidden data-i18n="static.use">Utiliser ces raccourcis</button></div>
+        <p id="importError" class="form-error" role="alert"></p><p id="importPreview" class="field-help" role="status"></p>
+    </dialog>
+    <dialog id="restoreDialog" aria-labelledby="restoreDialogTitle">
+        <div class="dialog-heading"><h2 id="restoreDialogTitle" data-i18n="backup.restoreTitle">Restaurer une sauvegarde</h2><button type="button" class="icon-button" data-close-dialog aria-label="Fermer" data-i18n-aria-label="static.close">×</button></div>
+        <section class="backup-library-section" aria-labelledby="localBackupTitle"><h3 id="localBackupTitle" data-i18n="backup.local">Sur cet appareil</h3><div id="localBackupList" class="saved-backup-list"></div></section>
+        <section class="backup-library-section" aria-labelledby="onlineBackupTitle"><h3 id="onlineBackupTitle" data-i18n="backup.online">En ligne</h3><div id="onlineBackupList" class="saved-backup-list"></div><p id="onlineBackupError" class="form-error" role="alert"></p></section>
+        <p id="restoreError" class="form-error" role="alert"></p>
+        <div id="restorePreview" class="restore-preview" hidden><strong id="restoreName"></strong><p id="restoreSummary" class="field-help"></p><p id="restoreHint" class="field-help" data-i18n="backup.restoreHint">Remplace les raccourcis de cet appareil.</p><button id="confirmRestoreButton" class="primary-button full-width" type="button" data-i18n="backup.restore">Restaurer</button></div>
     </dialog>
     <dialog id="shareDialog" class="sharing-dialog" aria-labelledby="shareDialogTitle">
-        <div class="dialog-heading"><h2 id="shareDialogTitle" data-i18n="static.exportBackup">Exporter une sauvegarde</h2><button type="button" class="icon-button" data-close-dialog aria-label="Fermer" data-i18n-aria-label="static.close">×</button></div>
+        <div class="dialog-heading"><h2 id="shareDialogTitle" data-i18n="backup.createTitle">Créer un code ou un lien</h2><button type="button" class="icon-button" data-close-dialog aria-label="Fermer" data-i18n-aria-label="static.close">×</button></div>
         <div class="share-choices">
             <form id="shareForm"><button id="sharePublishButton" class="share-choice" type="submit"><svg class="share-illustration" viewBox="0 0 120 76" aria-hidden="true"><path d="M34 54H27a13 13 0 0 1-2-26 20 20 0 0 1 37-9 16 16 0 0 1 22 15 10 10 0 0 1-2 20h-7"/><path class="illustration-accent" d="M54 62V33m-11 11 11-11 11 11"/><path d="M95 17h15m-7.5-7.5v15"/></svg><span data-i18n="static.publish">Créer ma sauvegarde</span></button>
             <details id="shareNameOptions" class="backup-name"><summary data-i18n="static.nameBackup">Nommer la sauvegarde</summary><label for="shareTitle" class="visually-hidden" data-i18n="static.backupName">Nom de la sauvegarde</label><input id="shareTitle" type="text" value="Mes raccourcis EvPortal" data-i18n-value="static.defaultBackup" maxlength="100"></details></form>
         </div>
         <p class="share-privacy field-help" data-i18n="static.public">Toute personne ayant le lien peut lire la sauvegarde.</p>
         <p id="shareError" class="form-error" role="alert"></p><p id="shareBusy" class="field-help" role="status" hidden></p>
-        <div id="shareResult" class="share-result" hidden><div id="shareQRCode" class="share-qr" aria-label="QR code pour retrouver vos raccourcis" data-i18n-aria-label="static.qrAccessible"></div><p data-i18n="static.scan">Scannez avec votre téléphone.</p><button id="shareCopyButton" type="button" data-i18n="static.copyLink">Copier le lien</button></div>
-        <details id="shareHistory"><summary data-i18n="static.sharedLinks">Mes sauvegardes</summary><div id="sharePages" class="share-pages"></div></details>
+        <div id="shareResult" class="backup-result" hidden>
+            <label for="shareCode" data-i18n="backup.code">Code</label><div class="backup-copy-row"><input id="shareCode" type="text" dir="ltr" readonly><button id="shareCopyCodeButton" class="icon-button" type="button" aria-label="Copier le code" data-i18n-aria-label="backup.copyCode"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V4H4v12h4"/></svg></button></div>
+            <label for="shareLink" data-i18n="backup.link">Lien EvPortal</label><div class="backup-copy-row"><input id="shareLink" type="text" dir="ltr" readonly><button id="shareCopyButton" class="icon-button" type="button" aria-label="Copier le lien" data-i18n-aria-label="static.copyLink"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V4H4v12h4"/></svg></button></div>
+        </div>
         <details id="fileExportOptions"><summary data-i18n="static.moreOptions">Plus d’options</summary><button id="exportConfigButton" type="button" data-i18n="static.exportJSON">Sauvegarder un fichier JSON</button></details>
     </dialog>
     <dialog id="pairReceiveDialog" class="pairing-dialog" aria-labelledby="pairReceiveTitle">
         <div class="dialog-heading"><h2 id="pairReceiveTitle" data-i18n="pair.receiveTitle">Recevoir du téléphone</h2><button type="button" class="icon-button" data-close-dialog aria-label="Fermer" data-i18n-aria-label="static.close">×</button></div>
-        <ol class="pair-steps">
+        <ol id="pairReceiveSteps" class="pair-steps">
             <li><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="13" y="4" width="22" height="39" rx="4"/><path d="M22 37h4M19 14h4v4h-4zm7 0h4v4h-4zm-7 7h4v4h-4zm7 0h4v4h-4z"/></svg><span data-i18n="pair.stepScan">Scanner</span></li>
             <li><svg viewBox="0 0 48 48" aria-hidden="true"><path d="m6 22 36-16-16 36-5-15Zm15 5L42 6"/></svg><span data-i18n="pair.stepSend">Envoyer</span></li>
-            <li><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="4" y="7" width="40" height="29" rx="4"/><path d="M24 36v6m-9 0h18M16 22l6 6 11-13"/></svg><span data-i18n="pair.stepApply">Appliquer</span></li>
+            <li><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="4" y="7" width="40" height="29" rx="4"/><path d="M24 36v6m-9 0h18M16 22l6 6 11-13"/></svg><span data-i18n="pair.stepApply">Ajouter</span></li>
         </ol>
         <div id="pairReceiveQRCode" class="share-qr" data-i18n-aria-label="pair.qrAccessible" aria-label="QR de réception" hidden></div>
         <p id="pairReceiveStatus" class="pair-status" role="status"></p>
         <p id="pairReceiveError" class="form-error" role="alert"></p>
         <p id="pairReceiveSummary" class="pair-summary" hidden></p>
-        <button id="pairApplyButton" class="primary-button full-width" type="button" hidden data-i18n="pair.apply">Appliquer</button>
+        <button id="pairApplyButton" class="primary-button full-width" type="button" hidden data-i18n="pair.apply">Ajouter</button>
         <button id="pairNewButton" class="full-width" type="button" hidden data-i18n="pair.newQR">Nouveau QR</button>
         <p class="pair-private field-help" data-i18n="pair.privateHint">Transfert chiffré · QR valable 5 minutes</p>
+    </dialog>
+    <dialog id="pairOfferDialog" class="pairing-dialog" aria-labelledby="pairOfferTitle">
+        <div class="dialog-heading"><h2 id="pairOfferTitle" data-i18n="pair.offerTitle">Mes raccourcis sur mon téléphone</h2><button type="button" class="icon-button" data-close-dialog aria-label="Fermer" data-i18n-aria-label="static.close">×</button></div>
+        <p class="field-help" data-i18n="pair.offerScanHint">Scannez ce QR code avec votre téléphone.</p>
+        <div id="pairOfferQRCode" class="share-qr" aria-label="QR code pour recevoir la sauvegarde sur votre téléphone" data-i18n-aria-label="pair.offerQRAccessible" hidden></div><p id="pairOfferSummary" class="pair-summary"></p><p id="pairOfferStatus" class="pair-status" role="status"></p><p id="pairOfferError" class="form-error" role="alert"></p>
+        <button id="pairOfferNewButton" class="full-width" type="button" hidden data-i18n="pair.newQR">Nouveau QR code</button><button id="pairOfferChooseBackupButton" class="pair-secondary full-width" type="button" data-i18n="pair.chooseBackup">Choisir une sauvegarde</button><p class="pair-private field-help" data-i18n="pair.privateHint">Transfert chiffré, valable 5 minutes.</p>
     </dialog>
     <dialog id="pairSendDialog" class="pairing-dialog" aria-labelledby="pairSendTitle">
         <div class="dialog-heading"><h2 id="pairSendTitle" data-i18n="pair.sendTitle">Envoyer à cet écran</h2><button type="button" class="icon-button" data-close-dialog aria-label="Fermer" data-i18n-aria-label="static.close">×</button></div>

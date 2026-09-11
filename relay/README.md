@@ -32,7 +32,7 @@ Ce dernier contrôle crée une session sur `http://127.0.0.1:8787`, chiffre une 
 
 ## Déployer
 
-Le relais de production est publié à l’adresse [https://evportal-pairing-relay.carbonnier-anthony.workers.dev](https://evportal-pairing-relay.carbonnier-anthony.workers.dev). Son point de contrôle public est [`/health`](https://evportal-pairing-relay.carbonnier-anthony.workers.dev/health). L’adresse configurée dans `js/config.js` active le bouton de réception sur le portail.
+Le relais de production est publié à l’adresse [https://evportal-pairing-relay.carbonnier-anthony.workers.dev](https://evportal-pairing-relay.carbonnier-anthony.workers.dev). Son point de contrôle public est [`/health`](https://evportal-pairing-relay.carbonnier-anthony.workers.dev/health). L’adresse configurée dans `js/config.js` active les actions Envoyer et Recevoir dans la rubrique Téléphone du portail.
 
 Après connexion au compte Cloudflare choisi avec Wrangler, `npm run deploy` publie le Worker et crée le namespace SQLite déclaré par la migration `v1`. Le nom par défaut est `evportal-pairing-relay`. L’URL retournée par Wrangler doit ensuite être renseignée dans la configuration du client EvPortal. GitHub Pages continue d’héberger le portail.
 
@@ -66,8 +66,10 @@ Les erreurs sont des objets `{error:"code"}` : `400` pour un format invalide, `4
 - AES-GCM 256 bits côté navigateurs, nonce aléatoire de 12 octets, tag de 16 octets. Le client lie le message à sa session avec les données authentifiées UTF-8 `evportal-pairing-v1:<id>`.
 - `iv` et `ciphertext` sont encodés en base64url canonique sans remplissage `=`. Le ciphertext inclut le tag GCM. Le relais valide le format et les tailles ; il ne possède pas la clé permettant de vérifier ou déchiffrer le contenu.
 - Corps JSON HTTP : **100 Kio maximum**, contrôlés pendant la lecture du flux même sans `Content-Length`. La requête de création `{}` est limitée à 1 Kio.
-- La clé de chiffrement reste dans les navigateurs et le fragment du QR. Elle n’est jamais envoyée à l’API. Le QR contient le droit d’envoyer à cette session, pas le droit de lire ni un jeton de compte.
+- La clé de chiffrement reste dans les navigateurs et le fragment du QR. Elle n’est jamais envoyée à l’API. Le QR `#receive` transmet le droit de déposer dans la session ; le QR `#download` transmet le droit de lire et supprimer la session déjà alimentée. Aucun ne contient un jeton de compte Telegra.ph.
 - La limite de création est de 20 requêtes par minute et par IP ; les autres requêtes authentifiées sont limitées à 120 par minute et par IP. Les bindings Cloudflare appliquent ces compteurs par emplacement et avec une précision permissive : ce sont des limites anti-abus, pas un plafond global de facturation. Des utilisateurs derrière un même réseau mobile peuvent partager cette limite. Un binding manquant entraîne un refus `503`.
+
+Le client accuse réception après déchiffrement et validation en mémoire. Il propose ensuite d’ajouter la sauvegarde à la liste locale. Le relais ne restaure aucune configuration : la restauration est une action explicite distincte dans Mes sauvegardes.
 
 La durée de cinq minutes est contrôlée à chaque requête, sans dépendre du déclenchement ponctuel de l’alarme. L’alarme nettoie également les sessions abandonnées. Une suppression retire le contenu du stockage actif ; elle ne constitue pas une garantie d’effacement physique immédiat des sauvegardes du fournisseur. Les Durable Objects SQLite proposent notamment une restauration historique : seules les données chiffrées et les empreintes de jetons doivent donc y figurer.
 

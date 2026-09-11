@@ -66,6 +66,45 @@ test('QR keeps the active portal and subdirectory, removing previous codes and r
     }
 });
 
+test('download QR exposes only the reading capability, with strict versioned fragments', () => {
+    const created = session();
+    const key = Pair.createKey(webcrypto);
+    const url = new URL(Pair.downloadURL(created, key, 'https://preview.example/EvPortal/?code=old#receive=old'));
+    assert.equal(url.origin + url.pathname, 'https://preview.example/EvPortal/');
+    assert.equal(url.search, '');
+    const parsed = Pair.parseDownloadFragment(url.hash);
+    assert.deepEqual(parsed, { v: 1, id, token: receiveToken, key, expiresAt: created.expiresAt });
+    assert.ok(!JSON.stringify(parsed).includes(sendToken));
+    assert.throws(() => Pair.parseFragment(url.hash), error => error.i18nKey === 'pair.invalidLink');
+    assert.throws(() => Pair.parseDownloadFragment(new URL(Pair.pairingURL(created, key)).hash), error => error.i18nKey === 'pair.invalidLink');
+    for (const patch of [{ sendToken }, { receiveToken }, { relayURL: 'https://other.example/' }, { v: 2 }, { token: [receiveToken] }]) {
+        const hostile = '#download=' + Pair.encode(new TextEncoder().encode(JSON.stringify({ ...parsed, ...patch })));
+        assert.throws(() => Pair.parseDownloadFragment(hostile), error => error.i18nKey === 'pair.invalidLink');
+    }
+    assert.throws(() => Pair.parseDownloadFragment(url.hash, created.expiresAt), error => error.i18nKey === 'pair.expired');
+    assert.throws(() => Pair.parseDownloadFragment(url.hash + '='), error => error.i18nKey === 'pair.invalidLink');
+});
+
+test('download recipient can read and delete with its sole QR capability; encrypted state remains portable', async () => {
+    const created = session();
+    const key = Pair.createKey(webcrypto);
+    const credentials = Pair.parseDownloadFragment(new URL(Pair.downloadURL(created, key)).hash);
+    const payload = await Pair.encryptState(fixture(), key, id, webcrypto);
+    const calls = [];
+    const client = Pair.createClient({ relayURL: 'https://relay.example', fetch: async (url, options) => {
+        calls.push({ url, options });
+        return options.method === 'GET' ? json({ status: 'ready', expiresAt: created.expiresAt, payload }) : new Response(null, { status: 204 });
+    } });
+    const reader = { id: credentials.id, receiveToken: credentials.token, expiresAt: credentials.expiresAt };
+    const received = await client.read(reader);
+    assert.deepEqual(await Pair.decryptState(received.payload, credentials.key, credentials.id, webcrypto), Core.normalizeState(fixture()));
+    await client.remove(reader);
+    assert.deepEqual(calls.map(call => call.options.method), ['GET', 'DELETE']);
+    assert.ok(calls.every(call => call.options.headers.Authorization === 'Bearer ' + receiveToken));
+    assert.ok(calls.every(call => !call.url.includes(key) && !call.url.includes(receiveToken)));
+    assert.ok(!JSON.stringify(calls).includes(sendToken));
+});
+
 test('payload bounds and canonical base64url are enforced before decryption', async () => {
     assert.throws(() => Pair.decode('AB', 1));
     assert.throws(() => Pair.validatePayload({ iv: 'a'.repeat(16), ciphertext: 'a'.repeat(100000) }));

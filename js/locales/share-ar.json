@@ -22,7 +22,7 @@
   "share.publishing": "جارٍ الحفظ…",
   "share.publish": "إنشاء نسختي الاحتياطية",
   "share.created": "تم إنشاء النسخة الاحتياطية.",
-  "share.copyUnavailable": "النسخ غير متاح. امسح رمز QR بهاتفك.",
+  "share.copyUnavailable": "النسخ غير متاح. حدد النص لنسخه يدويًا.",
   "share.linkCopied": "تم نسخ الرابط.",
   "share.codeCopied": "تم نسخ الرمز.",
   "share.import": "استيراد",

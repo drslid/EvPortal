@@ -22,7 +22,7 @@
   "share.publishing": "Сохранение…",
   "share.publish": "Создать копию",
   "share.created": "Копия создана.",
-  "share.copyUnavailable": "Копирование недоступно. Сканируйте QR-код телефоном.",
+  "share.copyUnavailable": "Копирование недоступно. Выделите текст, чтобы скопировать его вручную.",
   "share.linkCopied": "Ссылка скопирована.",
   "share.codeCopied": "Код скопирован.",
   "share.import": "Импортировать",

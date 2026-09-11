@@ -22,7 +22,7 @@
   "share.publishing": "Wird gespeichert…",
   "share.publish": "Sicherung erstellen",
   "share.created": "Sicherung erstellt.",
-  "share.copyUnavailable": "Kopieren nicht verfügbar. Scanne den QR-Code mit deinem Smartphone.",
+  "share.copyUnavailable": "Kopieren ist nicht verfügbar. Markiere den Text, um ihn manuell zu kopieren.",
   "share.linkCopied": "Link kopiert.",
   "share.codeCopied": "Code kopiert.",
   "share.import": "Importieren",

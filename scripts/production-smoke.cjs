@@ -1,8 +1,8 @@
 /*
  * Explicit production check: run only after the deployment has been approved.
  * node scripts/production-smoke.cjs [--frontend-only]
- * Uses the deployed configuration and unmodified QR. Creates one short-lived
- * relay session with synthetic data, then verifies its deletion. No Telegra.ph
+ * Uses the deployed configuration and unmodified QR. Creates two short-lived
+ * relay sessions with synthetic data, then verifies their deletion. No Telegra.ph
  * publication, account credentials, screenshots, traces, or persistent profile.
  */
 'use strict';
@@ -50,7 +50,7 @@ function check(condition, message) { assert.ok(condition, message); }
 function safeFailure(error) {
     let message = String(error && error.message || error).split('\n')[0];
     for (const value of privateValues) if (value) message = message.split(value).join('[redacted]');
-    return message.replace(/#receive=[^\s"'<>]+/g, '#receive=[redacted]')
+    return message.replace(/#(?:receive|download)=[^\s"'<>]+/g, '#transfer=[redacted]')
         .replace(/Bearer\s+[^\s"'<>]+/gi, 'Bearer [redacted]')
         .replace(/\b[a-f0-9]{32,}\b/gi, '[redacted]');
 }
@@ -104,7 +104,10 @@ function matchesResponse(response, method, url) {
     check(await receiver.locator('#categoryVisibilityOptions input').count() > 0, 'Category visibility preferences are missing');
     check(await receiver.locator('#backupSettings #shareButton').isVisible(), 'Export backup action is missing from settings');
     check(await receiver.locator('#backupSettings #importConfigButton').isVisible(), 'Import backup action is missing from settings');
+    check(await receiver.locator('#restoreBackupButton').isVisible(), 'Backup library is missing from settings');
     check(await receiver.locator('#pairReceiveButton').isVisible() === relayConfigured, 'QR action visibility does not match production relay availability');
+    check(await receiver.locator('#pairOfferButton').isVisible() === relayConfigured, 'Reverse QR action visibility does not match production relay availability');
+    check(await receiver.locator('#phoneSettings').isVisible() === relayConfigured, 'Phone group visibility does not match production relay availability');
     if (frontendOnly) {
         phase = 'frontend backup interface';
         await receiver.locator('#shareButton').click();
@@ -116,7 +119,6 @@ function matchesResponse(response, method, url) {
         await receiver.locator('#settingsButton').click();
         await receiver.locator('#importConfigButton').click();
         await receiver.locator('#importDialog').waitFor({ state: 'visible' });
-        await receiver.locator('#legacyImportOptions > summary').click();
         check(await receiver.locator('#importConfigID').isVisible(), 'Backup code and link import interface is missing');
         check(await receiver.locator('#importFile').count() === 1, 'JSON file import interface is missing');
         check(!relayRequests.some(request => ['POST', 'PUT', 'DELETE'].includes(request.method)), 'Frontend-only check must not create or transfer a session');
@@ -185,7 +187,7 @@ function matchesResponse(response, method, url) {
     check(Object.keys(payload).sort().join(',') === 'ciphertext,iv', 'Relay upload must contain only encrypted payload fields');
     check(!upload.body.includes('Essai QR') && !upload.body.includes(credentials.key), 'Relay upload must not disclose plaintext or its encryption key');
 
-    phase = 'Tesla preview, explicit application and relay deletion';
+    phase = 'Tesla preview, backup library and relay deletion';
     await receiver.locator('#pairApplyButton').waitFor({ state: 'visible', timeout: 30000 });
     check(await receiver.locator('#pairReceiveQRCode').isHidden(), 'Consumed QR must disappear');
     check(await receiver.evaluate(() => localStorage.getItem(EVState.STORAGE_KEY)) === original, 'Receiving must preview before replacing the Tesla configuration');
@@ -196,6 +198,14 @@ function matchesResponse(response, method, url) {
     deletionVerified = true;
     await receiver.locator('#pairApplyButton').click();
     await receiver.locator('#pairReceiveDialog').waitFor({ state: 'hidden' });
+    await receiver.locator('#restoreDialog').waitFor({ state: 'visible' });
+    check(await receiver.evaluate(() => localStorage.getItem(EVState.STORAGE_KEY)) === original, 'Adding a received backup must not apply it');
+    const receivedBackups = await receiver.evaluate(() => EVBackups.createLibrary().list());
+    check(receivedBackups.length === 1 && receivedBackups[0].source === 'transfer', 'Received configuration did not enter the local backup library');
+    assert.deepEqual(receivedBackups[0].state.categories, expected.categories, 'Saved backup differs from the phone configuration');
+    await receiver.locator('#localBackupList .backup-select').first().click();
+    await receiver.locator('#confirmRestoreButton').click();
+    await receiver.locator('#restoreDialog').waitFor({ state: 'hidden' });
     const applied = await receiver.evaluate(() => JSON.parse(localStorage.getItem(EVState.STORAGE_KEY)));
     // The sender's device preference opens Favorites before sharing; the portable
     // active view is therefore allowed to differ from the original fixture.
@@ -207,7 +217,49 @@ function matchesResponse(response, method, url) {
     const persisted = await receiver.evaluate(() => JSON.parse(localStorage.getItem(EVState.STORAGE_KEY)));
     assert.deepEqual(persisted.categories, expected.categories, 'Applied configuration did not survive a reload');
     check(pageErrors.length === 0, 'A production page raised a JavaScript error or unexpected publication request');
-    console.log('✓ Unmodified production QR: isolated phone sends ciphertext; Tesla previews, applies and persists the synthetic state; relay deletion confirmed');
+    console.log('✓ Real phone-to-screen QR: Add saves to the library; only Restore applies; persistence and relay deletion confirmed');
+
+    phase = 'reverse QR creation and phone reception';
+    await receiver.locator('#settingsButton').click();
+    const offeredPromise = receiver.waitForResponse(result => matchesResponse(result, 'POST', relayURL + '/v1/sessions'));
+    await receiver.locator('#pairOfferButton').click();
+    const offeredResponse = await offeredPromise;
+    check(offeredResponse.ok(), 'Relay refused reverse session creation');
+    session = await offeredResponse.json();
+    deletionVerified = false;
+    for (const value of [session.id, session.receiveToken, session.sendToken]) privateValues.add(value);
+    await receiver.locator('#pairOfferQRCode').waitFor({ state: 'visible' });
+    const offeredPixels = await receiver.locator('#pairOfferQRCode canvas').evaluate(canvas => ({ width: canvas.width, height: canvas.height,
+        data: Array.from(canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height).data) }));
+    const offeredQR = jsQR(Uint8ClampedArray.from(offeredPixels.data), offeredPixels.width, offeredPixels.height);
+    check(offeredQR && typeof offeredQR.data === 'string', 'Reverse production QR could not be decoded');
+    privateValues.add(offeredQR.data);
+    const offeredURL = new URL(offeredQR.data);
+    check(offeredURL.origin + offeredURL.pathname === PORTAL && !offeredURL.search && offeredURL.hash.startsWith('#download='), 'Reverse QR points outside the deployed portal');
+    const reader = await receiver.evaluate(hash => EVPairing.parseDownloadFragment(hash), offeredURL.hash);
+    privateValues.add(reader.key);
+    check(reader.token === session.receiveToken && reader.sendToken === undefined, 'Reverse QR must expose only reading credentials');
+    const phoneBeforeDownload = await sender.evaluate(() => localStorage.getItem(EVState.STORAGE_KEY));
+    await sender.locator('#pairSendDialog [data-close-dialog]').first().click();
+    const reverseDeletedPromise = sender.waitForResponse(result => matchesResponse(result, 'DELETE', sessionURL()), { timeout: 30000 });
+    reverseDeletedPromise.catch(() => {});
+    await sender.goto(offeredQR.data, { waitUntil: 'networkidle' });
+    await sender.locator('#pairApplyButton').waitFor({ state: 'visible', timeout: 30000 });
+    check(new URL(sender.url()).hash === '', 'Download credentials must be removed from the address bar');
+    check(await sender.locator('#pairReceiveSteps').isHidden(), 'Direct download must not ask for another scan');
+    check(await sender.evaluate(() => localStorage.getItem(EVState.STORAGE_KEY)) === phoneBeforeDownload, 'Downloading a backup must not restore it');
+    await sender.locator('#pairApplyButton').click();
+    await sender.locator('#restoreDialog').waitFor({ state: 'visible' });
+    check(await sender.evaluate(() => localStorage.getItem(EVState.STORAGE_KEY)) === phoneBeforeDownload, 'Adding a downloaded backup must not restore it');
+    const phoneBackups = await sender.evaluate(() => EVBackups.createLibrary().list());
+    check(phoneBackups.length === 1 && phoneBackups[0].source === 'transfer', 'Downloaded backup is missing from the phone library');
+    assert.deepEqual(phoneBackups[0].state.categories, expected.categories);
+    check((await reverseDeletedPromise).status() === 204, 'Reverse session deletion was not acknowledged');
+    const reverseRemoved = await car.request.get(sessionURL(), { headers: { Authorization: 'Bearer ' + session.receiveToken, Origin: new URL(PORTAL).origin }, timeout: 15000 });
+    check(reverseRemoved.status() === 410, 'Reverse session remains retrievable after reception');
+    deletionVerified = true;
+    check(pageErrors.length === 0, 'A production page raised a JavaScript error or unexpected publication request');
+    console.log('✓ Real screen-to-phone QR: reading capability only; phone adds the backup without changing its dashboard; relay deletion confirmed');
 })().catch(error => {
     console.error('Production check failed during ' + phase + ': ' + safeFailure(error));
     process.exitCode = 1;
