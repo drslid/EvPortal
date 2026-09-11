@@ -1,86 +1,125 @@
-/* Requires npm run dev: actual portal configuration and local Worker; no production requests. */
+/* npm run dev must already serve the actual portal and Worker. No production requests or configuration overrides. */
+'use strict';
 const { chromium } = require('playwright');
 const assert = require('node:assert/strict');
-const fs = require('node:fs/promises');
-const path = require('node:path');
-const root = path.resolve(__dirname, '..');
-const results = path.join(root, 'test-results');
-const jsqr = require('jsqr');
+const jsQR = require('jsqr');
+const PORTAL = 'http://127.0.0.1:4187/';
+const errors = [];
+let browser;
+const fixture = name => ({ version: 2, theme: 'dark', activeCategory: 'test-category', categories: [{ id: 'test-category', label: 'Essai local', icon: 'charging', shortcuts: [{ id: 'test-link', name, url: 'https://example.org/local-transfer', favorite: true, clickCount: 4 }] }] });
+const active = page => page.evaluate(() => localStorage.getItem(EVState.STORAGE_KEY));
+const library = page => page.evaluate(() => EVBackups.createLibrary().list());
+const close = (page, id) => page.locator('#' + id + ' [data-close-dialog]').first().click();
+async function qr(page, id) {
+    await page.locator('#' + id).waitFor({ state: 'visible' });
+    const pixels = await page.locator('#' + id + ' canvas').evaluate(canvas => ({ width: canvas.width, height: canvas.height,
+        data: Array.from(canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height).data) }));
+    const code = jsQR(Uint8ClampedArray.from(pixels.data), pixels.width, pixels.height);
+    assert.ok(code, 'QR must decode');
+    assert.equal(new URL(code.data).origin, new URL(PORTAL).origin);
+    return code.data;
+}
+async function axe(page) {
+    await page.addScriptTag({ path: require.resolve('axe-core/axe.min.js') });
+    const violations = await page.evaluate(async () => (await window.axe.run(document, { runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa'] } })).violations.map(item => ({ id: item.id, targets: item.nodes.map(node => node.target) })));
+    assert.deepEqual(violations, []);
+}
 (async () => {
-await fs.mkdir(results, {recursive:true});
-const browser = await chromium.launch({headless:true,channel:'chromium'});
-try {
-const errors=[];
-const car=await browser.newContext({viewport:{width:1440,height:900},locale:'fr-FR'});
-const phone=await browser.newContext({viewport:{width:390,height:844},locale:'fr-FR'});
-for(const context of [car,phone]) {
- context.on('page',p=>p.on('pageerror',e=>errors.push(e.message)));
-}
-const receiver=await car.newPage();
-await receiver.goto('http://127.0.0.1:4187/');
-assert.equal(await receiver.evaluate(()=>EV_CONFIG.pairingRelayURL),'http://127.0.0.1:8787', 'Development server must configure the real relay without test overrides');
-await receiver.evaluate(()=>{const previous=JSON.parse(localStorage.getItem('evportal.state.v2')); previous.categories[0].label='Older recovery'; localStorage.setItem('evportal.previous-transfer.v1',JSON.stringify(previous));});
-await receiver.reload();
-const recoveryBefore=await receiver.evaluate(()=>localStorage.getItem('evportal.previous-transfer.v1'));
-await receiver.locator('#settingsButton').click();
-await receiver.screenshot({path:path.join(results, 'evportal-share-desktop.png')});
-await receiver.locator('#pairReceiveButton').click();
-await receiver.locator('#pairReceiveQRCode').waitFor({state:'visible'});
-await receiver.locator('#pairReceiveQRCode canvas').waitFor({state:'attached'});
-const pixels=await receiver.locator('#pairReceiveQRCode canvas').evaluate(canvas=>({width:canvas.width,height:canvas.height,data:Array.from(canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data)}));
-const code=jsqr(Uint8ClampedArray.from(pixels.data),pixels.width,pixels.height);
-assert.ok(code,'Receiving QR must be decodable');
-assert.equal(new URL(code.data).origin,'http://127.0.0.1:4187');
-await receiver.screenshot({path:path.join(results, 'evportal-receive-desktop.png')});
-const sender=await phone.newPage();
-await sender.goto('http://127.0.0.1:4187/');
-await sender.evaluate(()=>{
- const state=JSON.parse(localStorage.getItem('evportal.state.v2'));
- state.categories[0].shortcuts[0].name='Test téléphone chiffré';
- localStorage.setItem('evportal.state.v2',JSON.stringify(state));
-});
-await sender.reload();
-await sender.goto(code.data);
-await sender.locator('#pairSendDialog').waitFor({state:'visible'});
-assert.equal(await sender.evaluate(()=>location.hash),'');
-await sender.screenshot({path:path.join(results, 'evportal-send-mobile.png')});
-await sender.locator('#pairSendButton').click();
-await receiver.locator('#pairApplyButton').waitFor({state:'visible',timeout:15000});
-assert.equal(await receiver.evaluate(()=>JSON.parse(localStorage.getItem('evportal.state.v2')).categories[0].shortcuts[0].name),'Netflix');
-await receiver.evaluate(()=>{window.testOriginalSetItem=Storage.prototype.setItem; Storage.prototype.setItem=function(key,value){if(key==='evportal.state.v2')throw new DOMException('Quota exceeded','QuotaExceededError'); return window.testOriginalSetItem.call(this,key,value);};});
-await receiver.locator('#pairApplyButton').click();
-await receiver.waitForFunction(()=>document.getElementById('pairReceiveError').textContent.length>0);
-assert.equal(await receiver.evaluate(()=>localStorage.getItem('evportal.previous-transfer.v1')),recoveryBefore);
-assert.equal(await receiver.evaluate(()=>JSON.parse(localStorage.getItem('evportal.state.v2')).categories[0].shortcuts[0].name),'Netflix');
-await receiver.evaluate(()=>{Storage.prototype.setItem=window.testOriginalSetItem; delete window.testOriginalSetItem;});
-await receiver.locator('#pairApplyButton').click();
-assert.equal(await receiver.evaluate(()=>JSON.parse(localStorage.getItem('evportal.state.v2')).categories[0].shortcuts[0].name),'Test téléphone chiffré');
-await receiver.reload();
-const otherTab=await car.newPage();
-await otherTab.goto('http://127.0.0.1:4187/');
-await otherTab.evaluate(()=>{const previous=JSON.parse(localStorage.getItem('evportal.previous-transfer.v1')); previous.categories[0].label='Updated recovery'; localStorage.setItem('evportal.previous-transfer.v1',JSON.stringify(previous));});
-await receiver.locator('#settingsButton').click();
-await receiver.locator('#undoTransferButton').evaluate(button=>{button.closest('details').open=true;});
-await receiver.locator('#undoTransferButton').click();
-assert.equal(await receiver.evaluate(()=>JSON.parse(localStorage.getItem('evportal.state.v2')).categories[0].shortcuts[0].name),'Netflix');
-assert.equal(await receiver.evaluate(()=>JSON.parse(localStorage.getItem('evportal.state.v2')).categories[0].label),'Updated recovery');
-assert.deepEqual(errors,[]);
-console.log('Real Worker / two isolated browser contexts: QR decoded, encrypted transfer, explicit Apply, failed-storage rollback, persistence and Undo across reloads/tabs passed.');
-for(const viewport of [{width:320,height:740},{width:390,height:844},{width:1440,height:900}]) {
- await receiver.setViewportSize(viewport);
- for(const language of ['fr','de','ar']) {
-  await receiver.evaluate(lang=>EVI18n.setLanguage(lang),language);
-  if (!await receiver.locator('#settingsDialog').isVisible()) await receiver.locator('#settingsButton').click();
-  await receiver.locator('#shareButton').click();
-  const sizes=await receiver.locator('#shareDialog').evaluate(d=>({w:d.clientWidth,scroll:d.scrollWidth}));
-  assert.ok(sizes.scroll<=sizes.w+1,JSON.stringify({viewport,language,sizes}));
-  if(language==='ar'&&viewport.width===320) await receiver.screenshot({path:path.join(results, 'evportal-share-ar-mobile.png')});
-  await receiver.addScriptTag({path:require.resolve('axe-core/axe.min.js')});
-  const a=await receiver.evaluate(async()=>{const r=await axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa']}}); return r.violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>n.target)}));});
-  assert.deepEqual(a,[],JSON.stringify({viewport,language,a}));
-  await receiver.locator('#shareDialog [data-close-dialog]').click();
- }
-}
-console.log('Share dialog: no horizontal overflow and axe checks passed at 320/390/1440px in French, German and Arabic.');
-} finally {await browser.close();}
-})().catch(e=>{console.error(e);process.exitCode=1;});
+    browser = await chromium.launch({ headless: true, channel: 'chromium' });
+    const car = await browser.newContext({ viewport: { width: 1440, height: 900 }, locale: 'fr-FR' });
+    const mobile = await browser.newContext({ viewport: { width: 390, height: 844 }, locale: 'fr-FR', isMobile: true, hasTouch: true });
+    for (const context of [car, mobile]) context.on('page', page => page.on('pageerror', error => errors.push(error.message)));
+    async function pageFor(context, initial) {
+        const page = await context.newPage();
+        page.setDefaultTimeout(15000);
+        await page.goto(PORTAL, { waitUntil: 'networkidle' });
+        assert.equal(await page.evaluate(() => EV_CONFIG.pairingRelayURL), 'http://127.0.0.1:8787');
+        await page.evaluate(state => localStorage.setItem(EVState.STORAGE_KEY, JSON.stringify(EVState.normalizeState(state))), initial);
+        await page.reload({ waitUntil: 'networkidle' });
+        return page;
+    }
+    const receiver = await pageFor(car, fixture('Écran initial'));
+    const phone = await pageFor(mobile, fixture('Test téléphone chiffré'));
+    const receiverBefore = await active(receiver), phoneBefore = await active(phone);
+    await receiver.locator('#settingsButton').click();
+    await receiver.locator('#pairReceiveButton').click();
+    const sendURL = await qr(receiver, 'pairReceiveQRCode');
+    assert.ok(new URL(sendURL).hash.startsWith('#receive='));
+    await axe(receiver);
+    await phone.goto(sendURL);
+    await phone.locator('#pairSendDialog').waitFor({ state: 'visible' });
+    assert.equal(new URL(phone.url()).hash, '');
+    await phone.locator('#pairSendButton').click();
+    await receiver.locator('#pairApplyButton').waitFor({ state: 'visible' });
+    assert.equal(await active(receiver), receiverBefore);
+    assert.equal((await library(receiver)).length, 0);
+    await receiver.evaluate(() => {
+        window.originalSetItem = Storage.prototype.setItem;
+        Storage.prototype.setItem = function (key, value) {
+            if (key === EVBackups.STORAGE_KEY) throw new DOMException('Quota exceeded', 'QuotaExceededError');
+            return window.originalSetItem.call(this, key, value);
+        };
+    });
+    await receiver.locator('#pairApplyButton').click();
+    await receiver.locator('#pairReceiveError').waitFor({ state: 'visible' });
+    assert.equal(await active(receiver), receiverBefore);
+    assert.equal((await library(receiver)).length, 0);
+    await receiver.evaluate(() => { Storage.prototype.setItem = window.originalSetItem; delete window.originalSetItem; });
+    await receiver.locator('#pairApplyButton').click();
+    await receiver.locator('#restoreDialog').waitFor({ state: 'visible' });
+    assert.equal(await active(receiver), receiverBefore);
+    assert.deepEqual((await library(receiver))[0].state.categories, JSON.parse(phoneBefore).categories);
+    await axe(receiver);
+    await receiver.locator('#localBackupList .backup-select').first().click();
+    const recoveryBefore = await receiver.evaluate(() => localStorage.getItem('evportal.previous-transfer.v1'));
+    await receiver.evaluate(() => {
+        window.originalSetItem = Storage.prototype.setItem;
+        Storage.prototype.setItem = function (key, value) {
+            if (key === EVState.STORAGE_KEY) throw new DOMException('Quota exceeded', 'QuotaExceededError');
+            return window.originalSetItem.call(this, key, value);
+        };
+    });
+    await receiver.locator('#confirmRestoreButton').click();
+    await receiver.locator('#restoreError').waitFor({ state: 'visible' });
+    assert.equal(await active(receiver), receiverBefore);
+    assert.equal(await receiver.evaluate(() => localStorage.getItem('evportal.previous-transfer.v1')), recoveryBefore);
+    await receiver.evaluate(() => { Storage.prototype.setItem = window.originalSetItem; delete window.originalSetItem; });
+    await receiver.locator('#confirmRestoreButton').click();
+    await receiver.locator('#restoreDialog').waitFor({ state: 'hidden' });
+    assert.deepEqual(JSON.parse(await active(receiver)).categories, JSON.parse(phoneBefore).categories);
+    await receiver.reload({ waitUntil: 'networkidle' });
+    assert.deepEqual(JSON.parse(await active(receiver)).categories, JSON.parse(phoneBefore).categories);
+    console.log('✓ Real local Worker: phone QR sends into the library; Add never restores; quota retries and explicit Restore persist correctly');
+
+    await close(phone, 'pairSendDialog');
+    await receiver.locator('#settingsButton').click();
+    await receiver.locator('#pairOfferButton').click();
+    const downloadURL = await qr(receiver, 'pairOfferQRCode');
+    assert.ok(new URL(downloadURL).hash.startsWith('#download='));
+    await axe(receiver);
+    await phone.goto(downloadURL);
+    await phone.locator('#pairApplyButton').waitFor({ state: 'visible' });
+    assert.equal(await phone.locator('#pairReceiveSteps').isHidden(), true);
+    assert.equal(await active(phone), phoneBefore);
+    await axe(phone);
+    await phone.locator('#pairApplyButton').click();
+    await phone.locator('#restoreDialog').waitFor({ state: 'visible' });
+    assert.equal(await active(phone), phoneBefore);
+    assert.equal((await library(phone)).length, 1);
+    assert.deepEqual((await library(phone))[0].state.categories, JSON.parse(phoneBefore).categories);
+    await close(phone, 'restoreDialog');
+    await phone.goto(downloadURL);
+    await phone.locator('#pairReceiveError[data-i18n="pair.downloadExpired"]').waitFor({ state: 'visible' });
+    assert.equal((await library(phone)).length, 1);
+    assert.equal(await phone.locator('#pairApplyButton').isHidden(), true);
+    await close(receiver, 'pairOfferDialog');
+    await receiver.locator('#settingsButton').click();
+    await receiver.locator('#undoTransferButton').evaluate(button => { button.closest('details').open = true; });
+    await receiver.locator('#undoTransferButton').click();
+    assert.deepEqual(JSON.parse(await active(receiver)).categories, JSON.parse(receiverBefore).categories);
+    assert.deepEqual(errors, []);
+    console.log('✓ Real local reverse QR downloads once into phone backups; consumed QR expires, Undo restores the prior dashboard, and new dialogs pass accessibility checks');
+})().catch(error => {
+    const safe = String(error.message || error).split('\n')[0].replace(/#(?:receive|download)=[^\s"'<>]+/g, '#transfer=[redacted]').replace(/\b[a-f0-9]{32,}\b/gi, '[redacted]');
+    console.error(safe); process.exitCode = 1;
+}).finally(async () => { if (browser) await browser.close(); });

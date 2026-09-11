@@ -22,7 +22,7 @@
   "share.publishing": "Guardando…",
   "share.publish": "Crear mi copia",
   "share.created": "Copia creada.",
-  "share.copyUnavailable": "No se puede copiar. Escanea el código QR con tu teléfono.",
+  "share.copyUnavailable": "No se puede copiar. Selecciona el texto para copiarlo manualmente.",
   "share.linkCopied": "Enlace copiado.",
   "share.codeCopied": "Código copiado.",
   "share.import": "Importar",

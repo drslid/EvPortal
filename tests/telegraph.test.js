@@ -194,6 +194,25 @@ test('history is requested explicitly, uses the old token, paginates and omits p
     assert.equal(api.calls.length, 1);
 });
 
+test('reopening the library requests its first page while another page is pending', async () => {
+    const resolvers = new Map();
+    const api = fakeAPI(call => new Promise(resolve => { resolvers.set(call.parameters.offset, resolve); }));
+    const client = Telegraph.createClient({ storage: storage({ config: JSON.stringify({ accesstoken: TOKEN }) }), fetch: api.fetch });
+    const olderPage = client.listPages(200);
+    assert.equal(client.listPages(200), olderPage, 'Repeated requests for the same offset share their response');
+    const firstPage = client.listPages(0);
+    assert.notEqual(firstPage, olderPage, 'Different offsets must never share a pending response');
+    assert.deepEqual(api.calls.map(call => call.parameters.offset), ['200', '0']);
+    resolvers.get('0')(reply({ total_count: 201, pages: [{ path: 'Latest-09-10', title: 'Latest' }] }));
+    assert.deepEqual(await firstPage, { total: 201, nextOffset: 1, pages: [{ path: 'Latest-09-10', title: 'Latest' }] });
+    resolvers.get('200')(reply({ total_count: 201, pages: [{ path: 'Older-09-10', title: 'Older' }] }));
+    assert.deepEqual(await olderPage, { total: 201, nextOffset: 201, pages: [{ path: 'Older-09-10', title: 'Older' }] });
+    const refreshed = client.listPages(0);
+    assert.equal(api.calls.length, 3, 'A completed page is refreshed on the next library opening');
+    resolvers.get('0')(reply({ total_count: 0, pages: [] }));
+    assert.deepEqual(await refreshed, { total: 0, nextOffset: 0, pages: [] });
+});
+
 test('an expired account fails visibly and is neither replaced nor deleted', async () => {
     const saved = storage({ config: JSON.stringify({ accesstoken: TOKEN }) });
     const api = fakeAPI(() => ({ ok: true, json: async () => ({ ok: false, error: 'ACCESS_TOKEN_INVALID' }) }));

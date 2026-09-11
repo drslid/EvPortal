@@ -22,9 +22,9 @@ Le projet utilise HTML, CSS et JavaScript natifs : aucun compte EvPortal, aucune
 - **Recherche, favoris et thèmes** : accès aux services habituels et choix clair ou sombre. Les raccourcis ouvrent les services dans un nouvel onglet.
 - **Huit langues** : anglais, français, espagnol, allemand, italien, russe, arabe et portugais ; interface et aide traduites, noms natifs et drapeaux dans le sélecteur, présentation de droite à gauche en arabe.
 - **Sauvegarde locale** : catégories, liens, ordre, favoris, compteurs d’ouverture et préférences restent dans la configuration de l’appareil.
-- **Sauvegardes regroupées** : « Exporter une sauvegarde », « Importer une sauvegarde » et la réception depuis un téléphone sont réunis dans Paramètres → Sauvegardes. QR, lien et fichiers JSON restent disponibles.
-- **Réception depuis un téléphone** : la Tesla affiche un QR de réception, le téléphone le scanne et envoie ses raccourcis. Le transfert direct nécessite le relais configuré.
-- **Import avec aperçu** : anciennes configurations Telegra.ph et fichiers JSON pris en charge ; remplacement après confirmation.
+- **Trois parcours de sauvegarde** : Code ou lien → Créer / Ajouter ; Téléphone → Envoyer / Recevoir ; Mes sauvegardes → Restaurer. Ajouter conserve une sauvegarde ; Restaurer applique son contenu.
+- **QR dans les deux sens** : envoyez une sauvegarde vers le téléphone ou recevez-en une depuis celui-ci. Le transfert chiffré nécessite le relais configuré et ne remplace jamais directement les raccourcis.
+- **Liste locale de sauvegardes** : les codes, liens et fichiers JSON sont validés puis enregistrés sur l’appareil. La restauration est explicite et peut être annulée.
 - **Plein écran Tesla** : retour au lancement par la redirection YouTube utilisée par la version historique ; l’API Fullscreen classique reste disponible pour les autres navigateurs.
 
 ## Utilisation
@@ -41,26 +41,27 @@ Dans **Paramètres → Catalogue et accueil**, choisissez votre pays, les catég
 
 Ces préférences restent propres à cet appareil : elles ne sont pas ajoutées aux fichiers de sauvegarde, aux pages Telegra.ph ou aux transferts QR. La région explicite du navigateur suggère le pays initial si elle est reconnue ; une langue seule ne détermine pas de pays. Le choix manuel reste prioritaire. Aucune position GPS, permission de géolocalisation ou recherche de pays auprès d’un service tiers n’est utilisée.
 
-### Du téléphone à la Tesla
+### Code ou lien : créer et ajouter
 
-1. Dans la Tesla, ouvrez **Paramètres → Sauvegardes → Recevoir depuis mon téléphone**.
-2. Scannez le QR de réception avec le téléphone.
-3. Sur le téléphone, choisissez les raccourcis à envoyer ou une sauvegarde, puis envoyez-les.
-4. Vérifiez la proposition reçue sur la Tesla et touchez **Utiliser ces raccourcis**.
+Dans **Paramètres → Code ou lien → Créer**, un nom facultatif accompagne la création d’un code et d’un lien EvPortal à copier. Ce parcours n’affiche pas de QR. La page créée apparaît dans **Mes sauvegardes → En ligne** ; sa création n’ajoute pas automatiquement une seconde copie locale.
 
-Le transfert est chiffré et valable cinq minutes. Les options des paramètres permettent d’annuler le dernier transfert appliqué sur cet appareil. Il s’agit d’un transfert ponctuel, sans synchronisation automatique. Le bouton de réception apparaît lorsque le service de réception est configuré ; son fonctionnement et sa mise en service sont décrits dans [la documentation d’appairage](docs/APPAIRAGE-TELEPHONE-TESLA.md).
+**Ajouter** accepte un code ou un lien EvPortal. Un clic valide et charge le contenu, puis enregistre un instantané dans **Sur cet appareil**, sans remplacer les raccourcis actuels. Les anciens liens Telegra.ph restent acceptés. Choisir un fichier JSON dans **Plus d’options** ajoute également une sauvegarde locale après validation. La liste s’ouvre ensuite pour permettre de choisir une sauvegarde et, séparément, de la restaurer.
 
-### Exporter et gérer mes sauvegardes
+Les nouveaux liens utilisent un identifiant aléatoire difficile à deviner. La page Telegra.ph reste **publique et non chiffrée** ; toute personne disposant de son adresse peut lire son contenu tant qu’il n’est pas effacé. Le jeton du compte et le reste du stockage du navigateur ne sont pas publiés. Les anciennes adresses restent prises en charge.
 
-Ouvrez **Paramètres → Sauvegardes → Exporter une sauvegarde**, puis touchez **Créer ma sauvegarde**. L’option **Nommer la sauvegarde** est facultative. Le résultat présente un QR code et **Copier le lien**, sans adresse technique ni code à saisir dans ce dialogue. Les QR codes et liens de sauvegarde pointent vers l’adresse publique d’EvPortal.
+### Téléphone : envoyer et recevoir par QR
 
-**Mes sauvegardes** charge l’historique du compte présent dans ce navigateur dès son ouverture. Touchez un nom pour retrouver le QR correspondant. La corbeille efface le contenu de la sauvegarde sans confirmation ; en cas d’échec, la ligne reste visible pour réessayer. Telegra.ph ne propose pas de suppression définitive de page par son API : EvPortal remplace les données par un message neutre, efface les informations d’auteur et remplace le titre, puis masque l’entrée. L’adresse de la page continue d’exister.
+Dans **Paramètres → Téléphone**, **Envoyer** affiche un QR à scanner avec le téléphone pour récupérer une sauvegarde de cet écran. **Recevoir** affiche le QR permettant au téléphone d’envoyer ses raccourcis actuels ou une sauvegarde choisie. Dans les deux sens, l’écran destinataire propose **Ajouter** pour conserver la sauvegarde dans sa liste locale ; aucun transfert ne remplace directement les raccourcis.
 
-Les nouveaux liens utilisent un identifiant aléatoire difficile à deviner. Une sauvegarde Telegra.ph reste **publique et non chiffrée** ; toute personne disposant du lien peut lire son contenu tant qu’il n’est pas effacé. Le jeton du compte et le reste du stockage du navigateur ne sont pas publiés. Les anciennes sauvegardes restent accessibles avec leur adresse d’origine jusqu’à leur effacement explicite.
+Le transfert est chiffré et valable cinq minutes, sans synchronisation automatique. Il nécessite le relais configuré et accessible aux deux appareils. Les parcours et sa mise en service sont décrits dans [la documentation d’appairage](docs/APPAIRAGE-TELEPHONE-TESLA.md).
 
-Dans le même groupe **Sauvegardes**, **Importer une sauvegarde** affiche les sauvegardes disponibles dans ce navigateur. Choisissez-en une, vérifiez l’aperçu puis confirmez. **Plus d’options** permet aussi de saisir un ancien code ou lien, ou de choisir un fichier JSON.
+### Mes sauvegardes : restaurer et gérer
 
-Le téléchargement JSON se trouve dans **Exporter une sauvegarde → Plus d’options**. Il permet aussi de conserver les configurations qui dépassent les limites du transfert direct ou de Telegra.ph.
+Ouvrez **Paramètres → Mes sauvegardes → Restaurer**. **Sur cet appareil** contient les instantanés ajoutés localement ; **En ligne** affiche les pages du compte Telegra.ph présent dans ce navigateur. Choisissez une sauvegarde, vérifiez son contenu puis touchez **Restaurer**. Cette dernière action remplace les raccourcis actifs. **Annuler la dernière restauration**, dans les options des paramètres, permet de retrouver la configuration précédente.
+
+La liste locale conserve jusqu’à 50 sauvegardes, avec une limite de 2 Mo par sauvegarde et selon l’espace disponible dans le navigateur. Les contenus locaux restent utilisables pour une restauration après la suppression de leur page d’origine ; ils ne sont pas synchronisés avec celle-ci. Le fichier JSON permet aussi de conserver une copie en dehors du navigateur et de dépasser les limites de taille du transfert direct ou de Telegra.ph.
+
+La corbeille retire une sauvegarde locale sans modifier les raccourcis actifs. Pour une page **En ligne**, elle efface les données de la page sans confirmation ; un échec conserve la ligne pour réessayer. Telegra.ph ne propose pas de suppression définitive par son API : EvPortal remplace les données par un message neutre, efface l’auteur et remplace le titre, puis masque l’entrée. L’adresse continue d’exister. Effacer la copie locale et effacer la page en ligne sont deux actions distinctes.
 
 ### Anciennes configurations
 
@@ -68,9 +69,9 @@ Les anciennes clés `pages` et les données de leurs catégories sont reprises a
 
 La limite de cinq catégories personnelles et les noms courts encadrent la création dans l’interface. Les anciennes catégories déjà plus nombreuses ou portant un nom plus long ne sont pas supprimées ou tronquées lors de la reprise. La validation des anciennes sauvegardes conserve sa limite globale de 50 catégories.
 
-L'import comprend les anciens fichiers organisés comme `{ "pages": ["cinema"], "cinema": [...] }` et les dictionnaires de catégories. Pour un ancien lien Telegra.ph, ouvrez l'import dédié et renseignez son identifiant ou son URL. Un lien EvPortal contenant `?code=...` ou `?config=...` prépare le formulaire : la configuration n'est ni téléchargée ni appliquée automatiquement.
+L'import comprend les anciens fichiers organisés comme `{ "pages": ["cinema"], "cinema": [...] }` et les dictionnaires de catégories. Pour un ancien lien Telegra.ph, ouvrez Code ou lien → Ajouter et renseignez son identifiant ou son URL. Un lien EvPortal contenant `?code=...` ou `?config=...` prépare le formulaire : la configuration n'est ni téléchargée ni appliquée automatiquement.
 
-Le partage utilise l’API Telegra.ph après un clic explicite. Le compte historique est repris lorsqu’il est disponible ; la liste « Mes sauvegardes » permet de retrouver ses pages. Une nouvelle publication crée une adresse aléatoire, puis y enregistre la configuration et le nom choisi avant de fournir le lien et le QR code. Si le navigateur ne peut pas générer cet identifiant de façon sûre ou si Telegra.ph ne le conserve pas lors de la création de l’adresse, la publication de la configuration est interrompue. Le contenu est limité à 64 Kio UTF-8 par Telegra.ph ; une configuration trop volumineuse peut être sauvegardée en JSON. Les pages publiées ne sont pas supprimées par une réinitialisation locale.
+Le partage utilise l’API Telegra.ph après un clic explicite. Le compte historique est repris lorsqu’il est disponible ; la rubrique « En ligne » permet de retrouver ses pages. Une nouvelle publication crée une adresse aléatoire, puis y enregistre la configuration et le nom choisi avant de fournir le code et le lien EvPortal. Si le navigateur ne peut pas générer cet identifiant de façon sûre ou si Telegra.ph ne le conserve pas lors de la création de l’adresse, la publication de la configuration est interrompue. Le contenu est limité à 64 Kio UTF-8 par Telegra.ph ; une configuration trop volumineuse peut être sauvegardée en JSON. Les pages publiées ne sont pas supprimées par une réinitialisation locale.
 
 ### Navigateur Tesla et accès aux services
 
@@ -84,7 +85,7 @@ Ce mécanisme dépend du navigateur et du logiciel du véhicule ; un essai sur T
 
 ## Données et confidentialité
 
-La configuration est stockée dans le `localStorage` du navigateur, sous la clé `evportal.state.v2`. Les informations du compte Telegra.ph restent séparées sous `evportal.telegraph.v1`. Effacer les données du site ou changer de navigateur peut faire perdre la personnalisation : un partage Telegra.ph ou un export JSON permet de la retrouver. Si le stockage est bloqué ou une sauvegarde est illisible, un message explique la situation et l'export reste disponible pour préserver la session.
+La configuration est stockée dans le `localStorage` du navigateur, sous la clé `evportal.state.v2`. Les informations du compte Telegra.ph restent séparées sous `evportal.telegraph.v1`. Les instantanés de la liste locale sont stockés séparément sous `evportal.backups.v1` ; ajouter ou retirer un instantané ne modifie pas la configuration active. Effacer les données du site ou changer de navigateur peut faire perdre la personnalisation : un partage Telegra.ph ou un export JSON permet de la retrouver. Si le stockage est bloqué ou une sauvegarde est illisible, un message explique la situation et l'export reste disponible pour préserver la session.
 
 La langue se choisit dans Paramètres et reste enregistrée sur cet appareil, séparément de la configuration partagée. Le pays du catalogue, les catégories affichées et l’accueil Favoris utilisent leur propre clé `evportal.preferences.v1`, indépendamment de la langue. Au premier lancement, la langue du navigateur est utilisée lorsqu’elle est prise en charge. Changer de langue adapte les libellés, les dialogues, les erreurs et l’aide ; vos noms de raccourcis et de catégories personnels restent conservés. Le sélecteur affiche les langues dans leur écriture d’origine, accompagnées de drapeaux. Les deux modes de thème disponibles sont clair et sombre.
 
@@ -103,7 +104,7 @@ npm ci --prefix relay
 npm run dev
 ```
 
-Ouvrez **http://127.0.0.1:4187/** et choisissez **Paramètres → Sauvegardes → Recevoir depuis mon téléphone**. Le serveur configure le relais local dans la réponse `/js/config.js`, sans modifier le fichier destiné à la publication. Il démarre Wrangler sur le port 8787 si nécessaire, ou vérifie un relais EvPortal déjà présent : origine autorisée, création d’une session, réception et suppression. Le bouton fonctionne dans un navigateur ordinaire disposant de Web Crypto ; aucun remplacement de configuration par Playwright n’est nécessaire. [Développement local Cloudflare](https://developers.cloudflare.com/workers/local-development/).
+Ouvrez **http://127.0.0.1:4187/** et choisissez **Paramètres → Téléphone → Recevoir**. Le serveur configure le relais local dans la réponse `/js/config.js`, sans modifier le fichier destiné à la publication. Il démarre Wrangler sur le port 8787 si nécessaire, ou vérifie un relais EvPortal déjà présent : origine autorisée, création d’une session, réception et suppression. Le bouton fonctionne dans un navigateur ordinaire disposant de Web Crypto ; aucun remplacement de configuration par Playwright n’est nécessaire. [Développement local Cloudflare](https://developers.cloudflare.com/workers/local-development/).
 
 `Ctrl+C` arrête le serveur et uniquement le Worker qu’il a lui-même démarré. Un relais préexistant est conservé. Si un port est occupé par un autre programme, le démarrage s’interrompt sans arrêter ce programme. Pour choisir d’autres ports : `npm run dev -- --port 4188 --relay-port 8788`.
 
@@ -124,7 +125,8 @@ js/state.js                Validation, migrations et modèle de sauvegarde
 js/preferences.js          Pays, accueil et catégories affichées propres à cet appareil
 js/script.js               Raccourcis, déplacement tactile, recherche et dialogues
 js/telegraph.js            Sauvegardes Telegra.ph, historique et effacement
-js/pairing.js              Transfert chiffré téléphone → écran récepteur
+js/backups.js              Liste locale de sauvegardes validées
+js/pairing.js              Transfert QR chiffré dans les deux sens avec un téléphone
 js/config.js               Adresse du service de réception
 js/tesla.js                Redirection Théâtre et plein écran classique
 js/vendor/                 QRCode.js, SortableJS et leurs licences
@@ -172,11 +174,11 @@ npm run test:i18n
 
 Les scripts navigateur démarrent leur propre serveur local temporaire. La recette d’interactions peut aussi être lancée avec `node scripts/interaction-smoke.cjs`. Sur une machine Linux qui ne possède pas les bibliothèques nécessaires à Chromium, utilisez `npx playwright install --with-deps chromium`. Playwright et axe servent uniquement aux vérifications ; les bibliothèques utilisées par le portail sont embarquées dans le site. Complétez cette recette par un essai sur le véhicule visé.
 
-Le relais nécessite Node.js 22 ou supérieur. Pour tester le transfert complet avec le vrai moteur Cloudflare local, démarrez `npm run dev`, puis lancez `npm run test:pairing:live` dans un autre terminal. Cette recette ouvre deux navigateurs isolés, décode le QR, vérifie l’envoi chiffré, le refus d’une écriture lorsque le stockage est plein, la validation explicite et l’annulation après rechargement ou changement d’onglet. Elle vérifie aussi le dialogue de partage sur mobile et en arabe. Elle utilise la configuration fournie par le serveur de développement et ouvre directement l’adresse décodée du QR, sans substitution de configuration ou d’URL ; la configuration publique reste intacte.
+Le relais nécessite Node.js 22 ou supérieur. Pour tester le transfert complet avec le vrai moteur Cloudflare local, démarrez `npm run dev`, puis lancez `npm run test:pairing:live` dans un autre terminal. Utilisez cette recette avec deux navigateurs isolés pour vérifier le QR, l’envoi chiffré, l’ajout à la liste locale, puis la restauration explicite et son annulation, y compris lorsque le stockage est plein. Elle vérifie aussi le dialogue de partage sur mobile et en arabe. Elle utilise la configuration fournie par le serveur de développement et ouvre directement l’adresse décodée du QR, sans substitution de configuration ou d’URL ; la configuration publique reste intacte.
 
 ### Vérifier la publication
 
-Après publication sur GitHub Pages, `npm run test:production -- --frontend-only` contrôle le catalogue, les réglages et les sauvegardes réellement servis, et indique si la réception QR est inactive. Lorsque le relais public est configuré, `npm run test:production` vérifie un transfert chiffré avec deux navigateurs isolés et des données synthétiques : QR suivi sans modification, aperçu, application et suppression de la session. Aucune sauvegarde Telegra.ph réelle n’est publiée.
+Après publication sur GitHub Pages, `npm run test:production -- --frontend-only` contrôle le catalogue, les réglages et les sauvegardes réellement servis, et indique si la réception QR est inactive. Lorsque le relais public est configuré, `npm run test:production` vérifie un transfert chiffré avec deux navigateurs isolés et des données synthétiques : QR suivi sans modification, ajout de la sauvegarde et suppression de la session ; la restauration reste une action explicite distincte. Aucune sauvegarde Telegra.ph réelle n’est publiée.
 
 ### Faire évoluer le catalogue
 

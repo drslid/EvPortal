@@ -22,7 +22,7 @@
   "share.publishing": "Sauvegarde…",
   "share.publish": "Créer ma sauvegarde",
   "share.created": "Sauvegarde créée.",
-  "share.copyUnavailable": "Copie indisponible. Scannez le QR code avec votre téléphone.",
+  "share.copyUnavailable": "Copie indisponible. Sélectionnez le texte pour le copier manuellement.",
   "share.linkCopied": "Lien copié.",
   "share.codeCopied": "Code copié.",
   "share.import": "Importer",

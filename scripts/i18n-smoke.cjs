@@ -98,16 +98,20 @@ let browser;
         assert.equal(await page.locator('#marketSelect option[value="MX"]').textContent(), dictionaries[language]['prefs.country.MX']);
         assert.ok(await page.locator('#settingsDialog').evaluate(dialog => dialog.scrollWidth <= dialog.clientWidth + 1), language + ' preferences overflow');
         const marketBeforeLanguage = await page.locator('#marketSelect').inputValue();
-        for (const id of ['shareButton', 'importConfigButton']) {
-            assert.equal(await page.locator('#backupSettings #' + id).isVisible(), true, 'Backup actions stay together in Settings');
+        for (const id of ['shareButton', 'importConfigButton', 'restoreBackupButton']) {
+            assert.equal(await page.locator('#backupSettings #' + id).isVisible(), true, 'Create, Add and Restore remain distinct Settings actions');
         }
+        assert.equal(await page.locator('#backupLinksTitle').textContent(), dictionaries[language]['backup.links']);
+        assert.equal(await page.locator('#backupLibraryTitle').textContent(), dictionaries[language]['backup.library']);
         const receptionConfigured = await page.evaluate(() => {
             try { EVPairing.relayURL(window.EV_CONFIG && EV_CONFIG.pairingRelayURL); return true; }
             catch (_) { return false; }
         });
         assert.equal(await page.locator('#backupSettings #pairReceiveButton').isVisible(), receptionConfigured, 'Reception is only offered when this deployment has a relay');
-        assert.equal(await page.locator('#shareButton span').textContent(), dictionaries[language]['static.exportBackup']);
-        assert.equal(await page.locator('#importConfigButton span').textContent(), dictionaries[language]['static.importBackup']);
+        assert.equal(await page.locator('#backupSettings #pairOfferButton').isVisible(), receptionConfigured, 'Sending to the phone uses the same relay availability');
+        assert.equal(await page.locator('#shareButton span').textContent(), dictionaries[language]['backup.create']);
+        assert.equal(await page.locator('#importConfigButton span').textContent(), dictionaries[language]['backup.add']);
+        assert.equal(await page.locator('#restoreBackupButton span').textContent(), dictionaries[language]['backup.restore']);
         assert.equal(await page.locator('#settingsTitle').textContent(), dictionaries[language]['static.settings']);
         const before = await page.evaluate(() => localStorage.getItem(EVState.STORAGE_KEY));
         const other = language === 'en' ? 'fr' : 'en';
@@ -118,18 +122,29 @@ let browser;
         await page.locator('#languageSelect').selectOption(language);
         assert.equal(await page.evaluate(() => localStorage.getItem(EVState.STORAGE_KEY)), before, 'Language leaves shortcut configuration untouched');
         await page.locator('#importConfigButton').click();
-        assert.equal(await page.locator('#importDialogTitle').textContent(), dictionaries[language]['static.importBackup']);
-        assert.equal(await page.locator('#savedBackupPicker').isVisible(), true);
-        assert.equal(await page.locator('#importConfigID').isVisible(), false);
-        await page.locator('#legacyImportOptions > summary').click();
+        assert.equal(await page.locator('#importDialogTitle').textContent(), dictionaries[language]['backup.addTitle']);
+        assert.equal(await page.locator('#importConfigID').isVisible(), true);
+        assert.equal(await page.locator('#importConfigID').getAttribute('placeholder'), dictionaries[language]['static.codePlaceholder']);
+        assert.equal(await page.locator('#addBackupButton').textContent(), dictionaries[language]['backup.add']);
         await page.locator('#importConfigID').fill('not/a/page');
         await page.locator('#telegraphImportForm button[type="submit"]').click();
         assert.equal(await page.locator('#importError').textContent(), dictionaries[language]['state.telegraphID']);
+        assert.equal(await page.evaluate(() => localStorage.getItem(EVState.STORAGE_KEY)), before, 'Invalid Add never changes active shortcuts');
         await page.locator('#importDialog [data-close-dialog]').first().click();
+        await page.locator('#settingsButton').click();
+        await page.locator('#restoreBackupButton').click();
+        assert.equal(await page.locator('#restoreDialogTitle').textContent(), dictionaries[language]['backup.restoreTitle']);
+        assert.equal(await page.locator('#localBackupTitle').textContent(), dictionaries[language]['backup.local']);
+        assert.equal(await page.locator('#onlineBackupTitle').textContent(), dictionaries[language]['backup.online']);
+        assert.equal(await page.locator('#confirmRestoreButton').isVisible(), false, 'Restoration requires selecting a backup');
+        assert.equal(await page.evaluate(() => localStorage.getItem(EVState.STORAGE_KEY)), before, 'Opening the backup library never restores automatically');
+        assert.ok(await page.locator('#restoreDialog').evaluate(node => node.scrollWidth <= node.clientWidth + 1));
+        await page.locator('#restoreDialog [data-close-dialog]').first().click();
         await page.locator('#settingsButton').click();
         await page.locator('#shareButton').click();
         assert.equal(await page.locator('#settingsDialog').isVisible(), false, 'Opening export closes Settings');
-        assert.equal(await page.locator('#shareDialogTitle').textContent(), dictionaries[language]['static.exportBackup']);
+        assert.equal(await page.locator('#shareDialogTitle').textContent(), dictionaries[language]['backup.createTitle']);
+        assert.equal(await page.locator('#shareDialog canvas, #shareQRCode').count(), 0, 'Code/link creation has no QR');
         assert.equal(await page.locator('#shareTitle').inputValue(), dictionaries[language]['static.defaultBackup']);
         assert.equal(await page.locator('#sharePublishButton span').textContent(), dictionaries[language]['static.publish']);
         assert.ok(await page.locator('#shareDialog').evaluate(node => node.scrollWidth <= node.clientWidth + 1));
@@ -152,7 +167,7 @@ let browser;
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), language + ' help overflow');
         assert.equal(await page.evaluate(() => [...document.querySelectorAll('[data-i18n]')].every(node => node.textContent === EVI18n.t(node.dataset.i18n))), true, 'Help is fully translated');
         await context.close();
-        console.log('✓ ' + language + ': flags and language names on both pages, grouped backup actions, theme, 6 widths, categories, import/export, help and persistence');
+        console.log('✓ ' + language + ': flags, catalog preferences, Create/Add/Restore separation, phone availability, theme, 6 widths, translated help and persistence');
     }
     assert.deepEqual(errors, []);
     console.log('8 languages verified across 48 layouts; no horizontal category scrolling or JavaScript errors.');

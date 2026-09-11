@@ -1,4 +1,4 @@
-/* Ephemeral, end-to-end encrypted phone-to-screen transfer. Secrets live in memory and QR fragments only. */
+/* Bidirectional encrypted backup transfer. Secrets live in memory and QR fragments only. */
 (function (root, factory) {
     if (typeof module === 'object' && module.exports) module.exports = factory(root, require('./state.js'), require('./locales/pair-fr.json'));
     else root.EVPairing = factory(root, root.EVState);
@@ -51,8 +51,7 @@
         if (raw.expiresAt <= (now === undefined ? Date.now() : now)) throw fail('pair.expired');
         return { v: 1, id: raw.id, token: raw.token, key: raw.key, expiresAt: raw.expiresAt };
     }
-    function pairingURL(session, key, currentURL) {
-        const credentials = validateCredentials({ id: session.id, token: session.sendToken, expiresAt: session.expiresAt, key: key });
+    function transferURL(credentials, mode, currentURL) {
         let url;
         try { url = new URL(currentURL || (root.location && root.location.href) || PUBLIC_URL); }
         catch (_) { throw fail('pair.invalidLink'); }
@@ -61,17 +60,26 @@
         // Both devices must use the same portal and relay, including a local
         // preview or a deployment in a subdirectory. Discard old import codes.
         url.search = '';
-        url.hash = 'receive=' + encode(new TextEncoder().encode(JSON.stringify(credentials)));
+        url.hash = mode + '=' + encode(new TextEncoder().encode(JSON.stringify(credentials)));
         return url.href;
     }
-    function parseFragment(hash, now) {
-        if (typeof hash !== 'string' || !hash.startsWith('#receive=') || hash.length > 1200) throw fail('pair.invalidLink');
+    function pairingURL(session, key, currentURL) {
+        return transferURL(validateCredentials({ id: session.id, token: session.sendToken, expiresAt: session.expiresAt, key: key }), 'receive', currentURL);
+    }
+    function downloadURL(session, key, currentURL) {
+        return transferURL(validateCredentials({ id: session.id, token: session.receiveToken, expiresAt: session.expiresAt, key: key }), 'download', currentURL);
+    }
+    function parseTransferFragment(hash, mode, now) {
+        const prefix = '#' + mode + '=';
+        if (typeof hash !== 'string' || !hash.startsWith(prefix) || hash.length > 1200) throw fail('pair.invalidLink');
         let raw;
-        try { raw = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(decode(hash.slice(9), 800))); }
+        try { raw = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(decode(hash.slice(prefix.length), 800))); }
         catch (_) { throw fail('pair.invalidLink'); }
         if (!raw || raw.v !== 1 || Object.keys(raw).sort().join(',') !== 'expiresAt,id,key,token,v') throw fail('pair.invalidLink');
         return validateCredentials(raw, now);
     }
+    function parseFragment(hash, now) { return parseTransferFragment(hash, 'receive', now); }
+    function parseDownloadFragment(hash, now) { return parseTransferFragment(hash, 'download', now); }
     function normalizedState(state) {
         let next;
         try { next = Core.normalizeState(state); } catch (_) { throw fail('pair.invalidConfig'); }
@@ -178,10 +186,11 @@
 
     function init(options) {
         const doc = root.document;
-        if (!doc || !options || typeof options.getState !== 'function' || typeof options.applyState !== 'function') return null;
+        if (!doc || !options || typeof options.getState !== 'function' || typeof options.saveBackup !== 'function') return null;
         const $ = function (id) { return doc.getElementById(id); };
         const receiverDialog = $('pairReceiveDialog');
         const senderDialog = $('pairSendDialog');
+        const offerDialog = $('pairOfferDialog');
         if (!receiverDialog || !senderDialog || receiverDialog.dataset.initialized) return null;
         receiverDialog.dataset.initialized = 'true';
         // Only expose reception when this deployment has a configured relay.
@@ -189,7 +198,13 @@
         try {
             relayURL(root.EV_CONFIG && root.EV_CONFIG.pairingRelayURL);
             $('pairReceiveButton').hidden = false;
-        } catch (_) { $('pairReceiveButton').hidden = true; }
+            if ($('pairOfferButton')) $('pairOfferButton').hidden = false;
+            if ($('phoneSettings')) $('phoneSettings').hidden = false;
+        } catch (_) {
+            $('pairReceiveButton').hidden = true;
+            if ($('pairOfferButton')) $('pairOfferButton').hidden = true;
+            if ($('phoneSettings')) $('phoneSettings').hidden = true;
+        }
         let client;
         let receiver = null;
         let receiverKey = '';
@@ -199,6 +214,7 @@
         let pollTimer;
         let clockTimer;
         let retries = 0;
+        let directDownload = false;
         let sender = null;
         let senderState = null;
         let senderPayload = null;
@@ -208,6 +224,13 @@
         let sent = false;
         let sendAmbiguous = false;
         let sendClock;
+        let offer = null;
+        let offerState = null;
+        let offerAbort = null;
+        let offerEpoch = 0;
+        let offerClock;
+        let offerPaused = false;
+        let offerChoice = null;
         function message(id, key, params) {
             const node = $(id);
             if (!node) return;
@@ -228,10 +251,31 @@
             if (!client) client = createClient({ relayURL: root.EV_CONFIG && root.EV_CONFIG.pairingRelayURL });
             return client;
         }
-        function clearQR() {
-            $('pairReceiveQRCode').hidden = true;
-            $('pairReceiveQRCode').replaceChildren();
-            $('pairReceiveQRCode').removeAttribute('title');
+        function clearQR(id) {
+            const qr = $(id || 'pairReceiveQRCode');
+            if (!qr) return;
+            qr.hidden = true;
+            qr.replaceChildren();
+            qr.removeAttribute('title');
+        }
+        function renderQR(id, url) {
+            if (!root.QRCode) throw fail('pair.unsupported');
+            const qr = $(id);
+            clearQR(id);
+            new root.QRCode(qr, { text: url, width: 256, height: 256, colorDark: '#10151f', colorLight: '#ffffff', correctLevel: root.QRCode.CorrectLevel.M });
+            qr.setAttribute('role', 'img');
+            qr.dataset.i18nAriaLabel = id === 'pairOfferQRCode' ? 'pair.offerQRAccessible' : 'pair.qrAccessible';
+            qr.setAttribute('aria-label', t(qr.dataset.i18nAriaLabel));
+            const image = qr.querySelector('img');
+            if (image) image.alt = '';
+            qr.hidden = false;
+        }
+        function receiveLayout(isDownload) {
+            directDownload = isDownload;
+            const steps = $('pairReceiveSteps') || receiverDialog.querySelector('.pair-steps');
+            if (steps) steps.hidden = isDownload;
+            message('pairReceiveTitle', isDownload ? 'pair.downloadTitle' : 'pair.receiveTitle');
+            $('pairNewButton').hidden = true;
         }
         function cleanupReceiver(removeRemote) {
             receiveEpoch += 1;
@@ -254,9 +298,9 @@
             if (receiver.expiresAt <= Date.now()) {
                 cleanupReceiver(true);
                 message('pairReceiveStatus', '');
-                message('pairReceiveError', 'pair.receiverExpired');
-                $('pairNewButton').hidden = false;
-            } else message('pairReceiveStatus', retries ? 'pair.retrying' : 'pair.waiting', { time: remaining(receiver.expiresAt) });
+                message('pairReceiveError', directDownload ? 'pair.downloadExpired' : 'pair.receiverExpired');
+                $('pairNewButton').hidden = directDownload;
+            } else message('pairReceiveStatus', retries ? 'pair.retrying' : (directDownload ? 'pair.downloading' : 'pair.waiting'), { time: remaining(receiver.expiresAt) });
         }
         async function poll(epoch) {
             if (!receiver || epoch !== receiveEpoch || !receiverDialog.open) return;
@@ -285,8 +329,8 @@
                 else {
                     cleanupReceiver(true);
                     message('pairReceiveStatus', '');
-                    error('pairReceiveError', issue.i18nKey === 'pair.expired' ? fail('pair.receiverExpired') : issue);
-                    $('pairNewButton').hidden = false;
+                    error('pairReceiveError', issue.i18nKey === 'pair.expired' ? fail(directDownload ? 'pair.downloadExpired' : 'pair.receiverExpired') : issue);
+                    $('pairNewButton').hidden = directDownload;
                     return;
                 }
             }
@@ -294,6 +338,7 @@
         }
         async function startReceiver() {
             cleanupReceiver(true);
+            receiveLayout(false);
             received = null;
             message('pairReceiveError', '');
             message('pairReceiveSummary', '');
@@ -312,13 +357,9 @@
                 receiver = session;
                 receiverKey = key;
                 retries = 0;
-                const qr = $('pairReceiveQRCode');
-                new root.QRCode(qr, { text: pairingURL(session, key), width: 256, height: 256, colorDark: '#10151f', colorLight: '#ffffff', correctLevel: root.QRCode.CorrectLevel.M });
-                qr.setAttribute('role', 'img');
-                const image = qr.querySelector('img');
-                if (image) image.alt = '';
-                qr.hidden = false;
+                renderQR('pairReceiveQRCode', pairingURL(session, key));
                 receiveClock();
+                if (!receiver) return;
                 clockTimer = setInterval(receiveClock, 1000);
                 pollTimer = setTimeout(function () { poll(epoch); }, 2000);
             } catch (issue) {
@@ -327,6 +368,116 @@
                 message('pairReceiveStatus', '');
                 error('pairReceiveError', issue);
                 $('pairNewButton').hidden = false;
+            }
+        }
+        function startDownload(credentials) {
+            cleanupReceiver(true);
+            receiveLayout(true);
+            received = null;
+            message('pairReceiveError', '');
+            message('pairReceiveSummary', '');
+            message('pairReceiveStatus', 'pair.downloading');
+            $('pairApplyButton').hidden = true;
+            open(receiverDialog);
+            try {
+                getClient();
+                receiver = { id: credentials.id, receiveToken: credentials.token, expiresAt: credentials.expiresAt };
+                receiverKey = credentials.key;
+                receiveAbort = new AbortController();
+                retries = 0;
+                receiveClock();
+                if (!receiver) return;
+                clockTimer = setInterval(receiveClock, 1000);
+                poll(receiveEpoch);
+            } catch (issue) {
+                cleanupReceiver(true);
+                message('pairReceiveStatus', '');
+                error('pairReceiveError', issue);
+            }
+        }
+        function cleanupOffer(removeRemote, preserveState) {
+            offerEpoch += 1;
+            clearInterval(offerClock);
+            if (offerAbort) offerAbort.abort();
+            offerAbort = null;
+            const old = offer;
+            offer = null;
+            offerPaused = false;
+            if (!preserveState) { offerState = null; offerChoice = null; }
+            clearQR('pairOfferQRCode');
+            if (removeRemote && old && client) client.remove(old).catch(function () {});
+        }
+        function offerTick() {
+            if (!offer) return;
+            if (offer.expiresAt <= Date.now()) {
+                cleanupOffer(true, true);
+                message('pairOfferStatus', '');
+                message('pairOfferError', 'pair.offerExpired');
+                $('pairOfferNewButton').hidden = false;
+            } else message('pairOfferStatus', 'pair.offerWaiting', { time: remaining(offer.expiresAt) });
+        }
+        async function startOffer(selectedState) {
+            if (!offerDialog) return;
+            const source = selectedState || options.getState();
+            cleanupOffer(true);
+            message('pairOfferError', '');
+            message('pairOfferSummary', '');
+            message('pairOfferStatus', 'pair.offerPreparing');
+            $('pairOfferNewButton').hidden = true;
+            if ($('pairOfferChooseBackupButton')) $('pairOfferChooseBackupButton').disabled = true;
+            open(offerDialog);
+            let epoch = offerEpoch;
+            offerAbort = new AbortController();
+            try {
+                getClient();
+                if (!root.QRCode) throw fail('pair.unsupported');
+                offerState = normalizedState(source).state;
+                summary('pairOfferSummary', offerState);
+                const key = createKey();
+                const session = await client.create(offerAbort.signal);
+                if (epoch !== offerEpoch || !offerDialog.open) { client.remove(session).catch(function () {}); return; }
+                offer = session;
+                const payload = await encryptState(offerState, key, session.id);
+                if (epoch !== offerEpoch || !offerDialog.open) return;
+                await client.send({ id: session.id, token: session.sendToken }, payload, offerAbort.signal);
+                if (epoch !== offerEpoch || !offerDialog.open) return;
+                // Publish the read capability only after the encrypted deposit
+                // succeeds. The writing capability never enters this QR.
+                session.sendToken = '';
+                renderQR('pairOfferQRCode', downloadURL(session, key));
+                offerTick();
+                if (offer) offerClock = setInterval(offerTick, 1000);
+            } catch (issue) {
+                if (epoch !== offerEpoch) return;
+                cleanupOffer(true, true);
+                epoch = offerEpoch;
+                message('pairOfferStatus', '');
+                error('pairOfferError', issue);
+                $('pairOfferNewButton').hidden = false;
+            } finally {
+                if (epoch === offerEpoch && offerDialog.open && $('pairOfferChooseBackupButton')) $('pairOfferChooseBackupButton').disabled = false;
+            }
+        }
+        function chooseOfferBackup() {
+            if (!options.chooseBackup || !offerDialog) return;
+            const choice = {};
+            offerChoice = choice;
+            offerPaused = true;
+            offerDialog.close();
+            try {
+                options.chooseBackup(function (selected) {
+                    if (offerChoice !== choice) return;
+                    offerChoice = null;
+                    offerPaused = false;
+                    if (selected) startOffer(selected);
+                    else open(offerDialog);
+                });
+            } catch (issue) {
+                if (offerChoice !== choice) return;
+                offerChoice = null;
+                offerPaused = false;
+                open(offerDialog);
+                error('pairOfferError', issue);
             }
         }
         function clearSender() {
@@ -362,9 +513,7 @@
             try {
                 getClient();
                 validateCredentials(sender);
-                senderState = normalizedState(options.getState()).state;
-                senderPayload = null;
-                sendAmbiguous = false;
+                if (!senderState) senderState = normalizedState(options.getState()).state;
                 summary('pairSendSummary', senderState);
                 $('pairSendButton').disabled = false;
                 clearInterval(sendClock);
@@ -415,6 +564,13 @@
         }
         $('pairReceiveButton').addEventListener('click', startReceiver);
         $('pairNewButton').addEventListener('click', startReceiver);
+        if ($('pairOfferButton')) $('pairOfferButton').addEventListener('click', function () { startOffer(); });
+        if ($('pairOfferNewButton')) $('pairOfferNewButton').addEventListener('click', function () { startOffer(offerState); });
+        if ($('pairOfferChooseBackupButton')) $('pairOfferChooseBackupButton').addEventListener('click', chooseOfferBackup);
+        if (offerDialog) {
+            offerDialog.addEventListener('close', function () { if (!offerDialog.open && !offerPaused) cleanupOffer(true); });
+            offerDialog.addEventListener('cancel', function () { cleanupOffer(true); });
+        }
         receiverDialog.addEventListener('close', function () { if (!receiverDialog.open) { cleanupReceiver(true); received = null; } });
         receiverDialog.addEventListener('cancel', function () { cleanupReceiver(true); received = null; });
         senderDialog.addEventListener('close', function () { if (!senderDialog.open && !senderPaused) clearSender(); });
@@ -422,40 +578,72 @@
         $('pairSendButton').addEventListener('click', send);
         $('pairApplyButton').addEventListener('click', async function () {
             if (!received || this.disabled) return;
+            const current = received;
             this.disabled = true;
             try {
-                const next = Core.normalizeState(received);
-                if (await options.applyState(next) === false) throw fail('pair.applyFailed');
+                const next = Core.normalizeState(current);
+                const result = await options.saveBackup(next);
+                if (result === false) throw fail('pair.addFailed');
+                if (current !== received) return;
                 receiverDialog.close();
-                if (options.announce) options.announce(t('pair.applied'));
-            } catch (issue) { error('pairReceiveError', issue.i18nKey ? issue : fail('pair.applyFailed')); }
+                if (options.announce) options.announce(t('pair.added'));
+                if (options.openBackups) options.openBackups(result && typeof result === 'object' ? result.id : result);
+            } catch (issue) { if (current === received) error('pairReceiveError', issue.i18nKey ? issue : fail('pair.addFailed')); }
             finally { this.disabled = false; }
         });
         if ($('pairChooseBackupButton')) $('pairChooseBackupButton').addEventListener('click', function () {
-            if (!sender || sending || sent || !options.chooseBackup) return;
+            if (!sender || sending || sent || senderPayload || !options.chooseBackup) return;
+            const current = sender;
             senderPaused = true;
             senderDialog.close();
-            options.chooseBackup();
+            try {
+                options.chooseBackup(function (selected) {
+                    if (sender !== current || !senderPaused) return;
+                    try {
+                        if (selected) senderState = normalizedState(selected).state;
+                        showSender();
+                    } catch (issue) { showSender(); error('pairSendError', issue); }
+                });
+            } catch (issue) { if (sender === current) { showSender(); error('pairSendError', issue); } }
         });
         const controller = {
             startReceiver: startReceiver,
+            startOffer: startOffer,
             resumeSender: function () { if (senderPaused && sender) { showSender(); return true; } return false; },
-            destroy: function () { cleanupReceiver(true); clearSender(); }
+            destroy: function () { cleanupReceiver(true); cleanupOffer(true); clearSender(); }
         };
         activeController = controller;
         root.addEventListener('pagehide', function () {
             cleanupReceiver(false);
+            cleanupOffer(false);
             received = null;
             clearSender();
             if (receiverDialog.open) receiverDialog.close();
             if (senderDialog.open) senderDialog.close();
+            if (offerDialog && offerDialog.open) offerDialog.close();
         });
         function incomingLink() {
             const hash = root.location.hash;
-            if (!hash.startsWith('#receive=')) return;
+            const download = hash.startsWith('#download=');
+            if (!download && !hash.startsWith('#receive=')) return;
             // Remove credentials before opening UI or making any request; never copy them into storage.
             root.history.replaceState(null, '', root.location.pathname + root.location.search);
+            cleanupReceiver(true);
+            cleanupOffer(true);
             clearSender();
+            if (download) {
+                try { startDownload(parseDownloadFragment(hash)); }
+                catch (issue) {
+                    receiveLayout(true);
+                    received = null;
+                    message('pairReceiveSummary', '');
+                    message('pairReceiveStatus', '');
+                    $('pairApplyButton').hidden = true;
+                    open(receiverDialog);
+                    error('pairReceiveError', issue.i18nKey === 'pair.expired' ? fail('pair.downloadExpired') : issue);
+                }
+                return;
+            }
             message('pairSendSummary', '');
             message('pairSendStatus', '');
             message('pairSendError', '');
@@ -471,5 +659,5 @@
         incomingLink();
         return controller;
     }
-    return { PUBLIC_URL, MAX_BYTES, TTL_MS, encode, decode, createKey, pairingURL, parseFragment, encryptState, decryptState, validatePayload, relayURL, createClient, init, resumeSender: function () { return activeController ? activeController.resumeSender() : false; } };
+    return { PUBLIC_URL, MAX_BYTES, TTL_MS, encode, decode, createKey, pairingURL, downloadURL, parseFragment, parseDownloadFragment, encryptState, decryptState, validatePayload, relayURL, createClient, init, resumeSender: function () { return activeController ? activeController.resumeSender() : false; } };
 }));

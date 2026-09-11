@@ -37,7 +37,12 @@ document.addEventListener('DOMContentLoaded', function () {
     let editingShortcut = null;
     let editingCategoryID = null;
     let editingCategoryLabel = '';
-    let pendingImport = null;
+    const backupLibrary = window.EVBackups.createLibrary(storage);
+    let selectedBackup = null;
+    let backupChoice = null;
+    let backupAbort = null;
+    let pendingBackupPath = null;
+    let backupSelectionAttempt = 0;
     let sharingClient = null;
     let backupPickerAttempt = 0;
     const PREVIOUS_TRANSFER_KEY = 'evportal.previous-transfer.v1';
@@ -462,10 +467,8 @@ document.addEventListener('DOMContentLoaded', function () {
     function closeDialog(dialog) {
         if (typeof dialog.close === 'function') dialog.close();
         else dialog.removeAttribute('open');
-        if (dialog.id === 'importDialog') {
-            importAttempt += 1;
-            if (importAbort) importAbort.abort();
-        }
+        if (dialog.id === 'importDialog') cancelImport();
+        if (dialog.id === 'restoreDialog') cancelBackupRead();
     }
 
     document.querySelectorAll('[data-close-dialog]').forEach(function (button) {
@@ -478,10 +481,9 @@ document.addEventListener('DOMContentLoaded', function () {
             if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) closeDialog(dialog);
         });
     });
-    $('importDialog').addEventListener('cancel', function () {
-        importAttempt += 1;
-        if (importAbort) importAbort.abort();
-    });
+    $('importDialog').addEventListener('cancel', cancelImport);
+    $('importDialog').addEventListener('close', function () { if (!$('importDialog').open) cancelImport(); });
+    $('restoreDialog').addEventListener('cancel', cancelBackupRead);
 
     function openShortcutDialog(category, shortcut) {
         editingShortcut = shortcut ? { category: category, shortcut: shortcut } : null;
@@ -722,81 +724,243 @@ document.addEventListener('DOMContentLoaded', function () {
     $('catalogSearch').addEventListener('input', renderCatalog);
     $('catalogMarketToggle').addEventListener('change', renderCatalog);
 
-    function openImport(proposal) {
-        backupPickerAttempt += 1;
-        $('savedBackupPicker').hidden = true;
-        $('savedBackupList').replaceChildren();
-        pendingImport = null;
+    function backupError(error) {
+        return error.i18nKey ? t(error.i18nKey, error.i18nParams) : error.name === 'AbortError' ? t('app.connectionTimeout')
+            : error instanceof TypeError ? t('app.connectionFailed') : error instanceof SyntaxError ? t('app.invalidConfig') : error.message;
+    }
+    function backupMessage(key) {
+        const node = element('p', 'field-help', t(key));
+        node.dataset.i18n = key;
+        return node;
+    }
+    function backupSummary(next) {
+        return t('backup.savedSummary', { categories: next.categories.length, count: Core.allShortcutEntries(next).length });
+    }
+    function normalizedBackup(next) { return Core.applyCatalogUpdates(Core.normalizeState(next), catalog).state; }
+    async function fetchBackup(proposal, controller) {
+        const path = Core.telegraphImportPath(proposal);
+        const timeout = window.setTimeout(function () { controller.abort(); }, 15000);
+        try {
+            const response = await fetch('https://api.telegra.ph/getPage/' + encodeURIComponent(path) + '?return_content=true', { signal: controller.signal, credentials: 'omit', referrerPolicy: 'no-referrer' });
+            if (!response.ok) throw new Error(t('app.telegraphNotReturned'));
+            const content = await response.text();
+            if (new TextEncoder().encode(content).length > Core.MAX_FILE_BYTES) throw new Error(t('app.pageTooLarge'));
+            const result = JSON.parse(content);
+            if (!result.ok || !Array.isArray(result.result?.content)) throw new Error(t('app.telegraphUnreadable'));
+            const first = result.result.content[0];
+            if (!first || !Array.isArray(first.children) || typeof first.children[0] !== 'string') throw new Error(t('app.noConfigInPage'));
+            return { path: path, title: typeof result.result.title === 'string' && result.result.title.trim() ? result.result.title.trim().slice(0, window.EVBackups.MAX_TITLE_LENGTH) : path, state: Core.parseImport(first.children[0], catalog) };
+        } finally { window.clearTimeout(timeout); }
+    }
+    function cancelImport() {
         importAttempt += 1;
+        if (importAbort) importAbort.abort();
+        $('addBackupButton').disabled = false;
+        $('importFile').disabled = false;
+    }
+    function openImport(proposal) {
+        cancelImport();
         $('importError').textContent = '';
-        $('importPreview').textContent = proposal ? t('app.sharedConfig') : '';
-        $('confirmImportButton').hidden = true;
+        $('importPreview').textContent = '';
         $('importFile').value = '';
         $('importConfigID').value = proposal || '';
-        const legacyDetails = $('importConfigID').closest('details');
-        if (legacyDetails) legacyDetails.open = true;
         openDialog($('importDialog'));
-        if (proposal) $('importConfigID').focus();
     }
-
-    function previewImport(next) {
-        pendingImport = Core.applyCatalogUpdates(next, catalog).state;
-        const total = pendingImport.categories.reduce(function (sum, category) { return sum + category.shortcuts.length; }, 0);
-        $('importPreview').textContent = t('app.importPreview', { categories: pendingImport.categories.length, count: total });
-        $('confirmImportButton').hidden = false;
+    function finishAdding(record) {
+        closeDialog($('importDialog'));
+        const url = new URL(window.location.href);
+        url.searchParams.delete('code');
+        url.searchParams.delete('config');
+        window.history.replaceState(null, '', url.pathname + url.search + url.hash);
+        openBackupLibrary(record.id);
+        announce(t('backup.added'));
+    }
+    async function addBackup(read) {
+        cancelImport();
+        const attempt = importAttempt;
+        importAbort = new AbortController();
         $('importError').textContent = '';
-    }
-
-    async function showSavedBackups(offset, attempt) {
-        const list = $('savedBackupList');
-        if (!offset) {
-            list.replaceChildren();
-            const loading = element('p', 'field-help', t('app.loadingConfig'));
-            loading.dataset.i18n = 'app.loadingConfig';
-            list.append(loading);
+        $('importPreview').textContent = t('app.loadingConfig');
+        $('addBackupButton').disabled = true;
+        $('importFile').disabled = true;
+        try {
+            const candidate = await read(importAbort);
+            if (attempt !== importAttempt || !$('importDialog').open) return;
+            finishAdding(backupLibrary.add(candidate));
+        } catch (error) {
+            if (attempt === importAttempt && $('importDialog').open) $('importError').textContent = backupError(error);
+        } finally {
+            if (attempt === importAttempt) {
+                $('addBackupButton').disabled = false;
+                $('importFile').disabled = false;
+                $('importPreview').textContent = '';
+            }
         }
+    }
+    function clearBackupSelection() {
+        selectedBackup = null;
+        $('restorePreview').hidden = true;
+        $('confirmRestoreButton').disabled = true;
+        document.querySelectorAll('.backup-select').forEach(function (button) { button.setAttribute('aria-pressed', 'false'); });
+    }
+    function previewBackup(record, kind) {
+        selectedBackup = { id: record.id, path: record.path, title: record.title, state: normalizedBackup(record.state), kind: kind };
+        $('restoreName').textContent = record.title;
+        $('restoreSummary').textContent = backupSummary(selectedBackup.state);
+        $('restorePreview').hidden = false;
+        $('confirmRestoreButton').disabled = false;
+        $('restoreError').textContent = '';
+        document.querySelectorAll('.backup-select').forEach(function (button) {
+            button.setAttribute('aria-pressed', String(button.dataset.backupKey === (kind === 'local' ? record.id : record.path)));
+        });
+    }
+    function cancelBackupRead() {
+        pendingBackupPath = null;
+        backupSelectionAttempt += 1;
+        if (backupAbort) backupAbort.abort();
+    }
+    async function selectBackup(record, kind) {
+        cancelBackupRead();
+        const attempt = backupSelectionAttempt;
+        clearBackupSelection();
+        $('restoreError').textContent = '';
+        try {
+            if (kind === 'local') {
+                const current = backupLibrary.get(record.id);
+                if (!current) throw new Error(t('backup.missing'));
+                previewBackup(current, kind);
+            } else {
+                backupAbort = new AbortController();
+                pendingBackupPath = record.path;
+                $('restoreError').textContent = t('app.loadingConfig');
+                const remote = await fetchBackup(record.path, backupAbort);
+                if (attempt !== backupSelectionAttempt || !$('restoreDialog').open) return;
+                previewBackup(remote, kind);
+            }
+        } catch (error) { if (attempt === backupSelectionAttempt) $('restoreError').textContent = backupError(error); }
+        finally { if (attempt === backupSelectionAttempt) pendingBackupPath = null; }
+    }
+    function backupRow(record, kind) {
+        const row = element('div', 'backup-row');
+        const select = element('button', 'backup-select');
+        select.type = 'button';
+        select.dataset.backupKey = kind === 'local' ? record.id : record.path;
+        select.setAttribute('aria-pressed', String(Boolean(selectedBackup && selectedBackup.kind === kind && (kind === 'local' ? selectedBackup.id === record.id : selectedBackup.path === record.path))));
+        select.append(element('strong', '', record.title || record.path));
+        if (kind === 'local') {
+            const savedAt = new Intl.DateTimeFormat(I18n.language, { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }).format(record.createdAt);
+            select.append(element('small', '', savedAt));
+        }
+        select.addEventListener('click', function () { selectBackup(record, kind); });
+        const remove = element('button', 'icon-button backup-delete');
+        remove.type = 'button';
+        remove.dataset.i18nAriaLabel = 'backup.deleteNamed';
+        remove.dataset.i18nParams = JSON.stringify({ name: record.title || record.path });
+        remove.setAttribute('aria-label', t('backup.deleteNamed', { name: record.title || record.path }));
+        remove.innerHTML = '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"/></svg>';
+        remove.addEventListener('click', async function () {
+            remove.disabled = true;
+            const opening = backupPickerAttempt;
+            try {
+                if (kind === 'local') backupLibrary.remove(record.id);
+                else { await sharingClient.removePage(record.path); window.dispatchEvent(new CustomEvent('evportal:backupremoved', { detail: { path: record.path } })); }
+                if (opening !== backupPickerAttempt || !$('restoreDialog').open) return;
+                if (kind === 'online' && pendingBackupPath === record.path) { cancelBackupRead(); $('restoreError').textContent = ''; }
+                if (selectedBackup && selectedBackup.kind === kind && (kind === 'local' ? selectedBackup.id === record.id : selectedBackup.path === record.path)) clearBackupSelection();
+                if (kind === 'local') renderLocalBackups();
+                else { row.remove(); if (!$('onlineBackupList').childElementCount) $('onlineBackupList').append(backupMessage('backup.empty')); }
+                announce(t('backup.deleted'));
+            } catch (error) { if (opening === backupPickerAttempt) $('restoreError').textContent = backupError(error); }
+            finally { remove.disabled = false; }
+        });
+        row.append(select, remove);
+        return row;
+    }
+    function renderLocalBackups() {
+        const list = $('localBackupList');
+        list.replaceChildren();
+        try {
+            const records = backupLibrary.list();
+            records.forEach(function (record) { list.append(backupRow(record, 'local')); });
+            if (!records.length) list.append(backupMessage('backup.empty'));
+        } catch (error) { list.append(element('p', 'form-error', backupError(error))); }
+    }
+    async function showOnlineBackups(offset, attempt) {
+        const list = $('onlineBackupList');
+        if (!offset) list.replaceChildren(backupMessage('app.loadingConfig'));
+        $('onlineBackupError').textContent = '';
         list.setAttribute('aria-busy', 'true');
         try {
             const result = sharingClient ? await sharingClient.listPages(offset) : { pages: [], total: 0, nextOffset: 0 };
-            if (attempt !== backupPickerAttempt || !$('importDialog').open) return;
+            if (attempt !== backupPickerAttempt || !$('restoreDialog').open) return;
             if (!offset) list.replaceChildren();
-            const oldMore = list.querySelector('[data-more-backups]');
-            if (oldMore) oldMore.remove();
-            result.pages.forEach(function (backup) {
-                const button = element('button', 'full-width', backup.title || backup.path);
-                button.type = 'button';
-                button.addEventListener('click', function () { loadTelegraphBackup(backup.path); });
-                list.append(button);
-            });
-            if (result.nextOffset < result.total && result.nextOffset > (offset || 0)) {
+            list.querySelectorAll('[data-more-backups]').forEach(function (button) { button.remove(); });
+            result.pages.forEach(function (record) { list.append(backupRow(record, 'online')); });
+            if (result.nextOffset < result.total && result.nextOffset > offset) {
                 const more = element('button', 'full-width', t('share.more'));
-                more.type = 'button';
-                more.dataset.moreBackups = 'true';
-                more.dataset.i18n = 'share.more';
-                more.addEventListener('click', function () { more.disabled = true; showSavedBackups(result.nextOffset, attempt); });
+                more.type = 'button'; more.dataset.moreBackups = 'true'; more.dataset.i18n = 'share.more';
+                more.addEventListener('click', function () { more.disabled = true; showOnlineBackups(result.nextOffset, attempt); });
                 list.append(more);
             }
-            if (!list.childElementCount) {
-                const empty = element('p', 'field-help', t('share.empty'));
-                empty.dataset.i18n = 'share.empty';
-                list.append(empty);
-            }
+            if (!list.childElementCount) list.append(backupMessage('backup.empty'));
         } catch (error) {
-            if (attempt === backupPickerAttempt && $('importDialog').open) {
-                if (!offset) list.replaceChildren();
-                const more = list.querySelector('[data-more-backups]');
-                if (more) more.disabled = false;
-                $('importError').textContent = error.i18nKey ? t(error.i18nKey, error.i18nParams) : error.message;
-            }
+            if (attempt !== backupPickerAttempt || !$('restoreDialog').open) return;
+            if (!offset) list.replaceChildren();
+            $('onlineBackupError').textContent = backupError(error);
+            list.querySelectorAll('[data-more-backups]').forEach(function (button) { button.remove(); });
+            const retry = element('button', 'full-width', t('backup.retry'));
+            retry.type = 'button'; retry.dataset.moreBackups = 'true'; retry.dataset.i18n = 'backup.retry';
+            retry.addEventListener('click', function () { retry.disabled = true; showOnlineBackups(offset, attempt); });
+            list.append(retry);
         } finally { if (attempt === backupPickerAttempt) list.removeAttribute('aria-busy'); }
     }
-
-    function chooseSavedBackup() {
-        openImport();
-        $('savedBackupPicker').hidden = false;
-        $('legacyImportOptions').open = false;
-        showSavedBackups(0, backupPickerAttempt);
+    function openBackupLibrary(id, callback) {
+        backupPickerAttempt += 1;
+        cancelBackupRead();
+        backupChoice = typeof callback === 'function' ? callback : null;
+        clearBackupSelection();
+        $('restoreError').textContent = '';
+        const titleKey = backupChoice ? 'backup.chooseTitle' : 'backup.restoreTitle';
+        const buttonKey = backupChoice ? 'backup.choose' : 'backup.restore';
+        $('restoreDialogTitle').dataset.i18n = titleKey; $('restoreDialogTitle').textContent = t(titleKey);
+        $('confirmRestoreButton').dataset.i18n = buttonKey; $('confirmRestoreButton').textContent = t(buttonKey);
+        $('restoreHint').hidden = Boolean(backupChoice);
+        renderLocalBackups();
+        openDialog($('restoreDialog'));
+        showOnlineBackups(0, backupPickerAttempt);
+        if (id) selectBackup({ id: id }, 'local');
     }
+    function chooseSavedBackup(callback) { openBackupLibrary(null, callback); }
+    $('restoreBackupButton').addEventListener('click', function () { openBackupLibrary(); });
+    $('restoreDialog').addEventListener('close', function () {
+        // Ignore a delayed close event if the dialog has already been reopened.
+        if ($('restoreDialog').open) return;
+        backupPickerAttempt += 1;
+        cancelBackupRead();
+        const callback = backupChoice;
+        backupChoice = null;
+        if (callback) callback(null);
+    });
+    $('confirmRestoreButton').addEventListener('click', function () {
+        if (!selectedBackup) return;
+        try {
+            let candidate = selectedBackup.state;
+            if (selectedBackup.kind === 'local') {
+                const current = backupLibrary.get(selectedBackup.id);
+                if (!current) throw new Error(t('backup.missing'));
+                candidate = normalizedBackup(current.state);
+            }
+            if (backupChoice) {
+                const callback = backupChoice; backupChoice = null;
+                closeDialog($('restoreDialog'));
+                callback(Core.normalizeState(candidate));
+            } else {
+                applyReceivedState(candidate);
+                closeDialog($('restoreDialog'));
+                announce(t('backup.restored'));
+            }
+        } catch (error) { $('restoreError').textContent = backupError(error); }
+    });
 
     function renderTransferredState(next) {
         state = next;
@@ -853,74 +1017,19 @@ document.addEventListener('DOMContentLoaded', function () {
         announce(t('pair.undone'));
     });
 
-    $('importConfigButton').addEventListener('click', chooseSavedBackup);
-    $('importFile').addEventListener('change', async function () {
-        const attempt = ++importAttempt;
-        if (importAbort) importAbort.abort();
-        pendingImport = null;
-        $('confirmImportButton').hidden = true;
-        $('importPreview').textContent = '';
+    $('importConfigButton').addEventListener('click', function () { openImport(); });
+    $('importFile').addEventListener('change', function () {
         const file = this.files[0];
         if (!file) return;
-        try {
+        addBackup(async function () {
             if (file.size > Core.MAX_FILE_BYTES) throw new Error(t('app.fileTooLarge'));
-            const text = await file.text();
-            if (attempt !== importAttempt) return;
-            previewImport(Core.parseImport(text, catalog));
-        } catch (error) { if (attempt === importAttempt) $('importError').textContent = error.message; }
+            return { title: file.name.replace(/\.json$/i, '').trim().slice(0, window.EVBackups.MAX_TITLE_LENGTH) || t('backup.fileTitle'), state: Core.parseImport(await file.text(), catalog), source: 'file' };
+        });
     });
-    async function loadTelegraphBackup(proposal) {
-        const attempt = ++importAttempt;
-        if (importAbort) importAbort.abort();
-        pendingImport = null;
-        $('confirmImportButton').hidden = true;
-        $('importError').textContent = '';
-        $('importPreview').textContent = '';
-        let timeout;
-        try {
-            const path = Core.telegraphImportPath(proposal);
-            importAbort = new AbortController();
-            timeout = window.setTimeout(function () { if (importAbort) importAbort.abort(); }, 15000);
-            $('importPreview').textContent = t('app.loadingConfig');
-            const response = await fetch('https://api.telegra.ph/getPage/' + encodeURIComponent(path) + '?return_content=true', { signal: importAbort.signal, credentials: 'omit', referrerPolicy: 'no-referrer' });
-            if (!response.ok) throw new Error(t('app.telegraphNotReturned'));
-            const content = await response.text();
-            if (new TextEncoder().encode(content).length > Core.MAX_FILE_BYTES) throw new Error(t('app.pageTooLarge'));
-            const result = JSON.parse(content);
-            if (!result.ok || !Array.isArray(result.result?.content)) throw new Error(t('app.telegraphUnreadable'));
-            const first = result.result.content[0];
-            if (!first || !Array.isArray(first.children) || typeof first.children[0] !== 'string') throw new Error(t('app.noConfigInPage'));
-            if (attempt !== importAttempt) return;
-            previewImport(Core.parseImport(first.children[0], catalog));
-        } catch (error) {
-            if (attempt === importAttempt) {
-                $('importPreview').textContent = '';
-                $('importError').textContent = error.name === 'AbortError' ? t('app.connectionTimeout')
-                    : (error instanceof TypeError ? t('app.connectionFailed') : (error instanceof SyntaxError ? t('app.invalidConfig') : error.message));
-            }
-        } finally { window.clearTimeout(timeout); }
-    }
     $('telegraphImportForm').addEventListener('submit', function (event) {
         event.preventDefault();
-        loadTelegraphBackup($('importConfigID').value);
-    });
-    $('confirmImportButton').addEventListener('click', function () {
-        if (!pendingImport) return;
-        state = pendingImport;
-        pendingImport = null;
-        storageLocked = false;
-        storageWarningKey = '';
-        storageWarning = '';
-        query = '';
-        $('searchInput').value = '';
-        persist(t('app.imported'));
-        applyTheme();
-        closeDialog($('importDialog'));
-        render();
-        const url = new URL(window.location.href);
-        url.searchParams.delete('code');
-        url.searchParams.delete('config');
-        window.history.replaceState(null, '', url.pathname + url.search + url.hash);
+        const proposal = $('importConfigID').value;
+        addBackup(async function (controller) { return Object.assign(await fetchBackup(proposal, controller), { source: 'link' }); });
     });
     $('exportConfigButton').addEventListener('click', function () {
         const dialog = this.closest('dialog');
@@ -1020,6 +1129,15 @@ document.addEventListener('DOMContentLoaded', function () {
             if ($('catalogDialog').open) renderCatalog();
         }
         if (event.key === PREVIOUS_TRANSFER_KEY || event.key === null) refreshPreviousTransfer();
+        if ((event.key === window.EVBackups.STORAGE_KEY || event.key === null) && $('restoreDialog').open) {
+            renderLocalBackups();
+            if (selectedBackup && selectedBackup.kind === 'local') {
+                try {
+                    const current = backupLibrary.get(selectedBackup.id);
+                    if (current) previewBackup(current, 'local'); else clearBackupSelection();
+                } catch (error) { clearBackupSelection(); $('restoreError').textContent = backupError(error); }
+            }
+        }
         if (event.key !== Core.STORAGE_KEY || !event.newValue || storageLocked) return;
         try {
             state = Core.applyCatalogUpdates(Core.normalizeState(JSON.parse(event.newValue)), catalog).state;
@@ -1069,9 +1187,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 option.querySelector('span').textContent = label;
             });
         }
-        ['categoryLimitHint', 'pageFormError', 'shortcutFormError', 'importError', 'importPreview'].forEach(function (id) {
+        ['categoryLimitHint', 'pageFormError', 'shortcutFormError', 'importError', 'importPreview', 'restoreError', 'onlineBackupError'].forEach(function (id) {
             if ($(id)) $(id).textContent = retranslateMessage($(id).textContent);
         });
+        if ($('restoreDialog').open) { renderLocalBackups(); if (selectedBackup) $('restoreSummary').textContent = backupSummary(selectedBackup.state); }
         if ($('catalogDialog').open) renderCatalog();
         if ($('shortcutDialog').open) renderAdditionalCategories(selectedAdditionalCategories());
         const activeFullscreen = Boolean(document.fullscreenElement);
@@ -1092,15 +1211,15 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!storageLocked) persist([loaded.source === 'legacy' ? t('app.legacyRecovered') : '', loaded.updates ? t('app.catalogUpdated', { count: loaded.updates }) : ''].filter(Boolean).join(' '));
     else announce('');
     if (window.EVTelegraph) sharingClient = window.EVTelegraph.init({ getState: function () { return state; }, announce: announce });
-    const incomingPairing = window.location.hash.startsWith('#receive=');
+    const incomingPairing = /^#(receive|download)=/.test(window.location.hash);
     if (window.EVPairing) {
         window.EVPairing.init({
             getState: function () { return state; },
-            applyState: applyReceivedState,
+            saveBackup: function (next) { return backupLibrary.add({ title: t('backup.receivedTitle'), state: next, source: 'transfer' }).id; },
+            openBackups: openBackupLibrary,
             announce: announce,
             chooseBackup: chooseSavedBackup
         });
-        $('importDialog').addEventListener('close', function () { window.EVPairing.resumeSender(); });
     }
     const params = new URLSearchParams(window.location.search);
     const proposal = params.get('code') || params.get('config');

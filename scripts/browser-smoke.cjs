@@ -103,16 +103,25 @@ const file = (data) => ({ name: 'configuration.json', mimeType: 'application/jso
     await page.locator('#importFile').evaluate(input => { for (let node = input.parentElement; node; node = node.parentElement) if (node.tagName === 'DETAILS') node.open = true; });
     await page.locator('#importFile').setInputFiles(file({ pages: ['unsafe'], unsafe: [{ name: 'Unsafe', url: 'javascript:alert(1)', order: 1 }] }));
     await page.waitForFunction(() => document.querySelector('#importError').textContent.length > 0);
-    assert.equal(await page.locator('#confirmImportButton').isVisible(), false);
+    assert.equal(await page.locator('#confirmRestoreButton').isVisible(), false);
     assert.equal(await page.evaluate(() => localStorage.getItem('evportal.state.v2')), snapshot);
     const legacy = { pages: ['Ma pause'], 'Ma pause': [{ name: 'Mon lien', url: 'https://example.org/', order: 2 }, { name: 'Premier lien', url: 'https://example.com/', order: 1 }] };
     await page.locator('#importFile').setInputFiles(file(legacy));
-    await page.locator('#confirmImportButton').waitFor({ state: 'visible' });
+    await page.locator('#confirmRestoreButton').waitFor({ state: 'visible' });
     assert.equal(await page.evaluate(() => localStorage.getItem('evportal.state.v2')), snapshot);
-    await page.locator('#confirmImportButton').click();
+    await page.locator('#confirmRestoreButton').click();
     assert.equal(await page.locator('.shortcut').count(), 2);
     assert.equal(await page.locator('.shortcut-name').first().textContent(), 'Premier lien');
-    check('Export limité à EvPortal, rejet import dangereux sans mutation, aperçu import historique et ordre conservé');
+    assert.equal(await page.evaluate(() => EVBackups.createLibrary(localStorage).list().length), 1);
+    await page.locator('#settingsButton').click();
+    await page.locator('#undoTransferButton').evaluate(button => { button.closest('details').open = true; });
+    await page.locator('#undoTransferButton').click();
+    assert.deepEqual(JSON.parse(await page.evaluate(() => localStorage.getItem(EVState.STORAGE_KEY))), JSON.parse(snapshot));
+    await page.locator('#settingsButton').click();
+    await page.locator('#restoreBackupButton').click();
+    await page.locator('#localBackupList .backup-select').click();
+    await page.locator('#confirmRestoreButton').click();
+    check('Export limité à EvPortal, ajout sans mutation, restauration explicite et annulation durable');
 
     await page.locator('#menu .menu-link').last().click();
     const handle = page.locator('.shortcut').filter({has:page.locator('.shortcut-name',{hasText:'Premier lien'})}).locator('.drag-handle');
@@ -178,13 +187,67 @@ const file = (data) => ({ name: 'configuration.json', mimeType: 'application/jso
     assert.ok(await remotePage.locator('#importDialog').isVisible());
     await remotePage.route('https://api.telegra.ph/**', route => route.fulfill({ json: { ok: true, result: { content: [{ tag: 'pre', children: [JSON.stringify(legacy)] }] } } }));
     await remotePage.locator('#telegraphImportForm [type="submit"]').click();
-    await remotePage.locator('#confirmImportButton').waitFor({ state: 'visible' });
+    await remotePage.locator('#confirmRestoreButton').waitFor({ state: 'visible' });
     assert.equal(remoteRequests.length, 1);
     assert.equal(Number(await remotePage.locator('#shortcutTotal').textContent()), total);
-    await remotePage.locator('#confirmImportButton').click();
+    await remotePage.locator('#confirmRestoreButton').click();
     assert.equal(Number(await remotePage.locator('#shortcutTotal').textContent()), 2);
     assert.equal(new URL(remotePage.url()).search, '');
-    check('Ancien partage proposé sans requête automatique, import Telegra.ph simulé avec confirmation');
+    assert.equal(await remotePage.evaluate(() => EVBackups.createLibrary(localStorage).list().length), 1);
+    check('Ancien partage sans requête automatique, Ajouter conserve les raccourcis et Restaurer les remplace');
+
+    const savedState = await remotePage.evaluate(() => localStorage.getItem(EVState.STORAGE_KEY));
+    await remotePage.locator('#settingsButton').click();
+    await remotePage.locator('#restoreBackupButton').click();
+    await remotePage.locator('#localBackupList .backup-select').click();
+    await remotePage.evaluate(() => {
+        window.originalBackupSetItem = Storage.prototype.setItem;
+        Storage.prototype.setItem = function (key, value) {
+            if (key === EVState.STORAGE_KEY) throw new DOMException('Full', 'QuotaExceededError');
+            return window.originalBackupSetItem.call(this, key, value);
+        };
+    });
+    const recoveryBefore = await remotePage.evaluate(() => localStorage.getItem('evportal.previous-transfer.v1'));
+    await remotePage.locator('#confirmRestoreButton').click();
+    assert.ok(await remotePage.locator('#restoreError').textContent());
+    assert.equal(await remotePage.evaluate(() => localStorage.getItem(EVState.STORAGE_KEY)), savedState);
+    assert.equal(await remotePage.evaluate(() => localStorage.getItem('evportal.previous-transfer.v1')), recoveryBefore);
+    await remotePage.evaluate(() => { Storage.prototype.setItem = window.originalBackupSetItem; });
+    await remotePage.locator('#restoreDialog [data-close-dialog]').click();
+
+    await remotePage.locator('#settingsButton').click();
+    await remotePage.locator('#importConfigButton').click();
+    await remotePage.locator('#importConfigID').fill('cancelled-09-10');
+    let releaseRequest;
+    const delayed = new Promise(resolve => { releaseRequest = resolve; });
+    await remotePage.route('**/getPage/cancelled-09-10*', async route => {
+        await delayed;
+        await route.fulfill({ json: { ok: true, result: { content: [{ tag: 'pre', children: [JSON.stringify(legacy)] }] } } }).catch(() => {});
+    });
+    const started = remotePage.waitForRequest('**/getPage/cancelled-09-10*');
+    await remotePage.locator('#addBackupButton').click();
+    await started;
+    await remotePage.locator('#importDialog [data-close-dialog]').click();
+    releaseRequest();
+    await remotePage.waitForTimeout(150);
+    assert.equal(await remotePage.evaluate(() => EVBackups.createLibrary(localStorage).list().length), 1);
+    assert.equal(await remotePage.evaluate(() => localStorage.getItem(EVState.STORAGE_KEY)), savedState);
+    check('Échec stockage restauration et ajout annulé ne modifient ni raccourcis ni récupération');
+
+    await remotePage.locator('#settingsButton').click();
+    await remotePage.locator('#restoreBackupButton').click();
+    await remotePage.locator('#localBackupList .backup-select').click();
+    const secondTab = await remoteContext.newPage();
+    await secondTab.goto(url);
+    await secondTab.evaluate(() => {
+        const library = EVBackups.createLibrary(localStorage);
+        library.remove(library.list()[0].id);
+    });
+    await remotePage.locator('#restorePreview').waitFor({ state: 'hidden' });
+    assert.equal(await remotePage.locator('#localBackupList .backup-select').count(), 0);
+    assert.equal(await remotePage.evaluate(() => localStorage.getItem(EVState.STORAGE_KEY)), savedState);
+    await secondTab.close();
+    check('Suppression dans un autre onglet invalide la sauvegarde sélectionnée sans toucher aux raccourcis');
 
     const preferencesContext = await context();
     const preferencesPage = await preferencesContext.newPage();

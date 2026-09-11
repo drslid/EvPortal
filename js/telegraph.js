@@ -1,4 +1,4 @@
-/* Explicit Telegra.ph publication and local QR generation. No account request on startup. */
+/* Explicit Telegra.ph publication and copyable backup links. No account request on startup. */
 (function (root, factory) {
     if (typeof module === 'object' && module.exports) module.exports = factory(root, require('./state.js'), require('./locales/share-fr.json'));
     else root.EVTelegraph = factory(root, root.EVState);
@@ -118,7 +118,7 @@
         const account = readAccount(storage);
         let publication = null;
         let accountCreation = null;
-        let historyRequest = null;
+        const historyRequests = new Map();
         const deletions = new Map();
         const removedPages = new Set();
         const timeoutMs = options.timeoutMs === undefined ? TIMEOUT_MS : options.timeoutMs;
@@ -231,14 +231,15 @@
             offset = offset || 0;
             if (!Number.isSafeInteger(offset) || offset < 0) return Promise.reject(localizedError('share.invalidPage'));
             if (!account.token) return Promise.resolve({ pages: [], total: 0, nextOffset: 0 });
-            if (historyRequest) return historyRequest;
-            historyRequest = request('getPageList', { access_token: account.token, offset: String(offset), limit: '200' }).then(function (result) {
+            if (historyRequests.has(offset)) return historyRequests.get(offset);
+            const historyRequest = request('getPageList', { access_token: account.token, offset: String(offset), limit: '200' }).then(function (result) {
                 if (!Array.isArray(result.pages) || !Number.isSafeInteger(result.total_count) || result.total_count < 0) throw localizedError('share.badHistory');
                 const pages = result.pages.filter(function (page) { return page && !removedPages.has(page.path) && page.title !== 'Deleted Page' && !(page.author_name === 'EvPortal (pending)' && /^EVP-[a-f0-9]{32}$/.test(page.title || '')); }).map(function (page) {
                     return { path: Core.telegraphPath(page.path), title: typeof page.title === 'string' ? page.title.slice(0, 256) : 'EvPortal' };
                 });
                 return { pages: pages, total: result.total_count, nextOffset: offset + result.pages.length };
-            }).finally(function () { historyRequest = null; });
+            }).finally(function () { historyRequests.delete(offset); });
+            historyRequests.set(offset, historyRequest);
             return historyRequest;
         }
 
@@ -278,7 +279,6 @@
         const client = createClient({ storage: storage });
         let pending = false;
         let selectedPath = null;
-        let historyLoading = false;
         let currentShareURL = '';
         const announce = typeof options.announce === 'function' ? options.announce : function () {};
         function publishLabel(key) {
@@ -296,29 +296,17 @@
             selectedPath = null;
             currentShareURL = '';
             if ($('shareResult')) $('shareResult').hidden = true;
-            if ($('shareQRCode')) $('shareQRCode').replaceChildren();
+            if ($('shareCode')) $('shareCode').value = '';
+            if ($('shareLink')) $('shareLink').value = '';
         }
 
         function displayShare(path) {
+            path = Core.telegraphPath(path);
             const url = shareURL(PUBLIC_URL, path);
             selectedPath = path;
             currentShareURL = url;
-            const qr = $('shareQRCode');
-            if (qr) {
-                qr.replaceChildren();
-                qr.setAttribute('role', 'img');
-                qr.setAttribute('aria-label', t('share.qrLabel'));
-                if (root.QRCode) {
-                    try {
-                        new root.QRCode(qr, { text: url, width: 220, height: 220, colorDark: '#10151f', colorLight: '#ffffff', correctLevel: root.QRCode.CorrectLevel.M });
-                        qr.querySelectorAll('img').forEach(function (img) { img.alt = ''; });
-                        qr.hidden = false;
-                    } catch (_) {
-                        qr.hidden = true;
-                        error(localizedError('share.qrAddressUnavailable'));
-                    }
-                } else { qr.hidden = true; error(localizedError('share.qrUnavailable')); }
-            }
+            if ($('shareCode')) $('shareCode').value = path;
+            if ($('shareLink')) $('shareLink').value = url;
             if ($('shareResult')) $('shareResult').hidden = false;
         }
 
@@ -331,7 +319,6 @@
             }
             if (typeof dialog.showModal === 'function') { if (!dialog.open) dialog.showModal(); }
             else dialog.setAttribute('open', '');
-            if ($('shareHistory') && $('shareHistory').open) refreshHistory(0);
         });
 
         async function publish(event) {
@@ -339,17 +326,18 @@
             if (pending) return;
             pending = true;
             error('');
-            if ($('shareResult')) $('shareResult').hidden = true;
+            clearShare();
             const button = $('sharePublishButton');
             if (button) { button.disabled = true; publishLabel('share.publishing'); }
             dialog.setAttribute('aria-busy', 'true');
             try {
+                // Capture the portable configuration before any network wait.
+                const snapshot = Core.normalizeState(options.getState());
                 const title = $('shareTitle') && $('shareTitle').value.trim() || t('static.defaultBackup');
-                const result = await client.publish(options.getState(), PUBLIC_URL, title);
+                const result = await client.publish(snapshot, PUBLIC_URL, title);
                 displayShare(result.path);
                 if (result.warning) error(localizedError('share.sessionOnly'));
                 announce(t('share.created'));
-                if ($('shareHistory') && $('shareHistory').open) refreshHistory(0);
                 if ($('shareResult')) $('shareResult').scrollIntoView({ block: 'nearest' });
             } catch (failure) { error(failure); }
             finally {
@@ -388,88 +376,16 @@
         if ($('shareCopyButton')) $('shareCopyButton').addEventListener('click', function () {
             copyShareText(currentShareURL, 'shareCopyButton', 'share.linkCopied');
         });
-        async function refreshHistory(offset) {
-            if (historyLoading) return;
-            historyLoading = true;
-            const button = $('shareRefreshButton');
-            const pages = $('sharePages');
-            if (!pages) { historyLoading = false; return; }
-            if (button) button.disabled = true;
-            pages.setAttribute('aria-busy', 'true');
-            error('');
-            try {
-                const result = await client.listPages(offset);
-                if (!offset) { pages.replaceChildren(); pages.removeAttribute('data-i18n'); }
-                const oldMore = pages.querySelector('[data-more-shares]');
-                if (oldMore) oldMore.remove();
-                result.pages.forEach(function (page) {
-                    const row = doc.createElement('div');
-                    row.className = 'share-history-row';
-                    row.dataset.sharePath = page.path;
-                    const select = doc.createElement('button');
-                    select.type = 'button';
-                    select.className = 'button button-secondary';
-                    select.textContent = page.title || page.path;
-                    select.addEventListener('click', function () {
-                        error('');
-                        try {
-                            displayShare(page.path);
-                            if ($('shareResult')) $('shareResult').scrollIntoView({ block: 'nearest' });
-                        } catch (failure) { error(failure); }
-                    });
-                    const remove = doc.createElement('button');
-                    remove.type = 'button';
-                    remove.className = 'icon-button danger share-delete';
-                    remove.setAttribute('data-i18n-aria-label', 'share.deleteNamed');
-                    remove.dataset.i18nParams = JSON.stringify({ name: page.title || page.path });
-                    remove.setAttribute('aria-label', t('share.deleteNamed', { name: page.title || page.path }));
-                    const svg = doc.createElementNS('http://www.w3.org/2000/svg', 'svg');
-                    svg.setAttribute('class', 'icon');
-                    svg.setAttribute('aria-hidden', 'true');
-                    svg.setAttribute('viewBox', '0 0 24 24');
-                    const drawing = doc.createElementNS('http://www.w3.org/2000/svg', 'path');
-                    drawing.setAttribute('d', 'M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7');
-                    svg.appendChild(drawing);
-                    remove.appendChild(svg);
-                    remove.addEventListener('click', async function () {
-                        if (remove.disabled) return;
-                        remove.disabled = true;
-                        error('');
-                        try {
-                            await client.removePage(page.path);
-                            pages.querySelectorAll('.share-history-row').forEach(function (entry) {
-                                if (entry.dataset.sharePath === page.path) entry.remove();
-                            });
-                            if (selectedPath === page.path) clearShare();
-                            if (!pages.childElementCount) { pages.dataset.i18n = 'share.empty'; pages.textContent = t('share.empty'); }
-                            announce(t('share.deleted'));
-                        } catch (failure) { error(failure); remove.disabled = false; }
-                    });
-                    row.append(select, remove);
-                    pages.appendChild(row);
-                });
-                if (result.nextOffset < result.total && result.nextOffset > (offset || 0)) {
-                    const more = doc.createElement('button');
-                    more.type = 'button';
-                    more.className = 'button button-quiet';
-                    more.dataset.moreShares = 'true';
-                    more.dataset.i18n = 'share.more';
-                    more.textContent = t('share.more');
-                    more.addEventListener('click', function () { refreshHistory(result.nextOffset); });
-                    pages.appendChild(more);
-                }
-                if (!pages.childElementCount) { pages.dataset.i18n = 'share.empty'; pages.textContent = t('share.empty'); }
-            } catch (failure) { error(failure); }
-            finally { historyLoading = false; pages.removeAttribute('aria-busy'); if (button) button.disabled = false; }
-        }
-        if ($('shareRefreshButton')) $('shareRefreshButton').addEventListener('click', function () { refreshHistory(0); });
-        if ($('shareHistory')) $('shareHistory').addEventListener('toggle', function () {
-            if ($('shareHistory').open) refreshHistory(0);
+        if ($('shareCopyCodeButton')) $('shareCopyCodeButton').addEventListener('click', function () {
+            copyShareText(selectedPath, 'shareCopyCodeButton', 'share.codeCopied');
+        });
+        root.addEventListener('evportal:backupremoved', function (event) {
+            const path = event.detail && event.detail.path;
+            if (path && path === selectedPath) clearShare();
         });
         root.addEventListener('evportal:languagechange', function () {
             if (lastError) error(lastError);
             publishLabel(pending ? 'share.publishing' : 'share.publish');
-            if ($('shareQRCode')) $('shareQRCode').setAttribute('aria-label', t('share.qrLabel'));
             if (root.EVI18n) root.EVI18n.translateDOM(dialog);
             // Static annotations must not replace the in-progress label.
             if (pending) publishLabel('share.publishing');
