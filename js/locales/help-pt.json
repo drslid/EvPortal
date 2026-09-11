@@ -1,9 +1,9 @@
 {
-  "help.title": "Ajuda do EvPortal — Atalhos e ecrã inteiro Tesla",
-  "help.description": "Cria um código ou uma ligação EvPortal, troca cópias com o telemóvel por QR e restaura os atalhos quando quiseres.",
+  "help.title": "Guia EvPortal — Navegador Tesla, atalhos e cópias de segurança",
+  "help.description": "Abra o EvPortal no navegador Tesla, organize os favoritos e transfira cópias por código, ligação ou QR. Saiba como começar e restaurar os seus atalhos.",
   "help.language": "Idioma",
   "help.back": "Voltar aos atalhos",
-  "help.heading": "O seu ecrã. Os seus atalhos.",
+  "help.heading": "Guia do EvPortal para o navegador Tesla",
   "help.intro": "Toca num atalho para abrir o serviço num novo separador. O botão do tema no topo permite escolher o modo claro ou escuro. Os oito idiomas estão disponíveis nas Definições com os seus nomes e bandeiras; o árabe é apresentado da direita para a esquerda.",
   "help.organizeHeading": "Organizar os atalhos",
   "help.ranking": "Todos apresenta primeiro os atalhos mais abertos. Em caso de empate, mantém a sua ordem manual. A classificação fica guardada após recarregar a página.",

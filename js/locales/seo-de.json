@@ -1,0 +1,22 @@
+{
+  "seo.introHeading": "Eine Startseite mit Verknüpfungen für deinen Tesla",
+  "seo.intro": "EvPortal ist eine kostenlose, unabhängige Startseite, die deine bevorzugten Websites auf einer für den Tesla-Browser gestalteten Seite bündelt. Du kannst sie auch im Browser auf dem Smartphone oder Computer verwenden. Große Symbole öffnen die gewählten Dienste, ohne den Startbildschirm mit Text oder Widgets zu füllen. Verknüpfungen, Kategorien und deren Reihenfolge lassen sich anpassen. Außerdem stehen ein helles und ein dunkles Design zur Auswahl.",
+  "seo.startHeading": "Im Fahrzeugbrowser starten",
+  "seo.start": "Öffne die Adresse von EvPortal im Browser deines geparkten Fahrzeugs. Speichere sie als Browserfavorit, wenn diese Möglichkeit verfügbar ist, damit du sie leicht wiederfindest. Zum Öffnen des Portals musst du keine App installieren und dich nicht mit einem Tesla-Konto anmelden. Sprache und Katalogland wählst du in den Einstellungen unabhängig voneinander. Deine Einstellungen bleiben auf diesem Gerät; mit einer Sicherung kannst du deine Verknüpfungen aufbewahren oder übertragen.",
+  "seo.chargingHeading": "Dienste während einer Ladepause finden",
+  "seo.charging": "Füge Links zu deiner Routen- oder Ladeplanung, Radiosendern, Musik und Wetterdiensten hinzu. Der Katalog schlägt Dienste für das ausgewählte Land vor; du kannst auch eigene Webadressen eingeben. Jede Verknüpfung öffnet die Website des Anbieters mit dessen Zugangsbedingungen. EvPortal steuert weder den Ladevorgang noch sendet es Befehle an das Fahrzeug. Nutze Unterhaltungsangebote im geparkten Fahrzeug.",
+  "seo.faqHeading": "Häufige Fragen",
+  "seo.faqFreeQuestion": "Ist EvPortal kostenlos?",
+  "seo.faqFreeAnswer": "Ja. Das Portal ist kostenlos und steht in keiner Verbindung zu Tesla. Einige verlinkte Websites können ein Konto oder Abonnement erfordern. Die jeweiligen Anbieter legen diese Bedingungen fest.",
+  "seo.faqPhoneQuestion": "Wie bereite ich meine Verknüpfungen auf dem Smartphone vor?",
+  "seo.faqPhoneAnswer": "Öffne EvPortal auf dem Smartphone und ordne deine Verknüpfungen. Unter Einstellungen bietet Smartphone eine QR-Übertragung in beide Richtungen. Auf dem empfangenden Bildschirm speichert Hinzufügen eine Sicherung. Wähle anschließend Meine Sicherungen und Wiederherstellen, um deren Inhalt zu verwenden. Der Empfang allein ersetzt deine Verknüpfungen nicht.",
+  "seo.faqOfflineQuestion": "Funktioniert EvPortal offline?",
+  "seo.faqOfflineAnswer": "Der Browser speichert deine Konfiguration lokal, EvPortal bietet jedoch keinen Offline-Modus. Zum Laden des Portals, Öffnen der Dienste und Übertragen von Sicherungen brauchst du eine Verbindung. Eine JSON-Datei bewahrt eine unabhängige Kopie für eine spätere Wiederherstellung auf.",
+  "seo.languages": "Verfügbare Sprachen",
+  "seo.operatingSystem": "Web",
+  "seo.browserRequirements": "Browser mit JavaScript und lokalem Speicher; HTTPS und Kryptografiefunktionen für QR-Übertragungen.",
+  "seo.featureFavorites": "Anpassbare Verknüpfungen und Favoriten",
+  "seo.featureDrag": "Reihenfolge durch Ziehen und Ablegen auf dem Touchscreen ändern",
+  "seo.featureQR": "Sicherungen per QR mit einem Smartphone übertragen",
+  "seo.featureBackup": "Sicherungen per Code, Link oder JSON-Datei"
+}

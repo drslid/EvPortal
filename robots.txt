@@ -1,6 +1,6 @@
 User-agent: *
 Disallow:
 
-# Google reads this file only at the host root (/robots.txt).
-# For the GitHub Pages project path, submit the sitemap in Search Console.
+# This project file is not the host-root /robots.txt.
+# Submit the sitemap directly in Google Search Console and Bing Webmaster Tools.
 Sitemap: https://drslid.github.io/EvPortal/sitemap.xml

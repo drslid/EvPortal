@@ -1,0 +1,22 @@
+{
+  "seo.introHeading": "Un portail de raccourcis pour votre Tesla",
+  "seo.intro": "EvPortal est un portail gratuit et indépendant qui rassemble vos sites favoris sur une page pensée pour le navigateur Tesla. Il s’utilise aussi dans un navigateur sur téléphone ou ordinateur. De grandes icônes donnent accès aux services choisis, sans remplir l’accueil de textes ou de widgets. Vous pouvez personnaliser vos raccourcis, leurs catégories et leur ordre, puis choisir un thème clair ou sombre.",
+  "seo.startHeading": "Commencer dans le navigateur du véhicule",
+  "seo.start": "À l’arrêt, ouvrez l’adresse d’EvPortal dans le navigateur de la voiture. Enregistrez-la dans ses favoris si cette option est disponible pour la retrouver facilement. Aucune installation d’application ni connexion à un compte Tesla n’est nécessaire pour ouvrir le portail. Dans Paramètres, choisissez la langue et le pays du catalogue séparément. Vos réglages restent sur cet appareil ; une sauvegarde permet de conserver ou de transférer vos raccourcis.",
+  "seo.chargingHeading": "Retrouver vos services pendant une recharge",
+  "seo.charging": "Ajoutez des liens vers vos outils de planification de trajet ou de recharge, vos radios, votre musique et la météo. Le catalogue propose des services selon le pays sélectionné ; vous pouvez aussi saisir une adresse personnelle. Chaque raccourci ouvre le site du service, avec ses propres conditions d’accès. EvPortal ne pilote pas la recharge et n’envoie aucune commande au véhicule. Les contenus de divertissement se consultent à l’arrêt.",
+  "seo.faqHeading": "Questions fréquentes",
+  "seo.faqFreeQuestion": "EvPortal est-il gratuit ?",
+  "seo.faqFreeAnswer": "Oui. Le portail est gratuit et sans affiliation avec Tesla. Certains sites ouverts peuvent demander un compte ou un abonnement ; ces conditions dépendent du service.",
+  "seo.faqPhoneQuestion": "Comment préparer mes raccourcis sur mon téléphone ?",
+  "seo.faqPhoneAnswer": "Ouvrez EvPortal sur le téléphone, puis organisez vos raccourcis. Dans Paramètres, Téléphone permet un transfert par QR dans les deux sens. Sur l’écran qui reçoit, Ajouter conserve une sauvegarde. Pour utiliser son contenu, choisissez ensuite Mes sauvegardes, puis Restaurer. Recevoir seul ne remplace pas les raccourcis.",
+  "seo.faqOfflineQuestion": "EvPortal fonctionne-t-il hors connexion ?",
+  "seo.faqOfflineAnswer": "Le navigateur conserve votre configuration localement, mais EvPortal ne propose pas de mode hors connexion. Prévoyez une connexion pour charger le portail, ouvrir les services et transférer des sauvegardes. Un fichier JSON permet de conserver une copie indépendante pour une restauration ultérieure.",
+  "seo.languages": "Langues disponibles",
+  "seo.operatingSystem": "Web",
+  "seo.browserRequirements": "Navigateur avec JavaScript et stockage local ; HTTPS et fonctions cryptographiques pour les transferts QR.",
+  "seo.featureFavorites": "Raccourcis et favoris personnalisables",
+  "seo.featureDrag": "Réorganisation tactile par glisser-déposer",
+  "seo.featureQR": "Transfert de sauvegardes par QR avec un téléphone",
+  "seo.featureBackup": "Sauvegardes par code, lien ou fichier JSON"
+}

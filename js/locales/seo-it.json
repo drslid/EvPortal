@@ -1,0 +1,22 @@
+{
+  "seo.introHeading": "Un portale di scorciatoie per la tua Tesla",
+  "seo.intro": "EvPortal è un portale gratuito e indipendente che riunisce i tuoi siti preferiti in una pagina pensata per il browser Tesla. Puoi usarlo anche nel browser del telefono o del computer. Le icone grandi aprono i servizi scelti senza riempire la schermata iniziale di testi o widget. Puoi personalizzare le scorciatoie, le categorie e il loro ordine, quindi scegliere un tema chiaro o scuro.",
+  "seo.startHeading": "Iniziare dal browser del veicolo",
+  "seo.start": "A veicolo parcheggiato, apri l’indirizzo di EvPortal nel browser dell’auto. Salvalo tra i preferiti del browser, se questa opzione è disponibile, per ritrovarlo facilmente. Non serve installare un’app né accedere a un account Tesla per aprire il portale. In Impostazioni, scegli separatamente la lingua e il paese del catalogo. Le preferenze restano su questo dispositivo; un backup permette di conservare o trasferire le scorciatoie.",
+  "seo.chargingHeading": "Ritrovare i tuoi servizi durante una ricarica",
+  "seo.charging": "Aggiungi link ai tuoi strumenti per pianificare viaggi o ricariche, alle stazioni radio, alla musica e al meteo. Il catalogo propone servizi per il paese selezionato; puoi anche inserire un indirizzo personale. Ogni scorciatoia apre il sito del servizio, con le sue condizioni di accesso. EvPortal non controlla la ricarica e non invia comandi al veicolo. Consulta i contenuti di intrattenimento a veicolo parcheggiato.",
+  "seo.faqHeading": "Domande frequenti",
+  "seo.faqFreeQuestion": "EvPortal è gratuito?",
+  "seo.faqFreeAnswer": "Sì. Il portale è gratuito e non è affiliato a Tesla. Alcuni siti collegati possono richiedere un account o un abbonamento; queste condizioni dipendono dal servizio.",
+  "seo.faqPhoneQuestion": "Come preparo le scorciatoie sul telefono?",
+  "seo.faqPhoneAnswer": "Apri EvPortal sul telefono e organizza le scorciatoie. In Impostazioni, Telefono permette trasferimenti QR in entrambe le direzioni. Sullo schermo che riceve, Aggiungi conserva un backup. Per usarne il contenuto, scegli poi I miei backup e Ripristina. La sola ricezione non sostituisce le scorciatoie.",
+  "seo.faqOfflineQuestion": "EvPortal funziona senza connessione?",
+  "seo.faqOfflineAnswer": "Il browser conserva la configurazione localmente, ma EvPortal non offre una modalità offline. Serve una connessione per caricare il portale, aprire i servizi e trasferire backup. Un file JSON permette di conservare una copia indipendente da ripristinare in seguito.",
+  "seo.languages": "Lingue disponibili",
+  "seo.operatingSystem": "Web",
+  "seo.browserRequirements": "Browser con JavaScript e archiviazione locale; HTTPS e funzioni crittografiche per i trasferimenti QR.",
+  "seo.featureFavorites": "Scorciatoie e preferiti personalizzabili",
+  "seo.featureDrag": "Riordinamento tramite trascinamento sul touchscreen",
+  "seo.featureQR": "Trasferimento di backup tramite QR con un telefono",
+  "seo.featureBackup": "Backup tramite codice, link o file JSON"
+}

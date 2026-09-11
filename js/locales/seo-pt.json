@@ -1,0 +1,22 @@
+{
+  "seo.introHeading": "Um portal de atalhos para o seu Tesla",
+  "seo.intro": "O EvPortal é um portal gratuito e independente que reúne os seus sites favoritos numa página pensada para o navegador Tesla. Também pode utilizá-lo num navegador no telemóvel ou computador. Os ícones grandes abrem os serviços escolhidos sem encher o ecrã inicial de textos ou widgets. Pode personalizar os atalhos, as categorias e a sua ordem, e escolher um tema claro ou escuro.",
+  "seo.startHeading": "Começar no navegador do veículo",
+  "seo.start": "Com o veículo estacionado, abra o endereço do EvPortal no navegador do carro. Guarde-o nos favoritos do navegador, se essa opção estiver disponível, para o encontrar facilmente. Não precisa de instalar uma aplicação nem de iniciar sessão numa conta Tesla para abrir o portal. Nas Definições, escolha o idioma e o país do catálogo separadamente. As preferências ficam neste dispositivo; uma cópia permite guardar ou transferir os seus atalhos.",
+  "seo.chargingHeading": "Encontrar os seus serviços durante um carregamento",
+  "seo.charging": "Adicione ligações aos seus planeadores de viagens ou carregamento, estações de rádio, música e meteorologia. O catálogo sugere serviços para o país selecionado; também pode introduzir um endereço à sua escolha. Cada atalho abre o site do serviço, com as suas próprias condições de acesso. O EvPortal não controla o carregamento nem envia comandos ao veículo. Utilize os conteúdos de entretenimento com o veículo estacionado.",
+  "seo.faqHeading": "Perguntas frequentes",
+  "seo.faqFreeQuestion": "O EvPortal é gratuito?",
+  "seo.faqFreeAnswer": "Sim. O portal é gratuito e não tem afiliação com a Tesla. Alguns sites abertos podem exigir uma conta ou subscrição; essas condições dependem do serviço.",
+  "seo.faqPhoneQuestion": "Como preparo os meus atalhos no telemóvel?",
+  "seo.faqPhoneAnswer": "Abra o EvPortal no telemóvel e organize os atalhos. Nas Definições, Telemóvel permite transferências QR nos dois sentidos. No ecrã que recebe, Adicionar guarda uma cópia. Para utilizar o seu conteúdo, escolha depois As minhas cópias e Restaurar. A receção, por si só, não substitui os seus atalhos.",
+  "seo.faqOfflineQuestion": "O EvPortal funciona sem ligação à Internet?",
+  "seo.faqOfflineAnswer": "O navegador guarda a configuração localmente, mas o EvPortal não oferece um modo sem ligação. Precisa de uma ligação para carregar o portal, abrir serviços e transferir cópias. Um ficheiro JSON permite guardar uma cópia independente para restaurar mais tarde.",
+  "seo.languages": "Idiomas disponíveis",
+  "seo.operatingSystem": "Web",
+  "seo.browserRequirements": "Navegador com JavaScript e armazenamento local; HTTPS e funções criptográficas para transferências QR.",
+  "seo.featureFavorites": "Atalhos e favoritos personalizáveis",
+  "seo.featureDrag": "Reordenação por arrastar e largar no ecrã tátil",
+  "seo.featureQR": "Transferência de cópias por QR com um telemóvel",
+  "seo.featureBackup": "Cópias por código, ligação ou ficheiro JSON"
+}

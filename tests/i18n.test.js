@@ -22,16 +22,16 @@ class Element {
     querySelectorAll() { return []; }
 }
 
-function environment(nodes = [], initial = {}) {
+function environment(nodes = [], initial = {}, options = {}) {
     const events = [];
     const metadata = new Element({ property: 'og:locale', content: 'fr_FR' });
     const doc = {
-        readyState: 'complete', documentElement: {},
+        readyState: 'complete', documentElement: new Element(options.pageLanguage === undefined ? {} : { 'data-page-language': options.pageLanguage }),
         querySelectorAll: () => nodes,
         querySelector: selector => selector === 'meta[property="og:locale"]' ? metadata : null
     };
     const win = {
-        document: doc, navigator: { languages: ['fr-FR'] }, localStorage: storage(initial),
+        document: doc, navigator: options.navigator || { languages: ['fr-FR'] }, localStorage: storage(initial),
         CustomEvent: class { constructor(type, options) { this.type = type; this.detail = options.detail; } },
         dispatchEvent: event => events.push(event)
     };
@@ -79,7 +79,7 @@ test('language changes persist separately, update document direction and Open Gr
     assert.equal(win.localStorage.getItem(I18n.STORAGE_KEY), 'ar');
     assert.equal(win.localStorage.getItem('evportal.state.v2'), 'user configuration');
     assert.equal(doc.documentElement.dir, 'rtl');
-    assert.equal(metadata.getAttribute('content'), 'ar_AR');
+    assert.equal(metadata.getAttribute('content'), 'ar_SA');
     assert.deepEqual(events.map(event => [event.type, event.detail]), [['evportal:languagechange', { language: 'ar' }]]);
     api.setLanguage('ar');
     assert.equal(events.length, 1);
@@ -88,6 +88,55 @@ test('language changes persist separately, update document direction and Open Gr
     assert.equal(doc.documentElement.lang, 'pt');
     assert.equal(metadata.getAttribute('content'), 'pt_PT');
     assert.equal(api.setLanguage('unknown'), 'en');
+});
+
+test('an explicit page language wins over saved and browser preferences without rewriting either', () => {
+    const initial = { [I18n.STORAGE_KEY]: 'de', 'evportal.state.v2': 'user configuration' };
+    for (const language of I18n.LANGUAGES) {
+        const heading = new Element({ 'data-i18n': 'app.favorites' });
+        const { api, win, doc, metadata, events } = environment([heading], initial, {
+            pageLanguage: language, navigator: { languages: ['pt-BR'] }
+        });
+        assert.equal(api.pageLanguage, language);
+        assert.equal(api.language, language);
+        assert.equal(doc.documentElement.lang, language);
+        assert.equal(doc.documentElement.dir, language === 'ar' ? 'rtl' : 'ltr');
+        assert.equal(heading.textContent, translations[language]['app.favorites']);
+        assert.deepEqual(Object.fromEntries(win.localStorage.values), initial, 'Viewing a localized URL must not replace a saved language');
+        assert.deepEqual(events, [], 'Initial rendering does not trigger an explicit language change');
+        if (language === 'ar') assert.equal(metadata.getAttribute('content'), 'ar_SA');
+    }
+});
+
+test('absent or invalid page declarations preserve legacy language selection', () => {
+    for (const pageLanguage of [undefined, '', 'unknown', 'fr-invalid', 'fr/fr', '<script>', 'null']) {
+        const saved = environment([], { [I18n.STORAGE_KEY]: 'ru' }, { pageLanguage });
+        assert.equal(saved.api.pageLanguage, null);
+        assert.equal(saved.api.language, 'ru');
+        assert.equal(saved.win.localStorage.getItem(I18n.STORAGE_KEY), 'ru');
+        const unsaved = environment([], {}, { pageLanguage, navigator: { languages: ['es-MX'] } });
+        assert.equal(unsaved.api.pageLanguage, null);
+        assert.equal(unsaved.api.language, 'es');
+        assert.equal(unsaved.win.localStorage.getItem(I18n.STORAGE_KEY), null);
+    }
+    assert.equal(I18n.createI18n({ navigator: { language: 'it' } }).pageLanguage, null);
+});
+
+test('an explicit language change keeps the page declaration and navigation unchanged', () => {
+    const { api, win, doc } = environment([], { [I18n.STORAGE_KEY]: 'de' }, { pageLanguage: 'fr' });
+    const location = { href: 'https://drslid.github.io/EvPortal/fr/?code=Saved-09-12#music' };
+    win.location = location;
+    const canonical = new Element({ rel: 'canonical', href: 'https://drslid.github.io/EvPortal/fr/' });
+    const querySelector = doc.querySelector;
+    doc.querySelector = selector => selector === 'link[rel="canonical"]' ? canonical : querySelector(selector);
+    api.setLanguage('ar');
+    assert.equal(api.language, 'ar');
+    assert.equal(api.pageLanguage, 'fr');
+    assert.equal(doc.documentElement.getAttribute('data-page-language'), 'fr');
+    assert.equal(win.localStorage.getItem(I18n.STORAGE_KEY), 'ar');
+    assert.equal(win.location, location);
+    assert.equal(win.location.href, 'https://drslid.github.io/EvPortal/fr/?code=Saved-09-12#music');
+    assert.equal(canonical.getAttribute('href'), 'https://drslid.github.io/EvPortal/fr/');
 });
 
 test('text, accessible labels, titles, placeholders and metadata translate through text and attribute assignment', () => {
