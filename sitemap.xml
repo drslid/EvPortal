@@ -1,5 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url><loc>https://drslid.github.io/EvPortal/</loc></url>
+    <url><loc>https://drslid.github.io/EvPortal/en/</loc></url>
+    <url><loc>https://drslid.github.io/EvPortal/fr/</loc></url>
+    <url><loc>https://drslid.github.io/EvPortal/es/</loc></url>
+    <url><loc>https://drslid.github.io/EvPortal/de/</loc></url>
+    <url><loc>https://drslid.github.io/EvPortal/it/</loc></url>
+    <url><loc>https://drslid.github.io/EvPortal/ru/</loc></url>
+    <url><loc>https://drslid.github.io/EvPortal/ar/</loc></url>
+    <url><loc>https://drslid.github.io/EvPortal/pt/</loc></url>
     <url><loc>https://drslid.github.io/EvPortal/aide.html</loc></url>
+    <url><loc>https://drslid.github.io/EvPortal/en/aide.html</loc></url>
+    <url><loc>https://drslid.github.io/EvPortal/fr/aide.html</loc></url>
+    <url><loc>https://drslid.github.io/EvPortal/es/aide.html</loc></url>
+    <url><loc>https://drslid.github.io/EvPortal/de/aide.html</loc></url>
+    <url><loc>https://drslid.github.io/EvPortal/it/aide.html</loc></url>
+    <url><loc>https://drslid.github.io/EvPortal/ru/aide.html</loc></url>
+    <url><loc>https://drslid.github.io/EvPortal/ar/aide.html</loc></url>
+    <url><loc>https://drslid.github.io/EvPortal/pt/aide.html</loc></url>
 </urlset>

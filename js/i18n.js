@@ -26,8 +26,11 @@
         }
         let saved;
         try { saved = storage && storage.getItem(STORAGE_KEY); } catch (_) { /* Private browsing keeps a session preference. */ }
+        const declaredLanguage = doc && doc.documentElement && typeof doc.documentElement.getAttribute === 'function'
+            ? (doc.documentElement.getAttribute('data-page-language') || '').trim().toLowerCase() : '';
+        const pageLanguage = LANGUAGES.includes(declaredLanguage) ? declaredLanguage : null;
         const browserLanguages = Array.isArray(navigator.languages) ? navigator.languages : [navigator.language];
-        let language = supportedLanguage(saved) || browserLanguages.map(supportedLanguage).find(Boolean) || supportedLanguage(navigator.language) || 'en';
+        let language = pageLanguage || supportedLanguage(saved) || browserLanguages.map(supportedLanguage).find(Boolean) || supportedLanguage(navigator.language) || 'en';
         const translatedValues = new WeakMap();
 
         function t(key, params) {
@@ -70,7 +73,7 @@
                 doc.documentElement.lang = language;
                 doc.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
                 const localeMeta = doc.querySelector && doc.querySelector('meta[property="og:locale"]');
-                if (localeMeta) localeMeta.setAttribute('content', { en: 'en_US', fr: 'fr_FR', es: 'es_ES', de: 'de_DE', it: 'it_IT', ru: 'ru_RU', ar: 'ar_AR', pt: 'pt_PT' }[language]);
+                if (localeMeta) localeMeta.setAttribute('content', { en: 'en_US', fr: 'fr_FR', es: 'es_ES', de: 'de_DE', it: 'it_IT', ru: 'ru_RU', ar: 'ar_SA', pt: 'pt_PT' }[language]);
             }
         }
 
@@ -94,6 +97,7 @@
 
         const api = { STORAGE_KEY, LANGUAGES, LANGUAGE_NAMES, t, setLanguage, translateDOM, category, supportedLanguage };
         Object.defineProperty(api, 'language', { enumerable: true, get: function () { return language; } });
+        Object.defineProperty(api, 'pageLanguage', { enumerable: true, value: pageLanguage });
         if (doc) {
             if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', function () { translateDOM(); }, { once: true });
             else translateDOM();

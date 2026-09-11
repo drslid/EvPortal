@@ -1,9 +1,9 @@
 {
-  "help.title": "Ayuda de EvPortal — Accesos directos y pantalla completa Tesla",
-  "help.description": "Crea un código o enlace EvPortal, intercambia copias con tu teléfono mediante QR y restaura tus accesos directos cuando quieras.",
+  "help.title": "Guía EvPortal — Navegador Tesla, accesos directos y copias",
+  "help.description": "Abre EvPortal en el navegador Tesla, organiza tus favoritos y transfiere copias mediante código, enlace o QR. Aprende a empezar y restaurar tus accesos directos.",
   "help.language": "Idioma",
   "help.back": "Volver a los accesos directos",
-  "help.heading": "Tu pantalla. Tus accesos directos.",
+  "help.heading": "Guía de EvPortal para el navegador Tesla",
   "help.intro": "Toca un acceso directo para abrir el servicio en una pestaña nueva. El botón de tema de la parte superior permite elegir el modo claro u oscuro. Los ocho idiomas están disponibles en Ajustes con sus nombres y banderas; el árabe se muestra de derecha a izquierda.",
   "help.organizeHeading": "Organizar los accesos directos",
   "help.ranking": "Todos muestra primero los accesos directos que más abres. En caso de empate, se conserva tu orden manual. La clasificación se guarda al recargar.",

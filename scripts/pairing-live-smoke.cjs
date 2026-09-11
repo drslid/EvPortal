@@ -3,7 +3,8 @@
 const { chromium } = require('playwright');
 const assert = require('node:assert/strict');
 const jsQR = require('jsqr');
-const PORTAL = 'http://127.0.0.1:4187/';
+const PORTAL = process.env.PORTAL_URL || 'http://127.0.0.1:4187/';
+assert.ok(['127.0.0.1', 'localhost', '[::1]'].includes(new URL(PORTAL).hostname), 'This recipe only targets a local portal');
 const errors = [];
 let browser;
 const fixture = name => ({ version: 2, theme: 'dark', activeCategory: 'test-category', categories: [{ id: 'test-category', label: 'Essai local', icon: 'charging', shortcuts: [{ id: 'test-link', name, url: 'https://example.org/local-transfer', favorite: true, clickCount: 4 }] }] });
@@ -17,6 +18,7 @@ async function qr(page, id) {
     const code = jsQR(Uint8ClampedArray.from(pixels.data), pixels.width, pixels.height);
     assert.ok(code, 'QR must decode');
     assert.equal(new URL(code.data).origin, new URL(PORTAL).origin);
+    assert.equal(new URL(code.data).pathname, new URL(PORTAL).pathname, 'QR preserves the localized portal route');
     return code.data;
 }
 async function axe(page) {

@@ -1,31 +1,14 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
+<!DOCTYPE html><html lang="fr" dir="ltr"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title data-i18n="static.title">EvPortal — Raccourcis Tesla, recharge, musique et streaming</title>
-    <meta name="description" content="Votre portail personnalisable pour Tesla et véhicules électriques : recharge, musique, streaming et navigation. Retrouvez vos favoris, sans créer de compte." data-i18n-content="static.description">
+    <title data-i18n="static.title">EvPortal — Portail de raccourcis pour navigateur Tesla</title>
     <meta name="robots" content="index, follow, max-image-preview:large">
+    <script src="./js/seo.js"></script>
     <meta name="author" content="DrSliD">
     <meta name="theme-color" content="#111213">
     <meta name="color-scheme" content="dark light">
     <meta name="format-detection" content="telephone=no">
     <link rel="canonical" href="https://drslid.github.io/EvPortal/">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="EvPortal">
-    <meta property="og:locale" content="fr_FR">
-    <meta property="og:title" content="EvPortal — Votre pause, vos raccourcis." data-i18n-content="static.socialTitle">
-    <meta property="og:description" content="Recharge, musique, streaming et navigation : un portail gratuit et personnalisable pour votre Tesla et vos écrans du quotidien." data-i18n-content="static.socialDescription">
-    <meta property="og:url" content="https://drslid.github.io/EvPortal/">
-    <meta property="og:image" content="https://drslid.github.io/EvPortal/img/evportal-preview.png">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="EvPortal : un tableau de raccourcis pour la recharge, la musique, le streaming et la navigation." data-i18n-content="static.previewAlt">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="EvPortal — Votre pause, vos raccourcis." data-i18n-content="static.socialTitle">
-    <meta name="twitter:description" content="Vos services préférés dans un portail gratuit et personnalisable pour Tesla et véhicules électriques." data-i18n-content="static.twitterDescription">
-    <meta name="twitter:image" content="https://drslid.github.io/EvPortal/img/evportal-preview.png">
-    <meta name="twitter:image:alt" content="Le tableau de raccourcis EvPortal en thème sombre." data-i18n-content="static.twitterAlt">
     <link rel="apple-touch-icon" sizes="180x180" href="./img/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="./img/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="./img/favicon-16x16.png">
@@ -35,87 +18,139 @@
     <meta name="msapplication-TileColor" content="#111213">
     <meta name="msapplication-config" content="./img/browserconfig.xml">
     <link rel="stylesheet" href="./css/styles.css">
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "WebApplication",
-        "name": "EvPortal",
-        "url": "https://drslid.github.io/EvPortal/",
-        "description": "Portail gratuit de raccourcis personnalisables pour Tesla, véhicules électriques et navigateurs web : recharge, musique, streaming et navigation.",
-        "applicationCategory": "UtilitiesApplication",
-        "operatingSystem": "Navigateur web",
-        "browserRequirements": "JavaScript nécessaire pour la personnalisation",
-        "inLanguage": ["en", "fr", "es", "de", "it", "ru", "ar", "pt"],
-        "isAccessibleForFree": true,
-        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"},
-        "image": "https://drslid.github.io/EvPortal/img/evportal-preview.png",
-        "author": {"@type": "Person", "name": "DrSliD"},
-        "sameAs": "https://github.com/drslid/EvPortal",
-        "featureList": ["Raccourcis personnalisables", "Recherche", "Favoris", "Thème clair et sombre", "Partage Telegra.ph et QR code", "Glisser-déposer tactile", "Mode Théâtre Tesla"]
-    }
-    </script>
-    <script src="./js/translations.js" defer></script>
-    <script src="./js/i18n.js" defer></script>
-    <script src="./js/catalog.js" defer></script>
-    <script src="./js/state.js" defer></script>
-    <script src="./js/backups.js" defer></script>
-    <script src="./js/preferences.js" defer></script>
-    <script src="./js/icons.js" defer></script>
-    <script src="./js/vendor/Sortable.min.js" defer></script>
-    <script src="./js/vendor/qrcode.min.js" defer></script>
-    <script src="./js/tesla.js" defer></script>
-    <script src="./js/config.js" defer></script>
-    <script src="./js/telegraph.js" defer></script>
-    <script src="./js/pairing.js" defer></script>
-    <script src="./js/script.js" defer></script>
+    <script src="./js/translations.js" defer=""></script>
+    <script src="./js/i18n.js" defer=""></script>
+    <script src="./js/catalog.js" defer=""></script>
+    <script src="./js/state.js" defer=""></script>
+    <script src="./js/backups.js" defer=""></script>
+    <script src="./js/preferences.js" defer=""></script>
+    <script src="./js/icons.js" defer=""></script>
+    <script src="./js/vendor/Sortable.min.js" defer=""></script>
+    <script src="./js/vendor/qrcode.min.js" defer=""></script>
+    <script src="./js/tesla.js" defer=""></script>
+    <script src="./js/config.js" defer=""></script>
+    <script src="./js/telegraph.js" defer=""></script>
+    <script src="./js/pairing.js" defer=""></script>
+    <script src="./js/script.js" defer=""></script>
+    <meta name="description" content="Personnalisez votre portail Tesla : raccourcis vers la recharge, la musique et la météo, favoris et sauvegardes. Gratuit, avec transfert QR depuis un téléphone." data-i18n-content="static.description">
+    <link rel="alternate" hreflang="en" href="https://drslid.github.io/EvPortal/en/" data-seo-generated="">
+    <link rel="alternate" hreflang="fr" href="https://drslid.github.io/EvPortal/fr/" data-seo-generated="">
+    <link rel="alternate" hreflang="es" href="https://drslid.github.io/EvPortal/es/" data-seo-generated="">
+    <link rel="alternate" hreflang="de" href="https://drslid.github.io/EvPortal/de/" data-seo-generated="">
+    <link rel="alternate" hreflang="it" href="https://drslid.github.io/EvPortal/it/" data-seo-generated="">
+    <link rel="alternate" hreflang="ru" href="https://drslid.github.io/EvPortal/ru/" data-seo-generated="">
+    <link rel="alternate" hreflang="ar" href="https://drslid.github.io/EvPortal/ar/" data-seo-generated="">
+    <link rel="alternate" hreflang="pt" href="https://drslid.github.io/EvPortal/pt/" data-seo-generated="">
+    <link rel="alternate" hreflang="x-default" href="https://drslid.github.io/EvPortal/" data-seo-generated="">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="EvPortal">
+    <meta property="og:locale" content="fr_FR">
+    <meta property="og:locale:alternate" content="en_US" data-seo-generated="">
+    <meta property="og:locale:alternate" content="es_ES" data-seo-generated="">
+    <meta property="og:locale:alternate" content="de_DE" data-seo-generated="">
+    <meta property="og:locale:alternate" content="it_IT" data-seo-generated="">
+    <meta property="og:locale:alternate" content="ru_RU" data-seo-generated="">
+    <meta property="og:locale:alternate" content="ar_SA" data-seo-generated="">
+    <meta property="og:locale:alternate" content="pt_PT" data-seo-generated="">
+    <meta property="og:title" content="EvPortal — Portail de raccourcis pour navigateur Tesla" data-i18n-content="static.title">
+    <meta property="og:description" content="Personnalisez votre portail Tesla : raccourcis vers la recharge, la musique et la météo, favoris et sauvegardes. Gratuit, avec transfert QR depuis un téléphone." data-i18n-content="static.description">
+    <meta property="og:url" content="https://drslid.github.io/EvPortal/">
+    <meta property="og:image" content="https://drslid.github.io/EvPortal/img/evportal-preview.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="EvPortal : un tableau de raccourcis pour la recharge, la musique, le streaming et la navigation." data-i18n-content="static.previewAlt">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="EvPortal — Portail de raccourcis pour navigateur Tesla" data-i18n-content="static.title">
+    <meta name="twitter:description" content="Personnalisez votre portail Tesla : raccourcis vers la recharge, la musique et la météo, favoris et sauvegardes. Gratuit, avec transfert QR depuis un téléphone." data-i18n-content="static.description">
+    <meta name="twitter:image" content="https://drslid.github.io/EvPortal/img/evportal-preview.png">
+    <meta name="twitter:image:alt" content="EvPortal : un tableau de raccourcis pour la recharge, la musique, le streaming et la navigation." data-i18n-content="static.previewAlt">
+    <script type="application/ld+json" data-seo-generated="">{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "@id": "https://drslid.github.io/EvPortal/#application",
+  "name": "EvPortal",
+  "url": "https://drslid.github.io/EvPortal/",
+  "description": "Personnalisez votre portail Tesla : raccourcis vers la recharge, la musique et la météo, favoris et sauvegardes. Gratuit, avec transfert QR depuis un téléphone.",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Web",
+  "browserRequirements": "Navigateur avec JavaScript et stockage local ; HTTPS et fonctions cryptographiques pour les transferts QR.",
+  "inLanguage": [
+    "en",
+    "fr",
+    "es",
+    "de",
+    "it",
+    "ru",
+    "ar",
+    "pt"
+  ],
+  "isAccessibleForFree": true,
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "EUR"
+  },
+  "image": "https://drslid.github.io/EvPortal/img/evportal-preview.png",
+  "author": {
+    "@type": "Person",
+    "name": "DrSliD"
+  },
+  "sameAs": "https://github.com/drslid/EvPortal",
+  "featureList": [
+    "Raccourcis et favoris personnalisables",
+    "Réorganisation tactile par glisser-déposer",
+    "Transfert de sauvegardes par QR avec un téléphone",
+    "Sauvegardes par code, lien ou fichier JSON"
+  ]
+}</script>
 </head>
 <body>
     <svg class="icon-sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <defs>
-            <symbol id="icon-all" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
-            <symbol id="icon-favorites" viewBox="0 0 24 24"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9Z"/></symbol>
-            <symbol id="icon-cinema" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 4v16M17 4v16M3 9h4M3 15h4M17 9h4M17 15h4"/></symbol>
-            <symbol id="icon-music" viewBox="0 0 24 24"><path d="M9 18V5l11-2v13M9 9l11-2"/><ellipse cx="6" cy="18" rx="3" ry="3"/><ellipse cx="17" cy="16" rx="3" ry="3"/></symbol>
-            <symbol id="icon-tv" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="m7 2 5 5 5-5"/></symbol>
-            <symbol id="icon-charging" viewBox="0 0 24 24"><path d="m13 2-9 12h7l-1 8 10-13h-8Z"/></symbol>
-            <symbol id="icon-games" viewBox="0 0 24 24"><path d="M7 7h10c2 0 3 2 3.5 4l1 6c.5 3-2 4-4 2l-3-3h-5l-3 3c-2 2-4.5 1-4-2l1-6C4 9 5 7 7 7Z"/><path d="M8 9v5M5.5 11.5h5M16 10h.01M18 13h.01"/></symbol>
-            <symbol id="icon-navigation" viewBox="0 0 24 24"><path d="m21 3-7 18-3-8-8-3Z"/></symbol>
-            <symbol id="icon-social" viewBox="0 0 24 24"><path d="M21 11a8 8 0 0 1-8 8H6l-4 3 1.5-6A8 8 0 1 1 21 11Z"/><path d="M7 11h.01M12 11h.01M17 11h.01"/></symbol>
-            <symbol id="icon-news" viewBox="0 0 24 24"><path d="M5 4h16v15a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8h2Z"/><path d="M5 8v11M9 8h8M9 12h8M9 16h5"/></symbol>
-            <symbol id="icon-weather" viewBox="0 0 24 24"><path d="M8 18H5a4 4 0 1 1 2-7 6 6 0 1 1 5 10H8"/><path d="M8 2v2M2 7l2 1M15 3l-1 2"/></symbol>
-            <symbol id="icon-productivity" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V3h8v4M3 12a22 22 0 0 0 18 0M10 13v3h4v-3"/></symbol>
-            <symbol id="icon-folder" viewBox="0 0 24 24"><path d="M3 7V5a2 2 0 0 1 2-2h5l3 4h6a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/></symbol>
-            <symbol id="icon-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7.5"/><path d="m16 16 5 5"/></symbol>
-            <symbol id="icon-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
-            <symbol id="icon-sliders" viewBox="0 0 24 24"><path d="M4 7h7M15 7h5M4 17h3M11 17h9"/><circle cx="13" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></symbol>
-            <symbol id="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5 19 19M5 19l1.5-1.5M17.5 6.5 19 5"/></symbol>
-            <symbol id="icon-moon" viewBox="0 0 24 24"><path d="M20.8 13.1A8.7 8.7 0 0 1 10.9 3.2 9 9 0 1 0 20.8 13.1Z"/></symbol>
-            <symbol id="icon-fullscreen" viewBox="0 0 24 24"><path d="M8 3H3v5M16 3h5v5M3 16v5h5M21 16v5h-5"/></symbol>
-            <symbol id="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
-            <symbol id="icon-share" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="3"/><path d="M10 18h4M12 14V6m-3 3 3-3 3 3"/></symbol>
-            <symbol id="icon-settings" viewBox="0 0 24 24"><path d="m9 3 1-1h4l1 3 3 1 3 1v4l-2 2v3l-2 3h-4l-2 2H7l-1-3-3-1-1-4 2-2V7l3-1Z"/><circle cx="12" cy="12" r="3"/></symbol>
-            <symbol id="icon-edit" viewBox="0 0 24 24"><path d="m16 3 5 5-12 12-6 1 1-6ZM13 6l5 5"/></symbol>
+            <symbol id="icon-all" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect><rect x="14" y="14" width="7" height="7" rx="1.5"></rect></symbol>
+            <symbol id="icon-favorites" viewBox="0 0 24 24"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9Z"></path></symbol>
+            <symbol id="icon-cinema" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M7 4v16M17 4v16M3 9h4M3 15h4M17 9h4M17 15h4"></path></symbol>
+            <symbol id="icon-music" viewBox="0 0 24 24"><path d="M9 18V5l11-2v13M9 9l11-2"></path><ellipse cx="6" cy="18" rx="3" ry="3"></ellipse><ellipse cx="17" cy="16" rx="3" ry="3"></ellipse></symbol>
+            <symbol id="icon-tv" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="14" rx="2"></rect><path d="m7 2 5 5 5-5"></path></symbol>
+            <symbol id="icon-charging" viewBox="0 0 24 24"><path d="m13 2-9 12h7l-1 8 10-13h-8Z"></path></symbol>
+            <symbol id="icon-games" viewBox="0 0 24 24"><path d="M7 7h10c2 0 3 2 3.5 4l1 6c.5 3-2 4-4 2l-3-3h-5l-3 3c-2 2-4.5 1-4-2l1-6C4 9 5 7 7 7Z"></path><path d="M8 9v5M5.5 11.5h5M16 10h.01M18 13h.01"></path></symbol>
+            <symbol id="icon-navigation" viewBox="0 0 24 24"><path d="m21 3-7 18-3-8-8-3Z"></path></symbol>
+            <symbol id="icon-social" viewBox="0 0 24 24"><path d="M21 11a8 8 0 0 1-8 8H6l-4 3 1.5-6A8 8 0 1 1 21 11Z"></path><path d="M7 11h.01M12 11h.01M17 11h.01"></path></symbol>
+            <symbol id="icon-news" viewBox="0 0 24 24"><path d="M5 4h16v15a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8h2Z"></path><path d="M5 8v11M9 8h8M9 12h8M9 16h5"></path></symbol>
+            <symbol id="icon-weather" viewBox="0 0 24 24"><path d="M8 18H5a4 4 0 1 1 2-7 6 6 0 1 1 5 10H8"></path><path d="M8 2v2M2 7l2 1M15 3l-1 2"></path></symbol>
+            <symbol id="icon-productivity" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="14" rx="2"></rect><path d="M8 7V3h8v4M3 12a22 22 0 0 0 18 0M10 13v3h4v-3"></path></symbol>
+            <symbol id="icon-folder" viewBox="0 0 24 24"><path d="M3 7V5a2 2 0 0 1 2-2h5l3 4h6a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"></path></symbol>
+            <symbol id="icon-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7.5"></circle><path d="m16 16 5 5"></path></symbol>
+            <symbol id="icon-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></symbol>
+            <symbol id="icon-sliders" viewBox="0 0 24 24"><path d="M4 7h7M15 7h5M4 17h3M11 17h9"></path><circle cx="13" cy="7" r="2"></circle><circle cx="9" cy="17" r="2"></circle></symbol>
+            <symbol id="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5 19 19M5 19l1.5-1.5M17.5 6.5 19 5"></path></symbol>
+            <symbol id="icon-moon" viewBox="0 0 24 24"><path d="M20.8 13.1A8.7 8.7 0 0 1 10.9 3.2 9 9 0 1 0 20.8 13.1Z"></path></symbol>
+            <symbol id="icon-fullscreen" viewBox="0 0 24 24"><path d="M8 3H3v5M16 3h5v5M3 16v5h5M21 16v5h-5"></path></symbol>
+            <symbol id="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"></path></symbol>
+            <symbol id="icon-share" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="3"></rect><path d="M10 18h4M12 14V6m-3 3 3-3 3 3"></path></symbol>
+            <symbol id="icon-settings" viewBox="0 0 24 24"><path d="m9 3 1-1h4l1 3 3 1 3 1v4l-2 2v3l-2 3h-4l-2 2H7l-1-3-3-1-1-4 2-2V7l3-1Z"></path><circle cx="12" cy="12" r="3"></circle></symbol>
+            <symbol id="icon-edit" viewBox="0 0 24 24"><path d="m16 3 5 5-12 12-6 1 1-6ZM13 6l5 5"></path></symbol>
         </defs>
     </svg>
     <a class="skip-link" href="#dashboard" data-i18n="static.skip">Aller aux raccourcis</a>
     <header id="header" class="site-header">
         <h1 class="brand-heading"><a href="./" class="brand-link" aria-label="EvPortal, accueil" data-i18n-aria-label="static.home"><img class="brand-logo" src="./img/evportal-tesla-theater-dashboard-logo.webp" width="629" height="54" alt="EV Portal"><span class="visually-hidden" data-i18n="static.tagline"> — raccourcis pour Tesla</span></a></h1>
         <div class="header-actions">
-            <button id="searchToggle" class="icon-button" type="button" aria-label="Rechercher" data-i18n-aria-label="static.search" aria-expanded="false" aria-controls="searchPanel" title="Rechercher" data-i18n-title="static.search"><svg class="icon" aria-hidden="true"><use href="#icon-search"/></svg></button>
-            <button id="fullscreenButton" class="header-button" type="button" aria-label="Passer en plein écran" data-i18n-aria-label="static.enterFullscreen" title="Plein écran" data-i18n-title="static.fullscreen"><svg class="icon" aria-hidden="true"><use href="#icon-fullscreen"/></svg><span data-i18n="static.fullscreen">Plein écran</span></button>
-            <button id="editModeToggle" class="header-button" type="button" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#icon-edit"/></svg><span data-i18n="static.edit">Modifier</span></button>
-            <button id="catalogButton" class="header-button primary-button" type="button" aria-label="Ajouter un raccourci ou une catégorie" data-i18n-aria-label="static.addAccessible" title="Ajouter" data-i18n-title="static.add"><svg class="icon" aria-hidden="true"><use href="#icon-plus"/></svg><span data-i18n="static.add">Ajouter</span></button>
-            <button id="themeToggle" class="icon-button" type="button" aria-label="Mode clair" title="Mode clair"><svg class="icon" aria-hidden="true"><use href="#icon-sun"/></svg></button>
-            <button id="settingsButton" class="icon-button" type="button" aria-label="Paramètres" data-i18n-aria-label="static.settings" title="Paramètres" data-i18n-title="static.settings"><svg class="icon" aria-hidden="true"><use href="#icon-settings"/></svg></button>
+            <button id="searchToggle" class="icon-button" type="button" aria-label="Rechercher" data-i18n-aria-label="static.search" aria-expanded="false" aria-controls="searchPanel" title="Rechercher" data-i18n-title="static.search"><svg class="icon" aria-hidden="true"><use href="#icon-search"></use></svg></button>
+            <button id="fullscreenButton" class="header-button" type="button" aria-label="Passer en plein écran" data-i18n-aria-label="static.enterFullscreen" title="Plein écran" data-i18n-title="static.fullscreen"><svg class="icon" aria-hidden="true"><use href="#icon-fullscreen"></use></svg><span data-i18n="static.fullscreen">Plein écran</span></button>
+            <button id="editModeToggle" class="header-button" type="button" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#icon-edit"></use></svg><span data-i18n="static.edit">Modifier</span></button>
+            <button id="catalogButton" class="header-button primary-button" type="button" aria-label="Ajouter un raccourci ou une catégorie" data-i18n-aria-label="static.addAccessible" title="Ajouter" data-i18n-title="static.add"><svg class="icon" aria-hidden="true"><use href="#icon-plus"></use></svg><span data-i18n="static.add">Ajouter</span></button>
+            <button id="themeToggle" class="icon-button" type="button" aria-label="Mode clair" title="Mode clair"><svg class="icon" aria-hidden="true"><use href="#icon-sun"></use></svg></button>
+            <button id="settingsButton" class="icon-button" type="button" aria-label="Paramètres" data-i18n-aria-label="static.settings" title="Paramètres" data-i18n-title="static.settings"><svg class="icon" aria-hidden="true"><use href="#icon-settings"></use></svg></button>
         </div>
     </header>
-    <div id="searchPanel" class="search-panel" hidden><div class="search-field"><svg class="icon" aria-hidden="true"><use href="#icon-search"/></svg><label class="visually-hidden" for="searchInput" data-i18n="static.searchLabel">Rechercher un raccourci</label><input id="searchInput" type="search" placeholder="Rechercher…" data-i18n-placeholder="static.searchPlaceholder" autocomplete="off" maxlength="150"><button id="clearSearchButton" type="button" class="icon-button" aria-label="Effacer la recherche" data-i18n-aria-label="static.clearSearch" hidden>×</button></div></div>
+    <div id="searchPanel" class="search-panel" hidden=""><div class="search-field"><svg class="icon" aria-hidden="true"><use href="#icon-search"></use></svg><label class="visually-hidden" for="searchInput" data-i18n="static.searchLabel">Rechercher un raccourci</label><input id="searchInput" type="search" placeholder="Rechercher…" data-i18n-placeholder="static.searchPlaceholder" autocomplete="off" maxlength="150"><button id="clearSearchButton" type="button" class="icon-button" aria-label="Effacer la recherche" data-i18n-aria-label="static.clearSearch" hidden="">×</button></div></div>
     <nav class="category-bar" aria-label="Catégories" data-i18n-aria-label="static.categories"><ul id="menu" class="category-menu"></ul></nav>
     <main id="dashboard" tabindex="-1">
         <p id="dragInstructions" class="visually-hidden" data-i18n="static.dragInstructions">Espace pour saisir, touches fléchées pour déplacer, Entrée pour déposer, Échap pour annuler.</p>
-        <div id="editControls" class="edit-controls" hidden data-i18n="static.reorder">Glissez les raccourcis pour les réorganiser.</div>
-        <p id="statusMessage" class="status-message" role="status" aria-live="polite" hidden></p>
-        <h2 id="sectionTitle" class="visually-hidden" data-i18n="static.video">Cinéma</h2><span id="resultCount" class="visually-hidden" aria-live="polite"></span><span id="shortcutTotal" hidden></span>
+        <div id="editControls" class="edit-controls" hidden="" data-i18n="static.reorder">Glissez les raccourcis pour les réorganiser.</div>
+        <p id="statusMessage" class="status-message" role="status" aria-live="polite" hidden=""></p>
+        <h2 id="sectionTitle" class="visually-hidden" data-i18n="static.video">Cinéma</h2><span id="resultCount" class="visually-hidden" aria-live="polite"></span><span id="shortcutTotal" hidden=""></span>
         <div id="content" class="shortcuts-grid" aria-labelledby="sectionTitle">
             <article class="shortcut"><a class="shortcut-link" href="https://www.netflix.com/" target="_blank" rel="noopener noreferrer"><span class="shortcut-icon" aria-hidden="true">N</span><span class="shortcut-name">Netflix</span></a></article>
             <article class="shortcut"><a class="shortcut-link" href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer"><span class="shortcut-icon" aria-hidden="true">▶</span><span class="shortcut-name">YouTube</span></a></article>
@@ -125,7 +160,7 @@
         <noscript><p><span data-i18n="static.javascript">Activez JavaScript pour personnaliser vos raccourcis.</span> <a href="./aide.html" data-i18n="static.help">Aide</a></p></noscript>
     </main>
     <dialog id="settingsDialog" aria-labelledby="settingsTitle">
-        <div class="dialog-heading"><h2 id="settingsTitle" data-i18n="static.settings">Paramètres</h2><button type="button" class="icon-button" data-close-dialog aria-label="Fermer" data-i18n-aria-label="static.close">×</button></div>
+        <div class="dialog-heading"><h2 id="settingsTitle" data-i18n="static.settings">Paramètres</h2><button type="button" class="icon-button" data-close-dialog="" aria-label="Fermer" data-i18n-aria-label="static.close">×</button></div>
         <div class="settings-list">
             <p id="categoryVisibilityHint" class="field-help" data-i18n="prefs.categoriesHint">Les raccourcis restent accessibles dans Tous et Favoris.</p>
             <details id="catalogPreferences"><summary data-i18n="prefs.title">Catalogue et accueil</summary>
@@ -133,95 +168,94 @@
                 <label class="preference-check"><input id="homeFavoritesToggle" type="checkbox"><span data-i18n="prefs.homeFavorites">Ouvrir sur mes favoris</span></label>
                 <fieldset class="category-visibility" aria-describedby="categoryVisibilityHint"><legend data-i18n="prefs.visibleCategories">Catégories affichées</legend><div id="categoryVisibilityOptions" class="category-checks"></div></fieldset>
             </details>
-            <div class="language-setting"><label for="languageSelect" data-i18n="static.language">Langue</label><select id="languageSelect" dir="ltr"><option value="en" lang="en">🇬🇧 English</option><option value="fr" lang="fr">🇫🇷 Français</option><option value="es" lang="es">🇪🇸 Español</option><option value="de" lang="de">🇩🇪 Deutsch</option><option value="it" lang="it">🇮🇹 Italiano</option><option value="ru" lang="ru">🇷🇺 Русский</option><option value="ar" lang="ar">🇸🇦 العربية</option><option value="pt" lang="pt">🇵🇹 Português</option></select></div>
+            <div class="language-setting"><label for="languageSelect" data-i18n="static.language">Langue</label><select id="languageSelect" dir="ltr"><option value="en" lang="en">🇬🇧 English</option><option value="fr" lang="fr" selected="">🇫🇷 Français</option><option value="es" lang="es">🇪🇸 Español</option><option value="de" lang="de">🇩🇪 Deutsch</option><option value="it" lang="it">🇮🇹 Italiano</option><option value="ru" lang="ru">🇷🇺 Русский</option><option value="ar" lang="ar">🇸🇦 العربية</option><option value="pt" lang="pt">🇵🇹 Português</option></select></div>
             <section id="backupSettings" class="settings-backups" aria-label="Sauvegardes" data-i18n-aria-label="static.backups">
                 <section class="backup-group" aria-labelledby="backupLinksTitle">
                     <h3 id="backupLinksTitle" data-i18n="backup.links">Code ou lien</h3>
-                    <div class="backup-actions"><button id="shareButton" type="button"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V3m-5 5 5-5 5 5M4 15v6h16v-6"/></svg><span data-i18n="backup.create">Créer</span></button><button id="importConfigButton" type="button"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span data-i18n="backup.add">Ajouter</span></button></div>
+                    <div class="backup-actions"><button id="shareButton" type="button"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V3m-5 5 5-5 5 5M4 15v6h16v-6"></path></svg><span data-i18n="backup.create">Créer</span></button><button id="importConfigButton" type="button"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg><span data-i18n="backup.add">Ajouter</span></button></div>
                 </section>
                 <section id="phoneSettings" class="backup-group" aria-labelledby="backupPhoneTitle">
                     <h3 id="backupPhoneTitle" data-i18n="backup.phone">Téléphone</h3>
-                    <div class="backup-actions"><button id="pairOfferButton" type="button" hidden><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg><span data-i18n="backup.send">Envoyer</span></button><button id="pairReceiveButton" type="button" hidden><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H4m6-6-6 6 6 6"/></svg><span data-i18n="backup.receive">Recevoir</span></button></div>
+                    <div class="backup-actions"><button id="pairOfferButton" type="button" hidden=""><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"></path></svg><span data-i18n="backup.send">Envoyer</span></button><button id="pairReceiveButton" type="button" hidden=""><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H4m6-6-6 6 6 6"></path></svg><span data-i18n="backup.receive">Recevoir</span></button></div>
                 </section>
-                <section class="backup-group" aria-labelledby="backupLibraryTitle"><h3 id="backupLibraryTitle" data-i18n="backup.library">Mes sauvegardes</h3><button id="restoreBackupButton" class="full-width" type="button"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10a8 8 0 1 1 1 8M4 4v6h6M12 8v5l3 2"/></svg><span data-i18n="backup.restore">Restaurer</span></button></section>
+                <section class="backup-group" aria-labelledby="backupLibraryTitle"><h3 id="backupLibraryTitle" data-i18n="backup.library">Mes sauvegardes</h3><button id="restoreBackupButton" class="full-width" type="button"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10a8 8 0 1 1 1 8M4 4v6h6M12 8v5l3 2"></path></svg><span data-i18n="backup.restore">Restaurer</span></button></section>
             </section>
             <button id="addShortcutButton" type="button" data-i18n="static.createShortcut">Créer un raccourci</button>
             <button id="addPageButton" type="button" data-i18n="static.createCategory">Créer une catégorie</button>
             <button id="teslaFullscreenButton" type="button" data-i18n="static.theater">Ouvrir le mode Théâtre Tesla</button>
-            <details><summary data-i18n="static.moreOptions">Plus d’options</summary><div class="settings-list"><button id="undoTransferButton" type="button" hidden data-i18n="backup.undoRestore">Annuler la dernière restauration</button><button id="resetButton" class="danger" type="button" data-i18n="static.reset">Réinitialiser les raccourcis</button></div></details>
+            <details><summary data-i18n="static.moreOptions">Plus d’options</summary><div class="settings-list"><button id="undoTransferButton" type="button" hidden="" data-i18n="backup.undoRestore">Annuler la dernière restauration</button><button id="resetButton" class="danger" type="button" data-i18n="static.reset">Réinitialiser les raccourcis</button></div></details>
             <a class="settings-help" href="./aide.html"><span data-i18n="static.about">Aide &amp; à propos</span><span aria-hidden="true">↗</span></a>
         </div>
     </dialog>
     <dialog id="pageDialog" aria-labelledby="pageDialogTitle">
-        <div class="dialog-heading"><h2 id="pageDialogTitle" data-i18n="static.newCategory">Nouvelle catégorie</h2><button type="button" class="icon-button" data-close-dialog aria-label="Fermer" data-i18n-aria-label="static.close">×</button></div>
-        <form id="addPageForm"><label for="newPageName" data-i18n="static.name">Nom</label><input id="newPageName" type="text" placeholder="Mes voyages" data-i18n-placeholder="static.tripsPlaceholder" required maxlength="16"><input id="newPageDescription" type="hidden" value=""><p id="categoryLimitHint" class="field-help"></p><fieldset id="categoryIconPicker" class="category-icon-picker"><legend data-i18n="static.icon">Icône</legend></fieldset><p id="pageFormError" class="form-error" role="alert"></p><div class="dialog-actions"><button type="button" data-close-dialog data-i18n="static.cancel">Annuler</button><button class="primary-button" type="submit" data-i18n="static.create">Créer</button></div></form>
+        <div class="dialog-heading"><h2 id="pageDialogTitle" data-i18n="static.newCategory">Nouvelle catégorie</h2><button type="button" class="icon-button" data-close-dialog="" aria-label="Fermer" data-i18n-aria-label="static.close">×</button></div>
+        <form id="addPageForm"><label for="newPageName" data-i18n="static.name">Nom</label><input id="newPageName" type="text" placeholder="Mes voyages" data-i18n-placeholder="static.tripsPlaceholder" required="" maxlength="16"><input id="newPageDescription" type="hidden" value=""><p id="categoryLimitHint" class="field-help"></p><fieldset id="categoryIconPicker" class="category-icon-picker"><legend data-i18n="static.icon">Icône</legend></fieldset><p id="pageFormError" class="form-error" role="alert"></p><div class="dialog-actions"><button type="button" data-close-dialog="" data-i18n="static.cancel">Annuler</button><button class="primary-button" type="submit" data-i18n="static.create">Créer</button></div></form>
     </dialog>
     <dialog id="shortcutDialog" aria-labelledby="shortcutDialogTitle">
-        <div class="dialog-heading"><h2 id="shortcutDialogTitle" data-i18n="static.newShortcut">Nouveau raccourci</h2><button type="button" class="icon-button" data-close-dialog aria-label="Fermer" data-i18n-aria-label="static.close">×</button></div>
-        <form id="addShortcutForm"><label for="shortcutName" data-i18n="static.name">Nom</label><input id="shortcutName" type="text" placeholder="Mon service" data-i18n-placeholder="static.servicePlaceholder" required maxlength="100"><label for="shortcutURL" data-i18n="static.website">Adresse du site</label><input id="shortcutURL" type="url" dir="ltr" placeholder="https://exemple.fr" data-i18n-placeholder="static.urlPlaceholder" required maxlength="2048"><label for="shortcutCategory" data-i18n="static.category">Catégorie</label><select id="shortcutCategory" required></select><details id="shortcutAdditionalOptions"><summary data-i18n="app.otherCategories">Autres catégories</summary><div id="shortcutAdditionalCategories" class="category-checks"></div></details><input id="shortcutDescription" type="hidden" value=""><p id="shortcutFormError" class="form-error" role="alert"></p><div class="dialog-actions"><button type="button" data-close-dialog data-i18n="static.cancel">Annuler</button><button class="primary-button" type="submit" data-i18n="static.add">Ajouter</button></div></form>
+        <div class="dialog-heading"><h2 id="shortcutDialogTitle" data-i18n="static.newShortcut">Nouveau raccourci</h2><button type="button" class="icon-button" data-close-dialog="" aria-label="Fermer" data-i18n-aria-label="static.close">×</button></div>
+        <form id="addShortcutForm"><label for="shortcutName" data-i18n="static.name">Nom</label><input id="shortcutName" type="text" placeholder="Mon service" data-i18n-placeholder="static.servicePlaceholder" required="" maxlength="100"><label for="shortcutURL" data-i18n="static.website">Adresse du site</label><input id="shortcutURL" type="url" dir="ltr" placeholder="https://exemple.fr" data-i18n-placeholder="static.urlPlaceholder" required="" maxlength="2048"><label for="shortcutCategory" data-i18n="static.category">Catégorie</label><select id="shortcutCategory" required=""></select><details id="shortcutAdditionalOptions"><summary data-i18n="app.otherCategories">Autres catégories</summary><div id="shortcutAdditionalCategories" class="category-checks"></div></details><input id="shortcutDescription" type="hidden" value=""><p id="shortcutFormError" class="form-error" role="alert"></p><div class="dialog-actions"><button type="button" data-close-dialog="" data-i18n="static.cancel">Annuler</button><button class="primary-button" type="submit" data-i18n="static.add">Ajouter</button></div></form>
     </dialog>
     <dialog id="importDialog" aria-labelledby="importDialogTitle">
-        <div class="dialog-heading"><h2 id="importDialogTitle" data-i18n="backup.addTitle">Ajouter une sauvegarde</h2><button type="button" class="icon-button" data-close-dialog aria-label="Fermer" data-i18n-aria-label="static.close">×</button></div>
+        <div class="dialog-heading"><h2 id="importDialogTitle" data-i18n="backup.addTitle">Ajouter une sauvegarde</h2><button type="button" class="icon-button" data-close-dialog="" aria-label="Fermer" data-i18n-aria-label="static.close">×</button></div>
         <p class="field-help" data-i18n="backup.addHint">Ajout à vos sauvegardes, sans modifier vos raccourcis.</p>
-        <form id="telegraphImportForm"><label for="importConfigID" data-i18n="static.shareInput">Code ou lien</label><input id="importConfigID" type="text" dir="ltr" placeholder="Code ou lien EvPortal" data-i18n-placeholder="static.codePlaceholder" maxlength="2048" required><button id="addBackupButton" class="primary-button full-width" type="submit" data-i18n="backup.add">Ajouter</button></form>
+        <form id="telegraphImportForm"><label for="importConfigID" data-i18n="static.shareInput">Code ou lien</label><input id="importConfigID" type="text" dir="ltr" placeholder="Code ou lien EvPortal" data-i18n-placeholder="static.codePlaceholder" maxlength="2048" required=""><button id="addBackupButton" class="primary-button full-width" type="submit" data-i18n="backup.add">Ajouter</button></form>
         <details class="file-import"><summary data-i18n="static.importJSON">Importer un fichier JSON</summary><label for="importFile" class="visually-hidden" data-i18n="static.jsonFile">Fichier JSON</label><input id="importFile" type="file" accept=".json,application/json"></details>
         <p id="importError" class="form-error" role="alert"></p><p id="importPreview" class="field-help" role="status"></p>
     </dialog>
     <dialog id="restoreDialog" aria-labelledby="restoreDialogTitle">
-        <div class="dialog-heading"><h2 id="restoreDialogTitle" data-i18n="backup.restoreTitle">Restaurer une sauvegarde</h2><button type="button" class="icon-button" data-close-dialog aria-label="Fermer" data-i18n-aria-label="static.close">×</button></div>
+        <div class="dialog-heading"><h2 id="restoreDialogTitle" data-i18n="backup.restoreTitle">Restaurer une sauvegarde</h2><button type="button" class="icon-button" data-close-dialog="" aria-label="Fermer" data-i18n-aria-label="static.close">×</button></div>
         <section class="backup-library-section" aria-labelledby="localBackupTitle"><h3 id="localBackupTitle" data-i18n="backup.local">Sur cet appareil</h3><div id="localBackupList" class="saved-backup-list"></div></section>
         <section class="backup-library-section" aria-labelledby="onlineBackupTitle"><h3 id="onlineBackupTitle" data-i18n="backup.online">En ligne</h3><div id="onlineBackupList" class="saved-backup-list"></div><p id="onlineBackupError" class="form-error" role="alert"></p></section>
         <p id="restoreError" class="form-error" role="alert"></p>
-        <div id="restorePreview" class="restore-preview" hidden><strong id="restoreName"></strong><p id="restoreSummary" class="field-help"></p><p id="restoreHint" class="field-help" data-i18n="backup.restoreHint">Remplace les raccourcis de cet appareil.</p><button id="confirmRestoreButton" class="primary-button full-width" type="button" data-i18n="backup.restore">Restaurer</button></div>
+        <div id="restorePreview" class="restore-preview" hidden=""><strong id="restoreName"></strong><p id="restoreSummary" class="field-help"></p><p id="restoreHint" class="field-help" data-i18n="backup.restoreHint">Remplace les raccourcis de cet appareil.</p><button id="confirmRestoreButton" class="primary-button full-width" type="button" data-i18n="backup.restore">Restaurer</button></div>
     </dialog>
     <dialog id="shareDialog" class="sharing-dialog" aria-labelledby="shareDialogTitle">
-        <div class="dialog-heading"><h2 id="shareDialogTitle" data-i18n="backup.createTitle">Créer un code ou un lien</h2><button type="button" class="icon-button" data-close-dialog aria-label="Fermer" data-i18n-aria-label="static.close">×</button></div>
+        <div class="dialog-heading"><h2 id="shareDialogTitle" data-i18n="backup.createTitle">Créer un code ou un lien</h2><button type="button" class="icon-button" data-close-dialog="" aria-label="Fermer" data-i18n-aria-label="static.close">×</button></div>
         <div class="share-choices">
-            <form id="shareForm"><button id="sharePublishButton" class="share-choice" type="submit"><svg class="share-illustration" viewBox="0 0 120 76" aria-hidden="true"><path d="M34 54H27a13 13 0 0 1-2-26 20 20 0 0 1 37-9 16 16 0 0 1 22 15 10 10 0 0 1-2 20h-7"/><path class="illustration-accent" d="M54 62V33m-11 11 11-11 11 11"/><path d="M95 17h15m-7.5-7.5v15"/></svg><span data-i18n="static.publish">Créer ma sauvegarde</span></button>
-            <details id="shareNameOptions" class="backup-name"><summary data-i18n="static.nameBackup">Nommer la sauvegarde</summary><label for="shareTitle" class="visually-hidden" data-i18n="static.backupName">Nom de la sauvegarde</label><input id="shareTitle" type="text" value="Mes raccourcis EvPortal" data-i18n-value="static.defaultBackup" maxlength="100"></details></form>
+            <form id="shareForm"><button id="sharePublishButton" class="share-choice" type="submit"><svg class="share-illustration" viewBox="0 0 120 76" aria-hidden="true"><path d="M34 54H27a13 13 0 0 1-2-26 20 20 0 0 1 37-9 16 16 0 0 1 22 15 10 10 0 0 1-2 20h-7"></path><path class="illustration-accent" d="M54 62V33m-11 11 11-11 11 11"></path><path d="M95 17h15m-7.5-7.5v15"></path></svg><span data-i18n="static.publish">Créer ma sauvegarde</span></button>
+            <details id="shareNameOptions" class="backup-name"><summary data-i18n="static.nameBackup">Nommer la sauvegarde</summary><label for="shareTitle" class="visually-hidden" data-i18n="static.backupName">Nom (facultatif)</label><input id="shareTitle" type="text" value="Mes raccourcis EvPortal" data-i18n-value="static.defaultBackup" maxlength="100"></details></form>
         </div>
-        <p class="share-privacy field-help" data-i18n="static.public">Toute personne ayant le lien peut lire la sauvegarde.</p>
-        <p id="shareError" class="form-error" role="alert"></p><p id="shareBusy" class="field-help" role="status" hidden></p>
-        <div id="shareResult" class="backup-result" hidden>
-            <label for="shareCode" data-i18n="backup.code">Code</label><div class="backup-copy-row"><input id="shareCode" type="text" dir="ltr" readonly><button id="shareCopyCodeButton" class="icon-button" type="button" aria-label="Copier le code" data-i18n-aria-label="backup.copyCode"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V4H4v12h4"/></svg></button></div>
-            <label for="shareLink" data-i18n="backup.link">Lien EvPortal</label><div class="backup-copy-row"><input id="shareLink" type="text" dir="ltr" readonly><button id="shareCopyButton" class="icon-button" type="button" aria-label="Copier le lien" data-i18n-aria-label="static.copyLink"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V4H4v12h4"/></svg></button></div>
+        <p class="share-privacy field-help" data-i18n="static.public">Cette sauvegarde sera publique.</p>
+        <p id="shareError" class="form-error" role="alert"></p><p id="shareBusy" class="field-help" role="status" hidden=""></p>
+        <div id="shareResult" class="backup-result" hidden="">
+            <label for="shareCode" data-i18n="backup.code">Code</label><div class="backup-copy-row"><input id="shareCode" type="text" dir="ltr" readonly=""><button id="shareCopyCodeButton" class="icon-button" type="button" aria-label="Copier le code" data-i18n-aria-label="backup.copyCode"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M16 8V4H4v12h4"></path></svg></button></div>
+            <label for="shareLink" data-i18n="backup.link">Lien EvPortal</label><div class="backup-copy-row"><input id="shareLink" type="text" dir="ltr" readonly=""><button id="shareCopyButton" class="icon-button" type="button" aria-label="Copier le lien" data-i18n-aria-label="static.copyLink"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M16 8V4H4v12h4"></path></svg></button></div>
         </div>
         <details id="fileExportOptions"><summary data-i18n="static.moreOptions">Plus d’options</summary><button id="exportConfigButton" type="button" data-i18n="static.exportJSON">Sauvegarder un fichier JSON</button></details>
     </dialog>
     <dialog id="pairReceiveDialog" class="pairing-dialog" aria-labelledby="pairReceiveTitle">
-        <div class="dialog-heading"><h2 id="pairReceiveTitle" data-i18n="pair.receiveTitle">Recevoir du téléphone</h2><button type="button" class="icon-button" data-close-dialog aria-label="Fermer" data-i18n-aria-label="static.close">×</button></div>
+        <div class="dialog-heading"><h2 id="pairReceiveTitle" data-i18n="pair.receiveTitle">Recevoir depuis mon téléphone</h2><button type="button" class="icon-button" data-close-dialog="" aria-label="Fermer" data-i18n-aria-label="static.close">×</button></div>
         <ol id="pairReceiveSteps" class="pair-steps">
-            <li><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="13" y="4" width="22" height="39" rx="4"/><path d="M22 37h4M19 14h4v4h-4zm7 0h4v4h-4zm-7 7h4v4h-4zm7 0h4v4h-4z"/></svg><span data-i18n="pair.stepScan">Scanner</span></li>
-            <li><svg viewBox="0 0 48 48" aria-hidden="true"><path d="m6 22 36-16-16 36-5-15Zm15 5L42 6"/></svg><span data-i18n="pair.stepSend">Envoyer</span></li>
-            <li><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="4" y="7" width="40" height="29" rx="4"/><path d="M24 36v6m-9 0h18M16 22l6 6 11-13"/></svg><span data-i18n="pair.stepApply">Ajouter</span></li>
+            <li><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="13" y="4" width="22" height="39" rx="4"></rect><path d="M22 37h4M19 14h4v4h-4zm7 0h4v4h-4zm-7 7h4v4h-4zm7 0h4v4h-4z"></path></svg><span data-i18n="pair.stepScan">Scanner</span></li>
+            <li><svg viewBox="0 0 48 48" aria-hidden="true"><path d="m6 22 36-16-16 36-5-15Zm15 5L42 6"></path></svg><span data-i18n="pair.stepSend">Envoyer</span></li>
+            <li><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="4" y="7" width="40" height="29" rx="4"></rect><path d="M24 36v6m-9 0h18M16 22l6 6 11-13"></path></svg><span data-i18n="pair.stepApply">Ajouter</span></li>
         </ol>
-        <div id="pairReceiveQRCode" class="share-qr" data-i18n-aria-label="pair.qrAccessible" aria-label="QR de réception" hidden></div>
+        <div id="pairReceiveQRCode" class="share-qr" data-i18n-aria-label="pair.qrAccessible" aria-label="QR code de transfert vers cet écran" hidden=""></div>
         <p id="pairReceiveStatus" class="pair-status" role="status"></p>
         <p id="pairReceiveError" class="form-error" role="alert"></p>
-        <p id="pairReceiveSummary" class="pair-summary" hidden></p>
-        <button id="pairApplyButton" class="primary-button full-width" type="button" hidden data-i18n="pair.apply">Ajouter</button>
-        <button id="pairNewButton" class="full-width" type="button" hidden data-i18n="pair.newQR">Nouveau QR</button>
-        <p class="pair-private field-help" data-i18n="pair.privateHint">Transfert chiffré · QR valable 5 minutes</p>
+        <p id="pairReceiveSummary" class="pair-summary" hidden=""></p>
+        <button id="pairApplyButton" class="primary-button full-width" type="button" hidden="" data-i18n="pair.apply">Ajouter</button>
+        <button id="pairNewButton" class="full-width" type="button" hidden="" data-i18n="pair.newQR">Nouveau QR code</button>
+        <p class="pair-private field-help" data-i18n="pair.privateHint">Transfert chiffré, valable 5 minutes.</p>
     </dialog>
     <dialog id="pairOfferDialog" class="pairing-dialog" aria-labelledby="pairOfferTitle">
-        <div class="dialog-heading"><h2 id="pairOfferTitle" data-i18n="pair.offerTitle">Mes raccourcis sur mon téléphone</h2><button type="button" class="icon-button" data-close-dialog aria-label="Fermer" data-i18n-aria-label="static.close">×</button></div>
+        <div class="dialog-heading"><h2 id="pairOfferTitle" data-i18n="pair.offerTitle">Mes raccourcis sur mon téléphone</h2><button type="button" class="icon-button" data-close-dialog="" aria-label="Fermer" data-i18n-aria-label="static.close">×</button></div>
         <p class="field-help" data-i18n="pair.offerScanHint">Scannez ce QR code avec votre téléphone.</p>
-        <div id="pairOfferQRCode" class="share-qr" aria-label="QR code pour recevoir la sauvegarde sur votre téléphone" data-i18n-aria-label="pair.offerQRAccessible" hidden></div><p id="pairOfferSummary" class="pair-summary"></p><p id="pairOfferStatus" class="pair-status" role="status"></p><p id="pairOfferError" class="form-error" role="alert"></p>
-        <button id="pairOfferNewButton" class="full-width" type="button" hidden data-i18n="pair.newQR">Nouveau QR code</button><button id="pairOfferChooseBackupButton" class="pair-secondary full-width" type="button" data-i18n="pair.chooseBackup">Choisir une sauvegarde</button><p class="pair-private field-help" data-i18n="pair.privateHint">Transfert chiffré, valable 5 minutes.</p>
+        <div id="pairOfferQRCode" class="share-qr" aria-label="QR code pour recevoir cette sauvegarde sur le téléphone" data-i18n-aria-label="pair.offerQRAccessible" hidden=""></div><p id="pairOfferSummary" class="pair-summary"></p><p id="pairOfferStatus" class="pair-status" role="status"></p><p id="pairOfferError" class="form-error" role="alert"></p>
+        <button id="pairOfferNewButton" class="full-width" type="button" hidden="" data-i18n="pair.newQR">Nouveau QR code</button><button id="pairOfferChooseBackupButton" class="pair-secondary full-width" type="button" data-i18n="pair.chooseBackup">Choisir une sauvegarde</button><p class="pair-private field-help" data-i18n="pair.privateHint">Transfert chiffré, valable 5 minutes.</p>
     </dialog>
     <dialog id="pairSendDialog" class="pairing-dialog" aria-labelledby="pairSendTitle">
-        <div class="dialog-heading"><h2 id="pairSendTitle" data-i18n="pair.sendTitle">Envoyer à cet écran</h2><button type="button" class="icon-button" data-close-dialog aria-label="Fermer" data-i18n-aria-label="static.close">×</button></div>
-        <svg class="send-illustration share-illustration" viewBox="0 0 120 76" aria-hidden="true"><rect x="8" y="15" width="28" height="48" rx="5"/><path d="M19 56h6"/><path class="illustration-accent" d="M45 39h21m-7-7 7 7-7 7"/><rect x="77" y="18" width="36" height="29" rx="4"/><path d="M89 47v10m-6 0h25"/></svg>
+        <div class="dialog-heading"><h2 id="pairSendTitle" data-i18n="pair.sendTitle">Envoyer vers la Tesla</h2><button type="button" class="icon-button" data-close-dialog="" aria-label="Fermer" data-i18n-aria-label="static.close">×</button></div>
+        <svg class="send-illustration share-illustration" viewBox="0 0 120 76" aria-hidden="true"><rect x="8" y="15" width="28" height="48" rx="5"></rect><path d="M19 56h6"></path><path class="illustration-accent" d="M45 39h21m-7-7 7 7-7 7"></path><rect x="77" y="18" width="36" height="29" rx="4"></rect><path d="M89 47v10m-6 0h25"></path></svg>
         <p id="pairSendSummary" class="pair-summary"></p>
-        <p class="field-help" data-i18n="pair.sendHint">Vos raccourcis seront proposés sur l’autre écran.</p>
+        <p class="field-help" data-i18n="pair.sendHint">Les raccourcis de ce téléphone seront proposés sur l’autre écran.</p>
         <button id="pairSendButton" class="primary-button full-width" type="button" data-i18n="pair.send">Envoyer mes raccourcis</button>
-        <button id="pairChooseBackupButton" class="pair-secondary full-width" type="button" data-i18n="pair.chooseBackup">Retrouver une sauvegarde</button>
+        <button id="pairChooseBackupButton" class="pair-secondary full-width" type="button" data-i18n="pair.chooseBackup">Choisir une sauvegarde</button>
         <p id="pairSendStatus" class="pair-status" role="status"></p><p id="pairSendError" class="form-error" role="alert"></p>
     </dialog>
     <dialog id="catalogDialog" class="catalog-dialog" aria-labelledby="catalogDialogTitle">
-        <div class="dialog-heading"><h2 id="catalogDialogTitle" data-i18n="static.addShortcuts">Ajouter des raccourcis</h2><button type="button" class="icon-button" data-close-dialog aria-label="Fermer" data-i18n-aria-label="static.close">×</button></div>
-        <div class="catalog-quick-actions"><button id="catalogCustomButton" class="primary-button" type="button"><svg class="icon" aria-hidden="true"><use href="#icon-plus"/></svg><span data-i18n="static.createShortcut">Créer un raccourci</span></button><button id="catalogCategoryButton" type="button"><svg class="icon" aria-hidden="true"><use href="#icon-folder"/></svg><span data-i18n="static.createCategory">Créer une catégorie</span></button></div><p id="catalogStatus" class="field-help" role="status"></p>
+        <div class="dialog-heading"><h2 id="catalogDialogTitle" data-i18n="static.addShortcuts">Ajouter des raccourcis</h2><button type="button" class="icon-button" data-close-dialog="" aria-label="Fermer" data-i18n-aria-label="static.close">×</button></div>
+        <div class="catalog-quick-actions"><button id="catalogCustomButton" class="primary-button" type="button"><svg class="icon" aria-hidden="true"><use href="#icon-plus"></use></svg><span data-i18n="static.createShortcut">Créer un raccourci</span></button><button id="catalogCategoryButton" type="button"><svg class="icon" aria-hidden="true"><use href="#icon-folder"></use></svg><span data-i18n="static.createCategory">Créer une catégorie</span></button></div><p id="catalogStatus" class="field-help" role="status"></p>
         <label class="visually-hidden" for="catalogSearch" data-i18n="static.searchService">Rechercher un service</label><input id="catalogSearch" type="search" placeholder="Rechercher…" data-i18n-placeholder="static.searchPlaceholder" maxlength="150"><label class="preference-check catalog-market-toggle"><input id="catalogMarketToggle" type="checkbox"><span data-i18n="prefs.showAllMarkets">Voir tous les pays</span></label><div id="catalogContent" class="catalog-content"></div>
     </dialog>
-</body>
-</html>
+</body></html>

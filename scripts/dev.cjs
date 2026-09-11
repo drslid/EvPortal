@@ -121,11 +121,18 @@ async function main() {
         if (!['GET', 'HEAD'].includes(request.method)) return send(405, 'Méthode non autorisée.');
         if (!ready) return send(503, 'Le relais local démarre. Rechargez la page dans quelques secondes.');
         try {
-            let relative = decodeURIComponent(new URL(request.url, origins[0]).pathname).replace(/^\/EvPortal(?=\/|$)/, '').replace(/^\//, '') || 'index.html';
+            const requestedURL = new URL(request.url, origins[0]);
+            let relative = decodeURIComponent(requestedURL.pathname).replace(/^\/EvPortal(?=\/|$)/, '').replace(/^\//, '') || 'index.html';
+            if (/^(en|fr|es|de|it|ru|ar|pt)$/.test(relative)) {
+                response.writeHead(301, { Location: requestedURL.pathname + '/' + requestedURL.search, 'Cache-Control': 'no-store' });
+                return response.end();
+            }
+            const localizedPage = /^(en|fr|es|de|it|ru|ar|pt)\/(index\.html|aide\.html)?$/.test(relative);
+            if (localizedPage && relative.endsWith('/')) relative += 'index.html';
             const parts = relative.split('/');
             if (parts.some(part => part.startsWith('.') || part.includes('\\') || part.includes('\0'))) return send(404, 'Introuvable.');
             if (relative === 'js/config.js') return send(200, configuration, mime['.js']);
-            if (!['index.html', 'aide.html', 'robots.txt', 'sitemap.xml'].includes(relative) && !['css', 'js', 'img', 'fonts'].includes(parts[0])) return send(404, 'Introuvable.');
+            if (!localizedPage && !['index.html', 'aide.html', 'robots.txt', 'sitemap.xml'].includes(relative) && !['css', 'js', 'img', 'fonts'].includes(parts[0])) return send(404, 'Introuvable.');
             const filename = await fs.realpath(path.resolve(root, relative));
             if (!filename.startsWith(root + path.sep)) return send(404, 'Introuvable.');
             const bytes = await fs.readFile(filename);
@@ -163,7 +170,7 @@ async function main() {
     if (stopping) return;
     ready = true;
     console.log('EvPortal prêt : ' + origins[0] + '/\nRelais réel : ' + relay + (reused ? ' (existant, conservé à l’arrêt)' : ' (arrêté avec ce serveur)')
-        + '\nOuvrez Paramètres → Sauvegardes → Recevoir depuis mon téléphone pour afficher le QR.\nCet aperçu reste local au PC. Ctrl+C pour arrêter.');
+        + '\nOuvrez Paramètres → Téléphone → Recevoir pour afficher le QR.\nCet aperçu reste local au PC. Ctrl+C pour arrêter.');
 }
 
 process.once('SIGINT', () => stop());

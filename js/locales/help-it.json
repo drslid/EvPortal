@@ -1,9 +1,9 @@
 {
-  "help.title": "Guida EvPortal — Scorciatoie e schermo intero Tesla",
-  "help.description": "Crea un codice o un link EvPortal, scambia backup con il telefono tramite QR e ripristina le scorciatoie quando vuoi.",
+  "help.title": "Guida EvPortal — Browser Tesla, scorciatoie e backup",
+  "help.description": "Apri EvPortal nel browser Tesla, organizza i preferiti e trasferisci backup tramite codice, link o QR. Scopri come iniziare e ripristinare le scorciatoie.",
   "help.language": "Lingua",
   "help.back": "Torna alle scorciatoie",
-  "help.heading": "Il tuo schermo. Le tue scorciatoie.",
+  "help.heading": "Guida a EvPortal per il browser Tesla",
   "help.intro": "Tocca una scorciatoia per aprire il servizio in una nuova scheda. Il pulsante del tema in alto permette di scegliere la modalità chiara o scura. Le otto lingue sono disponibili in Impostazioni con nomi e bandiere; l’arabo viene visualizzato da destra a sinistra.",
   "help.organizeHeading": "Organizzare le scorciatoie",
   "help.ranking": "Tutti mostra per prime le scorciatoie aperte più spesso. A parità di aperture, mantiene il tuo ordine manuale. La classifica resta salvata dopo il ricaricamento.",

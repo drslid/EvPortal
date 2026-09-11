@@ -6,7 +6,7 @@ EvPortal est un lanceur de sites pour l’écran d’une Tesla ou d’un véhicu
 
 ![Aperçu des raccourcis EvPortal en thème sombre](img/evportal-preview.png)
 
-Le projet utilise HTML, CSS et JavaScript natifs : aucun compte EvPortal, aucune compilation et aucune dépendance à un CDN pour afficher le tableau. Les sites ouverts depuis les raccourcis conservent leurs propres abonnements, restrictions et conditions d'accès.
+Le projet utilise HTML, CSS et JavaScript natifs : aucun compte EvPortal, aucun serveur d’application pour le tableau et aucune dépendance à un CDN pour l’afficher. Les pages HTML traduites sont générées après modification des sources. Les sites ouverts depuis les raccourcis conservent leurs propres abonnements, restrictions et conditions d’accès.
 
 ## Fonctionnalités
 
@@ -194,7 +194,7 @@ Une mise à jour ne doit pas réinsérer des raccourcis qu'une personne a suppri
 
 Les textes de l’interface, du partage et de l’aide sont séparés dans `js/locales/`. Chaque famille de fichiers possède les mêmes clés dans les huit langues. Le navigateur charge `js/translations.js` depuis le site ; aucun service externe de traduction n’est appelé. Les annotations `data-i18n` traduisent le texte, et leurs variantes les titres, descriptions et libellés accessibles. Les noms et liens personnalisés ne sont pas remplacés par des traductions.
 
-Après modification des JSON, lancez `npm run build:locales` ou `node scripts/build-locales.cjs` pour régénérer le fichier embarqué. La génération vérifie la présence des mêmes clés et paramètres dans les huit langues. `npm run test:i18n` vérifie l’interface, les dialogues, le thème, la persistance et l’aide dans ces langues, sur six largeurs.
+Après modification des JSON, lancez `npm run build:seo` pour régénérer le bundle et les pages HTML traduites, puis `npm run check:seo`. La génération vérifie la présence des mêmes clés et paramètres dans les huit langues. `npm run test:i18n` vérifie l’interface, les dialogues, le thème, la persistance et l’aide dans ces langues, sur six largeurs ; `npm run test:seo` contrôle les adresses traduites et leurs métadonnées.
 
 Vérifiez les libellés longs, le passage de gauche à droite et de droite à gauche, les dialogues ouverts lors d’un changement de langue et la conservation du choix après rechargement.
 
@@ -206,13 +206,21 @@ Le format exact à réutiliser est celui produit par le bouton d'export. Les don
 
 ## Hébergement et référencement
 
-Déployez les fichiers statiques sur GitHub Pages ou un hébergeur HTTPS. L'adresse publique de référence est actuellement `https://drslid.github.io/EvPortal/`.
+L’adresse publique de référence est `https://drslid.github.io/EvPortal/`. Le projet produit **18 pages HTML explorables** : les deux adresses historiques, huit tableaux `/{lang}/` et huit guides `/{lang}/aide.html`, sous ce chemin de projet. Chaque page possède son titre, sa description, sa canonique, neuf variantes `hreflang` dont `x-default`, et des données JSON-LD descriptives sans notes ni avis inventés. Le contenu explicatif reste dans l’aide ; l’écran de raccourcis demeure épuré.
 
-Lors d'un changement de domaine ou de chemin, actualisez ensemble les URL canoniques, Open Graph et JSON-LD dans `index.html`, l'adresse du `sitemap.xml`, la directive Sitemap de `robots.txt` et l'icône historique dans `img/browserconfig.xml`. Les chemins du manifeste sont relatifs à son dossier `img/`.
+Sur une URL traduite, la langue du chemin est prioritaire et aucune redirection automatique n’est imposée. Les adresses historiques gardent un HTML initial français et leur choix de langue habituel. Les sources éditables restent `index.html`, `aide.html` et `js/locales/` ; les pages dans les dossiers de langue sont générées. Après modification, lancez :
 
-**Particularité GitHub Pages :** `https://drslid.github.io/EvPortal/robots.txt` est dans un sous-dossier. Google attend le fichier à la racine de l'hôte, `https://drslid.github.io/robots.txt`. Placez-y la directive Sitemap si cet emplacement est administrable, ou soumettez directement le sitemap dans Search Console. Le fichier du dépôt seul ne configure pas le robot de tout l'hôte. [Règle officielle Google](https://developers.google.com/crawling/docs/robots-txt/create-robots-txt).
+```bash
+npm run build:seo
+npm run check:seo
+npm run test:seo
+```
 
-Après déploiement, inspectez l'URL canonique dans Search Console, soumettez le sitemap et mesurez les résultats réels. La feuille de route SEO et les vérifications détaillées figurent dans [l'audit](docs/AUDIT-AMELIORATIONS.md).
+Publiez les sorties avec les sources sur GitHub Pages ou un hébergeur HTTPS. `seo.config.json` centralise l’adresse SEO et les codes facultatifs de vérification Google/Bing. Ces codes sont actuellement vides : aucune propriété n’a été validée ni aucun sitemap soumis dans cette intervention. Les démarches à effectuer après publication sont décrites dans [la documentation SEO multilingue](docs/SEO-MULTILINGUE.md).
+
+**GitHub Pages :** `/EvPortal/robots.txt` ne remplace pas `/robots.txt` à la racine de l’hôte. Cette dernière adresse renvoyait HTTP 404 lors du contrôle ; ce statut n’interdit pas l’exploration Google. Il reste pertinent de soumettre directement le [sitemap](https://drslid.github.io/EvPortal/sitemap.xml) dans Search Console et Bing Webmaster Tools après validation. [Règles Google pour robots.txt](https://developers.google.com/crawling/docs/robots-txt/robots-txt-spec).
+
+Un changement de domaine implique de mettre à jour `baseURL`, de régénérer les pages et de vérifier aussi le partage, le manifeste et le relais QR. La documentation détaille la maintenance, les démarches d’indexation et les pistes d’acquisition à mesurer, sans promesse de trafic.
 
 ## Évolutions proposées
 

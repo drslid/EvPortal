@@ -323,7 +323,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const asset = window.EV_ICONS && window.EV_ICONS[hostname];
         if (asset) {
             const logo = element('img', 'service-logo');
-            logo.src = asset;
+            logo.src = window.EVSEO ? window.EVSEO.asset(asset) : asset;
             logo.alt = '';
             logo.width = 64;
             logo.height = 64;
@@ -1201,7 +1201,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     if ($('languageSelect')) {
         $('languageSelect').value = I18n.language;
-        $('languageSelect').addEventListener('change', function () { I18n.setLanguage(this.value); });
+        $('languageSelect').addEventListener('change', function () {
+            if (window.EVSEO) window.EVSEO.selectLanguage(this.value);
+            else I18n.setLanguage(this.value);
+        });
     }
     window.addEventListener('evportal:languagechange', refreshLanguage);
 

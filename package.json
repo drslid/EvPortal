@@ -16,11 +16,15 @@
     "test:relay": "npm --prefix relay test",
     "build:locales": "node scripts/build-locales.cjs",
     "test:i18n": "node scripts/i18n-smoke.cjs",
-    "test:production": "node scripts/production-smoke.cjs"
+    "test:production": "node scripts/production-smoke.cjs",
+    "build:seo": "npm run build:locales && node scripts/build-seo.mjs",
+    "check:seo": "node scripts/build-seo.mjs --check",
+    "test:seo": "node scripts/seo-smoke.cjs"
   },
   "devDependencies": {
     "axe-core": "4.13.0",
-    "playwright": "1.63.0",
-    "jsqr": "1.4.0"
+    "jsqr": "1.4.0",
+    "parse5": "8.0.1",
+    "playwright": "1.63.0"
   }
 }

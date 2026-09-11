@@ -1,9 +1,9 @@
 {
-  "help.title": "EvPortal-Hilfe — Verknüpfungen und Tesla-Vollbild",
-  "help.description": "Erstelle einen EvPortal-Code oder -Link, tausche Sicherungen per QR mit deinem Smartphone aus und stelle deine Verknüpfungen bei Bedarf wieder her.",
+  "help.title": "EvPortal-Anleitung — Tesla-Browser, Favoriten und Sicherungen",
+  "help.description": "Öffne EvPortal im Tesla-Browser, ordne deine Favoriten und übertrage Sicherungen per Code, Link oder QR. Anleitung für den Einstieg und die Wiederherstellung.",
   "help.language": "Sprache",
   "help.back": "Zurück zu den Verknüpfungen",
-  "help.heading": "Dein Bildschirm. Deine Verknüpfungen.",
+  "help.heading": "EvPortal-Anleitung für den Tesla-Browser",
   "help.intro": "Tippe auf eine Verknüpfung, um den Dienst in einem neuen Tab zu öffnen. Die Design-Schaltfläche oben wechselt zwischen Hell und Dunkel. Die acht Sprachen stehen in den Einstellungen mit Namen und Flaggen zur Auswahl; Arabisch wird von rechts nach links angezeigt.",
   "help.organizeHeading": "Verknüpfungen ordnen",
   "help.ranking": "Alle zeigt die am häufigsten geöffneten Verknüpfungen zuerst. Bei gleicher Anzahl gilt deine manuelle Reihenfolge. Die Sortierung bleibt nach dem Neuladen gespeichert.",

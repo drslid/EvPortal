@@ -1,9 +1,9 @@
 {
-  "help.title": "Aide EvPortal — Raccourcis et plein écran Tesla",
-  "help.description": "Créez un code ou un lien EvPortal, échangez des sauvegardes par QR avec votre téléphone et restaurez vos raccourcis quand vous le choisissez.",
+  "help.title": "Guide EvPortal — Navigateur Tesla, raccourcis et sauvegardes",
+  "help.description": "Ouvrez EvPortal dans le navigateur Tesla, organisez vos favoris et transférez vos sauvegardes par code, lien ou QR. Guide de démarrage et de restauration.",
   "help.language": "Langue",
   "help.back": "Retour aux raccourcis",
-  "help.heading": "Votre écran. Vos raccourcis.",
+  "help.heading": "Guide EvPortal pour le navigateur Tesla",
   "help.intro": "Touchez un raccourci pour ouvrir le service dans un nouvel onglet. Le bouton de thème en haut permet de choisir le mode clair ou sombre. Les huit langues sont disponibles dans Paramètres, avec leurs noms et drapeaux ; l’arabe s’affiche de droite à gauche.",
   "help.organizeHeading": "Organiser les raccourcis",
   "help.ranking": "« Tous » affiche d’abord les raccourcis les plus ouverts. À égalité, votre ordre manuel est conservé. Le classement reste enregistré après rechargement.",

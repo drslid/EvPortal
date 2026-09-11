@@ -1,0 +1,22 @@
+{
+  "seo.introHeading": "A shortcut dashboard for your Tesla",
+  "seo.intro": "EvPortal is a free, independent dashboard that brings your favourite websites together on a page designed for the Tesla browser. You can also use it in a browser on your phone or computer. Large icons open your chosen services without filling the home screen with text or widgets. Customise your shortcuts, categories and their order, then choose a light or dark theme.",
+  "seo.startHeading": "Get started in your vehicle’s browser",
+  "seo.start": "While parked, open the EvPortal address in your car’s browser. Save it as a browser favourite if that option is available so it is easy to find again. Opening the portal requires no app installation or Tesla account sign-in. In Settings, choose your language and catalogue country separately. Your preferences stay on this device; a backup lets you keep a copy of your shortcuts or transfer them.",
+  "seo.chargingHeading": "Find your services during a charging stop",
+  "seo.charging": "Add links to your route and charging planners, radio stations, music and weather services. The catalogue suggests services for the selected country; you can also enter your own web address. Each shortcut opens the provider’s website, with its own access conditions. EvPortal does not control charging or send commands to the vehicle. Use entertainment content while parked.",
+  "seo.faqHeading": "Frequently asked questions",
+  "seo.faqFreeQuestion": "Is EvPortal free?",
+  "seo.faqFreeAnswer": "Yes. The portal is free and is not affiliated with Tesla. Some linked websites may require an account or subscription; the service provider sets those conditions.",
+  "seo.faqPhoneQuestion": "How do I prepare my shortcuts on my phone?",
+  "seo.faqPhoneAnswer": "Open EvPortal on your phone and organise your shortcuts. In Settings, Phone offers QR transfers in both directions. On the receiving screen, Add keeps a backup. To use its contents, then choose My backups and Restore. Receiving a backup alone does not replace your shortcuts.",
+  "seo.faqOfflineQuestion": "Does EvPortal work offline?",
+  "seo.faqOfflineAnswer": "Your browser stores your configuration locally, but EvPortal does not offer an offline mode. You need a connection to load the portal, open services and transfer backups. A JSON file lets you keep an independent copy for a later restoration.",
+  "seo.languages": "Available languages",
+  "seo.operatingSystem": "Web",
+  "seo.browserRequirements": "Browser with JavaScript and local storage; HTTPS and cryptographic features for QR transfers.",
+  "seo.featureFavorites": "Customisable shortcuts and favourites",
+  "seo.featureDrag": "Touch drag-and-drop ordering",
+  "seo.featureQR": "QR backup transfers with a phone",
+  "seo.featureBackup": "Backups by code, link or JSON file"
+}

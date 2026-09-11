@@ -1,9 +1,9 @@
 {
-  "help.title": "EvPortal help — Shortcuts and Tesla fullscreen",
-  "help.description": "Create an EvPortal code or link, exchange backups with your phone by QR, and restore your shortcuts when you choose.",
+  "help.title": "EvPortal Guide — Tesla Browser, Shortcuts & Backups",
+  "help.description": "Open EvPortal in your Tesla browser, organise your favourites and transfer backups by code, link or QR. Learn how to get started and restore your shortcuts.",
   "help.language": "Language",
   "help.back": "Back to shortcuts",
-  "help.heading": "Your screen. Your shortcuts.",
+  "help.heading": "EvPortal guide for the Tesla browser",
   "help.intro": "Tap a shortcut to open the service in a new tab. The theme button at the top switches between light and dark mode. The eight languages are available in Settings with their names and flags; Arabic uses a right-to-left layout.",
   "help.organizeHeading": "Organize shortcuts",
   "help.ranking": "All shows your most frequently opened shortcuts first. Ties keep your manual order. The ranking is saved after reloading.",
