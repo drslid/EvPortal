@@ -28,5 +28,7 @@
   "share.import": "Importer",
   "share.importNamed": "Importer {name}",
   "share.more": "Voir la suite",
-  "share.empty": "Aucun partage sur cet appareil."
+  "share.empty": "Aucun partage sur cet appareil.",
+  "share.secureRandomUnavailable": "Impossible de générer un lien de partage aléatoire dans ce navigateur. Utilisez un navigateur récent.",
+  "share.unsafePath": "Telegra.ph n’a pas conservé l’identifiant aléatoire. Aucune configuration n’a été publiée."
 }

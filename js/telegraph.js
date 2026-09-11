@@ -24,6 +24,15 @@
     const MAX_CONTENT_BYTES = 64 * 1024;
     const TIMEOUT_MS = 15000;
 
+    // The random identifier becomes the page path; never fall back to Math.random.
+    function randomPageTitle(cryptoAPI) {
+        if (!cryptoAPI || typeof cryptoAPI.getRandomValues !== 'function') throw localizedError('share.secureRandomUnavailable');
+        const bytes = new Uint8Array(16);
+        try { cryptoAPI.getRandomValues(bytes); }
+        catch (_) { throw localizedError('share.secureRandomUnavailable'); }
+        return 'EVP-' + Array.from(bytes, function (byte) { return byte.toString(16).padStart(2, '0'); }).join('');
+    }
+
     function validToken(value) {
         return typeof value === 'string' && /^[a-zA-Z0-9_-]{16,256}$/.test(value);
     }
@@ -102,6 +111,7 @@
         let accountCreation = null;
         let historyRequest = null;
         const timeoutMs = options.timeoutMs === undefined ? TIMEOUT_MS : options.timeoutMs;
+        const cryptoAPI = options.crypto === undefined ? root.crypto : options.crypto;
 
         async function request(method, parameters) {
             if (!fetcher) throw localizedError('share.noConnection');
@@ -110,7 +120,7 @@
             const timeout = new Promise(function (_, reject) {
                 timer = setTimeout(function () {
                     controller.abort();
-                    reject(localizedError(method === 'createPage' ? 'share.publishTimeout' : 'share.timeout'));
+                    reject(localizedError((method === 'createPage' || method === 'editPage') ? 'share.publishTimeout' : 'share.timeout'));
                 }, timeoutMs);
             });
             try {
@@ -170,19 +180,32 @@
             let content;
             let base;
             let pageTitle;
+            let randomTitle;
             try {
                 content = contentForState(state);
                 base = normalizeBaseURL(baseURL);
                 pageTitle = title === undefined || title === '' ? 'EvPortal' : title;
                 if (typeof pageTitle !== 'string' || !pageTitle.trim() || pageTitle.trim().length > 256) throw localizedError('share.invalidTitle');
                 pageTitle = pageTitle.trim();
+                randomTitle = randomPageTitle(cryptoAPI);
             } catch (error) { return Promise.reject(error); }
             publication = (async function () {
                 const token = await ensureAccount();
-                const result = await request('createPage', {
-                    access_token: token, title: pageTitle, author_name: 'EvPortal', author_url: PUBLIC_URL, content: content
+                // Reserve an unpredictable path before uploading any user configuration.
+                // editPage keeps this path while restoring the user's readable backup name.
+                const reserved = await request('createPage', {
+                    access_token: token, title: randomTitle, author_name: 'EvPortal (pending)', author_url: PUBLIC_URL,
+                    content: JSON.stringify([{ tag: 'p', children: ['EvPortal'] }])
                 });
-                const path = Core.telegraphPath(result.path);
+                let path;
+                try { path = Core.telegraphPath(reserved.path); }
+                catch (_) { throw localizedError('share.unsafePath'); }
+                if (path !== randomTitle && !path.startsWith(randomTitle + '-')) throw localizedError('share.unsafePath');
+                const result = await request('editPage', {
+                    access_token: token, path: path, title: pageTitle,
+                    author_name: 'EvPortal', author_url: PUBLIC_URL, content: content
+                });
+                if (result.path !== path) throw localizedError('share.badResponse');
                 return {
                     path: path,
                     shareURL: shareURL(base, path),
@@ -200,7 +223,7 @@
             if (historyRequest) return historyRequest;
             historyRequest = request('getPageList', { access_token: account.token, offset: String(offset), limit: '200' }).then(function (result) {
                 if (!Array.isArray(result.pages) || !Number.isSafeInteger(result.total_count) || result.total_count < 0) throw localizedError('share.badHistory');
-                const pages = result.pages.filter(function (page) { return page && page.title !== 'Deleted Page'; }).map(function (page) {
+                const pages = result.pages.filter(function (page) { return page && page.title !== 'Deleted Page' && !(page.author_name === 'EvPortal (pending)' && /^EVP-[a-f0-9]{32}$/.test(page.title || '')); }).map(function (page) {
                     return { path: Core.telegraphPath(page.path), title: typeof page.title === 'string' ? page.title.slice(0, 256) : 'EvPortal' };
                 });
                 return { pages: pages, total: result.total_count, nextOffset: offset + result.pages.length };

@@ -239,7 +239,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 const controls = element('div', 'category-actions');
                 const edit = action(t('app.editCategory', { name: categoryLabel(category) }), '✎', function () { openCategoryDialog(category); });
                 const remove = action(t('app.deleteCategory', { name: categoryLabel(category) }), '×', function () {
-                    if (!window.confirm(t('app.confirmDeleteCategory', { name: categoryLabel(category), count: category.shortcuts.length }))) return;
                     state.categories = state.categories.filter(function (item) { return item.id !== category.id; });
                     if (state.activeCategory === category.id) state.activeCategory = 'all';
                     persist(t('app.categoryDeleted'));
@@ -314,7 +313,6 @@ document.addEventListener('DOMContentLoaded', function () {
             const controls = element('div', 'shortcut-actions');
             const edit = action(t('app.editShortcut', { name: shortcut.name }), '✎', function () { openShortcutDialog(category, shortcut); });
             const remove = action(t('app.deleteShortcut', { name: shortcut.name }), '×', function () {
-                if (!window.confirm(t('app.confirmDeleteShortcut', { name: shortcut.name }))) return;
                 category.shortcuts = category.shortcuts.filter(function (item) { return item.id !== shortcut.id; });
                 persist(t('app.shortcutDeleted'));
                 render('nav-' + category.id);

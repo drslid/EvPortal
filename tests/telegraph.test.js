@@ -24,12 +24,18 @@ function storage(initial) {
 
 function reply(result) { return { ok: true, json: async () => ({ ok: true, result }) }; }
 
+function success(call) {
+    if (call.method === 'createAccount') return reply({ access_token: TOKEN });
+    if (call.method === 'createPage') return reply({ path: call.parameters.title + '-09-10' });
+    return reply({ path: call.parameters.path });
+}
+
 function fakeAPI(handler) {
     const calls = [];
     return { calls, fetch: async (url, options) => {
         const call = { url, method: url.split('/').pop(), options, parameters: Object.fromEntries(options.body.entries()) };
         calls.push(call);
-        return handler ? handler(call) : reply(call.method === 'createAccount' ? { access_token: TOKEN } : { path: 'EvPortal-09-10' });
+        return handler ? handler(call) : success(call);
     } };
 }
 
@@ -90,7 +96,7 @@ test('legacy account migration preserves every old and unrelated key and reuses 
     assert.equal(JSON.parse(saved.getItem(Telegraph.STORAGE_KEY)).accessToken, TOKEN);
     for (const [key, value] of Object.entries(original)) assert.equal(saved.getItem(key), value);
     const result = await client.publish(state(), Telegraph.PUBLIC_URL, 'Ma Tesla');
-    assert.deepEqual(api.calls.map(call => call.method), ['createPage']);
+    assert.deepEqual(api.calls.map(call => call.method), ['createPage', 'editPage']);
     assert.equal(api.calls[0].parameters.access_token, TOKEN);
     assert.equal(result.warning, '');
     assert.equal(JSON.stringify(result).includes(TOKEN), false);
@@ -110,7 +116,7 @@ test('a corrupt new account entry is kept intact while a usable legacy account r
     const api = fakeAPI();
     await Telegraph.createClient({ storage: saved, fetch: api.fetch }).publish(state(), Telegraph.PUBLIC_URL);
     assert.equal(saved.getItem(Telegraph.STORAGE_KEY), '{broken');
-    assert.deepEqual(api.calls.map(call => call.method), ['createPage']);
+    assert.deepEqual(api.calls.map(call => call.method), ['createPage', 'editPage']);
     assert.equal(api.calls[0].parameters.access_token, TOKEN);
 });
 
@@ -122,11 +128,11 @@ test('a new account is created only on publication, persisted separately, then r
     assert.deepEqual(await client.listPages(), { pages: [], total: 0, nextOffset: 0 });
     assert.equal(api.calls.length, 0);
     const result = await client.publish(state(), 'https://portal.example/app/', 'Mon portail');
-    assert.deepEqual(api.calls.map(call => call.method), ['createAccount', 'createPage']);
+    assert.deepEqual(api.calls.map(call => call.method), ['createAccount', 'createPage', 'editPage']);
     assert.equal(JSON.parse(saved.getItem(Telegraph.STORAGE_KEY)).accessToken, TOKEN);
     assert.equal(saved.getItem('config'), null);
-    assert.equal(result.shareURL, 'https://portal.example/app/?code=EvPortal-09-10');
-    assert.equal(result.telegraphURL, 'https://telegra.ph/EvPortal-09-10');
+    assert.equal(result.shareURL, 'https://portal.example/app/?code=' + api.calls[1].parameters.title + '-09-10');
+    assert.equal(result.telegraphURL, 'https://telegra.ph/' + api.calls[1].parameters.title + '-09-10');
     assert.equal(api.calls[1].parameters.content.includes(TOKEN), false);
     for (const call of api.calls) {
         assert.equal(call.url.includes(TOKEN), false);
@@ -135,20 +141,20 @@ test('a new account is created only on publication, persisted separately, then r
         assert.equal(call.options.referrerPolicy, 'no-referrer');
     }
     await client.publish(state(), Telegraph.PUBLIC_URL);
-    assert.deepEqual(api.calls.map(call => call.method), ['createAccount', 'createPage', 'createPage']);
+    assert.deepEqual(api.calls.map(call => call.method), ['createAccount', 'createPage', 'editPage', 'createPage', 'editPage']);
 });
 
 test('simultaneous publication clicks share one in-flight account and page request', async () => {
     let release;
     const waiting = new Promise(resolve => { release = resolve; });
-    const api = fakeAPI(async call => { await waiting; return reply(call.method === 'createAccount' ? { access_token: TOKEN } : { path: 'EvPortal-09-10' }); });
+    const api = fakeAPI(async call => { await waiting; return success(call); });
     const client = Telegraph.createClient({ storage: storage(), fetch: api.fetch });
     const first = client.publish(state(), Telegraph.PUBLIC_URL);
     const second = client.publish(state(), Telegraph.PUBLIC_URL);
     assert.equal(first, second);
     release();
     assert.deepEqual(await first, await second);
-    assert.deepEqual(api.calls.map(call => call.method), ['createAccount', 'createPage']);
+    assert.deepEqual(api.calls.map(call => call.method), ['createAccount', 'createPage', 'editPage']);
 });
 
 test('unavailable storage keeps a session account and warns without losing the published link', async () => {
@@ -158,7 +164,7 @@ test('unavailable storage keeps a session account and warns without losing the p
         const client = Telegraph.createClient({ storage: saved, fetch: api.fetch });
         const result = await client.publish(state(), Telegraph.PUBLIC_URL);
         assert.match(result.warning, /session/);
-        assert.match(result.shareURL, /code=EvPortal/);
+        assert.match(result.shareURL, /code=EVP-[a-f0-9]{32}/);
         await client.publish(state(), Telegraph.PUBLIC_URL);
         assert.equal(api.calls.filter(call => call.method === 'createAccount').length, 1);
     }
@@ -219,4 +225,96 @@ test('a timed-out publication aborts and recommends checking history before crea
     });
     await assert.rejects(client.publish(state(), Telegraph.PUBLIC_URL), /Mes partages/);
     assert.equal(signal.aborted, true);
+});
+
+test('a fresh 128-bit cryptographic path is reserved without user content before publishing the readable title', async () => {
+    const api = fakeAPI();
+    let draws = 0;
+    const crypto = { getRandomValues(bytes) {
+        assert.equal(bytes.length, 16);
+        assert.equal(bytes instanceof Uint8Array, true);
+        bytes.set(Array.from({ length: 16 }, (_, index) => index + draws));
+        draws += 1;
+        return bytes;
+    } };
+    const client = Telegraph.createClient({ storage: storage({ config: JSON.stringify({ accesstoken: TOKEN }) }), fetch: api.fetch, crypto });
+    const initial = state();
+    const first = await client.publish(initial, Telegraph.PUBLIC_URL, 'Ma Tesla');
+    const second = await client.publish(initial, Telegraph.PUBLIC_URL, 'Ma Tesla');
+    assert.equal(draws, 2);
+    assert.notEqual(first.path, second.path);
+    assert.match(first.path, /^EVP-000102030405060708090a0b0c0d0e0f-09-10$/);
+    for (let index = 0; index < api.calls.length; index += 2) {
+        const reservation = api.calls[index], publication = api.calls[index + 1];
+        assert.equal(reservation.method, 'createPage');
+        assert.match(reservation.parameters.title, /^EVP-[a-f0-9]{32}$/);
+        assert.equal(reservation.parameters.title.includes('Ma Tesla'), false);
+        assert.deepEqual(JSON.parse(reservation.parameters.content), [{ tag: 'p', children: ['EvPortal'] }]);
+        assert.equal(reservation.parameters.content.includes('example.org'), false);
+        assert.equal(publication.method, 'editPage');
+        assert.equal(publication.parameters.path, reservation.parameters.title + '-09-10');
+        assert.equal(publication.parameters.title, 'Ma Tesla');
+        assert.deepEqual(Core.parseImport(JSON.parse(publication.parameters.content)[0].children[0]), initial);
+    }
+});
+
+test('unavailable or failing secure randomness stops before creating an account or publishing anything', async () => {
+    for (const crypto of [null, {}, { getRandomValues() { throw new Error('unavailable'); } }]) {
+        const api = fakeAPI();
+        const client = Telegraph.createClient({ storage: storage(), fetch: api.fetch, crypto });
+        await assert.rejects(client.publish(state(), Telegraph.PUBLIC_URL), /aléatoire/);
+        assert.equal(api.calls.length, 0);
+    }
+});
+
+test('a server path missing any part of the random identifier never receives the user configuration', async () => {
+    for (const makePath of [() => 'My-EvPortal-shortcuts-09-11', call => call.parameters.title.slice(0, -1) + '-09-11', () => 'https://example.org/page']) {
+        const api = fakeAPI(call => reply({ path: makePath(call) }));
+        const client = Telegraph.createClient({ storage: storage({ config: JSON.stringify({ accesstoken: TOKEN }) }), fetch: api.fetch });
+        await assert.rejects(client.publish(state(), Telegraph.PUBLIC_URL), /Aucune configuration/);
+        assert.deepEqual(api.calls.map(call => call.method), ['createPage']);
+        assert.deepEqual(JSON.parse(api.calls[0].parameters.content), [{ tag: 'p', children: ['EvPortal'] }]);
+    }
+});
+
+test('failed or inconsistent final publication is not returned as a working backup and retries get a fresh random path', async () => {
+    for (const badResult of [() => ({ ok: false }), () => reply({ path: 'different-09-10' })]) {
+        let fail = true;
+        const api = fakeAPI(call => call.method === 'editPage' && fail ? badResult() : success(call));
+        const client = Telegraph.createClient({ storage: storage({ config: JSON.stringify({ accesstoken: TOKEN }) }), fetch: api.fetch });
+        await assert.rejects(client.publish(state(), Telegraph.PUBLIC_URL));
+        fail = false;
+        const published = await client.publish(state(), Telegraph.PUBLIC_URL);
+        assert.notEqual(api.calls[0].parameters.title, api.calls[2].parameters.title);
+        assert.equal(published.path, api.calls[3].parameters.path);
+    }
+});
+
+test('history hides only unfinished reservations, while preserving both old links and user-chosen names', async () => {
+    const title = 'EVP-' + 'a'.repeat(32);
+    const api = fakeAPI(() => reply({ total_count: 3, pages: [
+        { path: title + '-09-10', title, author_name: 'EvPortal (pending)' },
+        { path: title + '-09-10-2', title, author_name: 'EvPortal' },
+        { path: 'My-EvPortal-shortcuts-09-11-2', title: 'My EvPortal shortcuts' }
+    ] }));
+    const client = Telegraph.createClient({ storage: storage({ config: JSON.stringify({ accesstoken: TOKEN }) }), fetch: api.fetch });
+    const history = await client.listPages();
+    assert.equal(history.pages.length, 2);
+    assert.equal(history.pages[0].title, title);
+    assert.equal(history.pages[1].path, 'My-EvPortal-shortcuts-09-11-2');
+    assert.equal(history.nextOffset, 3);
+});
+
+test('a final-write timeout preserves the account and recommends checking history rather than claiming success', async () => {
+    let signal;
+    const saved = storage({ config: JSON.stringify({ accesstoken: TOKEN }) });
+    const api = fakeAPI(call => {
+        if (call.method !== 'editPage') return success(call);
+        signal = call.options.signal;
+        return new Promise(() => {});
+    });
+    const client = Telegraph.createClient({ storage: saved, fetch: api.fetch, timeoutMs: 5 });
+    await assert.rejects(client.publish(state(), Telegraph.PUBLIC_URL), /Mes partages/);
+    assert.equal(signal.aborted, true);
+    assert.equal(JSON.parse(saved.getItem('config')).accesstoken, TOKEN);
 });

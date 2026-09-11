@@ -28,5 +28,7 @@
   "share.import": "Importieren",
   "share.importNamed": "{name} importieren",
   "share.more": "Mehr anzeigen",
-  "share.empty": "Keine Freigaben auf diesem Gerät."
+  "share.empty": "Keine Freigaben auf diesem Gerät.",
+  "share.secureRandomUnavailable": "In diesem Browser lässt sich kein zufälliger Freigabelink erzeugen. Verwende einen aktuellen Browser.",
+  "share.unsafePath": "Telegra.ph hat die zufällige Kennung nicht beibehalten. Es wurde keine Konfiguration veröffentlicht."
 }

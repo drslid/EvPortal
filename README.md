@@ -14,6 +14,7 @@ Le projet utilise HTML, CSS et JavaScript natifs : aucun compte EvPortal, aucune
 - **135 raccourcis, 10 catégories** : recharge, navigation, vidéo, musique, télévision, jeux et services pratiques.
 - **Vue « Tous » automatique** : les raccourcis les plus ouverts passent en premier ; l’ordre manuel départage les égalités.
 - **Personnalisation tactile** : glisser-déposer dans les catégories et les favoris ; création, modification et choix de l’icône des catégories.
+- **Suppression directe** : raccourcis et catégories sont supprimés immédiatement, sans fenêtre de confirmation. La réinitialisation complète reste confirmée.
 - **Ajout direct** : le bouton « + » donne accès au catalogue, à « Créer un raccourci » et à « Créer une catégorie ».
 - **Catégories personnelles** : jusqu’à cinq catégories créées, avec un nom de 16 caractères maximum ; anciennes configurations préservées.
 - **Navigation visible** : les catégories se répartissent sur plusieurs lignes si nécessaire, sans défilement horizontal.
@@ -40,9 +41,13 @@ Le projet utilise HTML, CSS et JavaScript natifs : aucun compte EvPortal, aucune
 
 Le **QR code se scanne avec un téléphone** pour y ouvrir la configuration. Pour le trajet téléphone → Tesla, utilisez le code ou le lien dans l’import du véhicule. Il ne s’agit pas d’une synchronisation : le partage contient un instantané du tableau. Après d’autres modifications, créez un nouveau partage et importez-le de nouveau.
 
+Une réception par jumelage est à l’étude : la Tesla afficherait un QR code que le téléphone scannerait pour lui envoyer la configuration. Ce parcours n’est pas encore implémenté ; l’import actuel utilise le code ou le lien Telegra.ph.
+
 Le téléchargement et l’import JSON restent disponibles comme sauvegarde locale.
 
-Une publication Telegra.ph est **publique** : elle contient les noms et adresses de vos raccourcis. Le partage ne contient ni le reste du stockage du navigateur ni le jeton du compte Telegra.ph. Les QR codes sont générés localement.
+Les nouveaux liens de partage utilisent un identifiant aléatoire long, difficile à deviner. Le nom donné à la sauvegarde reste visible dans « Mes liens partagés ». Une publication Telegra.ph reste **publique et non chiffrée** : toute personne disposant du lien peut consulter les noms et adresses de vos raccourcis. Le partage ne contient ni le reste du stockage du navigateur ni le jeton du compte Telegra.ph. Les QR codes sont générés localement.
+
+Les anciens liens restent importables et accessibles avec leur adresse d’origine. Créer un nouveau lien aléatoire ne rend pas une ancienne publication privée et ne la supprime pas.
 
 ### Anciennes configurations
 
@@ -52,7 +57,7 @@ La limite de cinq catégories personnelles et les noms courts encadrent la créa
 
 L'import comprend les anciens fichiers organisés comme `{ "pages": ["cinema"], "cinema": [...] }` et les dictionnaires de catégories. Pour un ancien lien Telegra.ph, ouvrez l'import dédié et renseignez son identifiant ou son URL. Un lien EvPortal contenant `?code=...` ou `?config=...` prépare le formulaire : la configuration n'est ni téléchargée ni appliquée automatiquement.
 
-Le partage utilise l’API Telegra.ph après un clic explicite. Le compte historique est repris lorsqu’il est disponible ; la liste « Mes liens partagés » permet de retrouver ses pages. Une nouvelle publication crée une page et fournit son code, un lien EvPortal d’import et son QR code. Le contenu est limité à 64 Kio UTF-8 par Telegra.ph ; une configuration trop volumineuse peut être sauvegardée en JSON. Les pages publiées ne sont pas supprimées par une réinitialisation locale.
+Le partage utilise l’API Telegra.ph après un clic explicite. Le compte historique est repris lorsqu’il est disponible ; la liste « Mes liens partagés » permet de retrouver ses pages. Une nouvelle publication crée une adresse aléatoire, puis y enregistre la configuration et le nom choisi avant de fournir le code, le lien d’import et le QR code. Si le navigateur ne peut pas générer cet identifiant de façon sûre ou si Telegra.ph ne le conserve pas lors de la création de l’adresse, la publication de la configuration est interrompue. Le contenu est limité à 64 Kio UTF-8 par Telegra.ph ; une configuration trop volumineuse peut être sauvegardée en JSON. Les pages publiées ne sont pas supprimées par une réinitialisation locale.
 
 ### Navigateur Tesla et accès aux services
 
@@ -74,7 +79,7 @@ Le classement « Tous » utilise un compteur d’ouvertures par raccourci, assoc
 
 Les logos du catalogue sont embarqués dans le dépôt, sans requête de favicon à un tiers pendant l’utilisation. Le portail n’intègre aucun outil d’analyse d’audience ni publication automatique de configuration. Publier, importer ou consulter ses partages Telegra.ph déclenche une requête vers ce service après une action explicite. Le jeton du compte n’est ni affiché dans le partage ni inclus dans l’export. Ouvrir un raccourci transmet la navigation au site choisi, qui applique sa propre politique de confidentialité. L'hébergeur du portail peut également traiter les informations techniques d'une requête web.
 
-Réinitialiser le tableau remplace uniquement l'état EvPortal récent. L'application n'efface pas l'ensemble du stockage de l'origine, qui peut être partagé avec d'autres projets GitHub Pages.
+En mode « Modifier », supprimer un raccourci ou une catégorie prend effet immédiatement. La suppression d’une catégorie enlève aussi les raccourcis qu’elle contient. La réinitialisation complète demande toujours confirmation et remplace uniquement l’état EvPortal récent. L’application n’efface pas l’ensemble du stockage de l’origine, qui peut être partagé avec d’autres projets GitHub Pages.
 
 ## Développement local
 
@@ -192,3 +197,5 @@ Le contrôle régulier des liens relève de la maintenance. Le plein écran, le 
 Signalez un lien obsolète ou proposez une fonctionnalité dans les [issues GitHub](https://github.com/drslid/EvPortal/issues). Pour un problème de navigateur, précisez le modèle d'appareil, la version du navigateur ou du logiciel Tesla, la région et les étapes pour le reproduire.
 
 Pour une contribution au code, créez une branche, effectuez vos modifications et ouvrez une pull request décrivant le problème résolu et les vérifications effectuées. Le projet est distribué sous [licence MIT](LICENSE). EvPortal est un projet indépendant, sans affiliation avec Tesla ou les services référencés.
+
+Le transfert sans saisie fait l’objet d’une [proposition de réception par QR sur la Tesla](docs/APPAIRAGE-TELEPHONE-TESLA.md), distincte des sauvegardes Telegra.ph déjà disponibles.

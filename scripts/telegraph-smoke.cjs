@@ -28,6 +28,7 @@ async function run() {
     const calls = [];
     let copied = '';
     let publishedContent;
+    let publishedPath;
     let pageRequestStarted;
     let releasePublication;
     const publicationStarted = new Promise(resolve => { pageRequestStarted = resolve; });
@@ -49,10 +50,18 @@ async function run() {
                 const parameters = Object.fromEntries(new URLSearchParams(request.postData() || ''));
                 calls.push({ url: url.href, parameters });
                 if (url.pathname === '/createPage') {
+                    assert.match(parameters.title, /^EVP-[a-f0-9]{32}$/);
+                    assert.deepEqual(JSON.parse(parameters.content), [{ tag: 'p', children: ['EvPortal'] }]);
+                    publishedPath = parameters.title + '-09-11';
+                    return route.fulfill({ json: { ok: true, result: { path: publishedPath } } });
+                }
+                if (url.pathname === '/editPage') {
+                    assert.equal(parameters.path, publishedPath);
+                    assert.equal(parameters.title, 'Mes raccourcis EvPortal');
                     publishedContent = JSON.parse(parameters.content);
                     pageRequestStarted();
                     await publicationRelease;
-                    return route.fulfill({ json: { ok: true, result: { path: 'Phone-09-10' } } });
+                    return route.fulfill({ json: { ok: true, result: { path: publishedPath } } });
                 }
                 if (url.pathname === '/getPageList') {
                     return route.fulfill({ json: { ok: true, result: { total_count: 2, pages: [
@@ -60,7 +69,7 @@ async function run() {
                         { path: 'Deleted-09-09', title: 'Deleted Page' }
                     ] } } });
                 }
-                if (['/getPage/Old-09-09', '/getPage/Phone-09-10'].includes(url.pathname)) {
+                if (['/getPage/Old-09-09', '/getPage/' + publishedPath].includes(url.pathname)) {
                     return route.fulfill({ json: { ok: true, result: { content: publishedContent } } });
                 }
             }
@@ -90,22 +99,24 @@ async function run() {
         await publicationStarted;
         assert.equal(await page.locator('#sharePublishButton').isDisabled(), true);
         assert.equal(await page.locator('#shareResult').isVisible(), false);
-        assert.equal(calls.length, 1, 'A double submit creates only one page');
+        assert.equal(calls.length, 2, 'A double submit creates only one page');
         await page.evaluate(() => EVI18n.setLanguage('ar'));
         assert.equal(await page.locator('html').getAttribute('dir'), 'rtl');
         assert.equal(await page.locator('#sharePublishButton').textContent(), await page.evaluate(() => EVI18n.t('share.publishing')));
         assert.equal(await page.locator('#sharePublishButton').isDisabled(), true, 'Changing language must preserve the pending publication');
-        assert.equal(calls.length, 1, 'Changing language does not publish again');
+        assert.equal(calls.length, 2, 'Changing language does not publish again');
         await page.evaluate(() => EVI18n.setLanguage('fr'));
         releasePublication();
         await page.locator('#shareResult').waitFor({ state: 'visible' });
         assert.equal(await page.locator('#sharePublishButton').isEnabled(), true);
         assert.equal(calls[0].parameters.access_token, token);
         assert.equal(calls[0].parameters.content.includes(token), false);
+        assert.equal(calls[1].parameters.content.includes(token), false);
+        assert.deepEqual(calls.slice(0, 2).map(call => new URL(call.url).pathname), ['/createPage', '/editPage']);
         assert.equal(JSON.parse(publishedContent[0].children[0]).version, 2);
-        const expectedURL = appURL + '?code=Phone-09-10';
+        const expectedURL = appURL + '?code=' + publishedPath;
         assert.equal(await page.locator('#shareLink').getAttribute('href'), expectedURL);
-        assert.equal(await page.locator('#shareCode').inputValue(), 'Phone-09-10');
+        assert.equal(await page.locator('#shareCode').inputValue(), publishedPath);
 
         async function decodeQR() {
             return page.evaluate(() => {
@@ -126,25 +137,25 @@ async function run() {
         await page.locator('#shareCopyButton').click();
         assert.equal(copied, expectedURL, 'Copy and QR contain exactly the same link');
         await page.locator('#shareCopyCodeButton').click();
-        assert.equal(copied, 'Phone-09-10', 'Tesla receives the public page ID without an account token');
+        assert.equal(copied, publishedPath, 'Tesla receives the public page ID without an account token');
         assert.equal((await page.locator('body').textContent()).includes(token), false);
         assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem('config')).randomID), 'old-account');
-        console.log('✓ Publication explicite, ancien compte conservé, double clic neutralisé, QR réellement décodé = lien copié');
+        console.log('✓ Publication avec identifiant aléatoire vérifié, nom conservé, double clic neutralisé, QR décodé = lien copié');
 
         const lanBase = 'http://192.168.1.20:4188/EvPortal/';
         await page.locator('#shareBaseURL').fill(lanBase);
-        assert.equal(await page.locator('#shareLink').getAttribute('href'), lanBase + '?code=Phone-09-10');
-        assert.equal(await decodeQR(), lanBase + '?code=Phone-09-10');
-        assert.equal(calls.length, 1, 'Editing the destination does not republish');
+        assert.equal(await page.locator('#shareLink').getAttribute('href'), lanBase + '?code=' + publishedPath);
+        assert.equal(await decodeQR(), lanBase + '?code=' + publishedPath);
+        assert.equal(calls.length, 2, 'Editing the destination does not republish');
         await page.setViewportSize({ width: 390, height: 844 });
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth), false);
         assert.equal(await page.locator('#shareDialog').evaluate(dialog => dialog.scrollWidth > dialog.clientWidth), false);
         await page.setViewportSize({ width: 1280, height: 900 });
         await page.locator('#shareHistory summary').click();
-        assert.equal(calls.length, 1, 'History requires an explicit request');
+        assert.equal(calls.length, 2, 'History requires an explicit request');
         await page.locator('#shareRefreshButton').click();
         await page.locator('.share-history-row').waitFor();
-        assert.equal(calls.length, 2);
+        assert.equal(calls.length, 3);
         assert.equal(await page.locator('.share-history-row').count(), 1);
         assert.equal(await page.locator('.share-history-row img').count(), 0);
         const importURL = appURL + '?code=Old-09-09';
@@ -153,7 +164,7 @@ async function run() {
         assert.equal(await page.locator('.share-history-row a').textContent(), await page.evaluate(() => EVI18n.t('share.import')));
         assert.equal(await page.locator('.share-history-row a').getAttribute('aria-label'), await page.evaluate(() => EVI18n.t('share.importNamed', { name: '<img src=x onerror=alert(1)>' })));
         assert.equal(await page.locator('.share-history-row button').textContent(), '<img src=x onerror=alert(1)>', 'User titles are not translated');
-        assert.equal(calls.length, 2, 'History retranslation does not request pages again');
+        assert.equal(calls.length, 3, 'History retranslation does not request pages again');
         await page.evaluate(() => EVI18n.setLanguage('fr'));
         await page.locator('.share-history-row button').click();
         assert.equal(await page.locator('#shareLink').getAttribute('href'), lanBase + '?code=Old-09-09');
@@ -179,7 +190,7 @@ async function run() {
         const beforePastedLink = await page.evaluate(() => localStorage.getItem(EVState.STORAGE_KEY));
         await page.locator('#telegraphImportForm').evaluate(form => form.requestSubmit());
         await page.locator('#confirmImportButton').waitFor({ state: 'visible' });
-        assert.equal(calls.at(-1).url, 'https://api.telegra.ph/getPage/Phone-09-10?return_content=true', 'Pasted EvPortal link only requests the matching Telegra.ph page');
+        assert.equal(calls.at(-1).url, 'https://api.telegra.ph/getPage/' + publishedPath + '?return_content=true', 'Pasted EvPortal link only requests the matching Telegra.ph page');
         assert.equal(await page.evaluate(() => localStorage.getItem(EVState.STORAGE_KEY)), beforePastedLink, 'Pasting the copied link still requires confirmation');
         await page.locator('#confirmImportButton').click();
         assert.equal(await page.locator('#importDialog').isVisible(), false);

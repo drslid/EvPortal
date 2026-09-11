@@ -1,6 +1,6 @@
 # EvPortal — audit révisé pour l’écran Tesla
 
-Révision : 10 septembre 2026. Les retours utilisateur fixent la priorité : un lanceur de raccourcis simple, lisible d’un regard, facile à toucher. La première proposition ajoutait trop de texte et avait remplacé deux parcours utiles : le partage Telegra.ph avec QR code et le lancement plein écran particulier à Tesla. Ces parcours sont rétablis ; la présente révision affine le classement, la personnalisation et le transfert téléphone → Tesla.
+Révision : 11 septembre 2026. Les retours utilisateur fixent la priorité : un lanceur de raccourcis simple, lisible d’un regard, facile à toucher. La première proposition ajoutait trop de texte et avait remplacé deux parcours utiles : le partage Telegra.ph avec QR code et le lancement plein écran particulier à Tesla. Ces parcours sont rétablis ; le complément du 11 septembre ajoute la suppression directe et des adresses de partage aléatoires.
 
 Publication sur GitHub Pages autorisée après la recette locale. Aucun résultat sur véhicule physique ou dans Search Console n’est présenté comme acquis.
 
@@ -16,9 +16,11 @@ Publication sur GitHub Pages autorisée après la recette locale. Aucun résulta
 | Toucher et déplacer facilement | Grandes surfaces tactiles ; déplacement des raccourcis dans les catégories et les favoris. Aucun glisser-déposer dans « Tous », dont l’ordre est automatique. |
 | Créer sans chercher dans les réglages | Le bouton « + » affiche « Créer un raccourci », « Créer une catégorie » et le catalogue. Les services déjà présents sont signalés par « Déjà présent ». |
 | Personnaliser les catégories | Jusqu’à cinq catégories personnelles créées, nom de 16 caractères maximum, choix d’une icône SVG embarquée et édition par le crayon. |
+| Supprimer en un geste | Suppression immédiate des raccourcis et des catégories, sans confirmation intermédiaire. Supprimer une catégorie enlève aussi son contenu. La réinitialisation complète reste soumise à confirmation. |
 | Ouvrir un service séparément | Les liens des raccourcis demandent un nouvel onglet (`target="_blank"`), conformément au choix utilisateur. |
 | Reconnaître un service sans lire | 128 favicons embarqués pour les 135 raccourcis ; aucune requête de favicon vers un tiers au démarrage. |
 | Préparer le tableau sur téléphone | Publication Telegra.ph explicite, code affiché et copiable, lien d’import et QR code généré localement. Sur Tesla, l’import utilise le code ou le lien ; le QR se scanne avec un téléphone. |
+| Éviter les adresses prévisibles | Les nouveaux partages utilisent un identifiant aléatoire ; le titre choisi reste lisible dans l’historique. Les pages restent publiques et non chiffrées. |
 | Retrouver ses anciennes données | Migration locale conservée, réutilisation du compte historique Telegra.ph et import des anciens formats avec aperçu. |
 | Retrouver le plein écran Tesla | Rétablissement du lancement via la redirection YouTube de la version historique ; API Fullscreen utilisée pour les navigateurs ordinaires. |
 | Conserver un référencement utile | Métadonnées cohérentes, liens réels et explications déplacées dans l’aide ; l’écran de raccourcis n’est pas surchargé pour le SEO. |
@@ -39,6 +41,14 @@ Le partage ne doit contenir que la configuration EvPortal. Le jeton Telegra.ph r
 
 Le contenu publié par Telegra.ph est limité à 64 Kio UTF-8 ; le dépassement est détecté avant une requête. L’export JSON reste disponible pour une sauvegarde locale et les configurations plus volumineuses. [API Telegra.ph : createPage](https://telegra.ph/api#createPage).
 
+## Adresses de partage aléatoires
+
+Une nouvelle publication utilise 128 bits produits par le générateur cryptographique du navigateur, encodés en 32 caractères hexadécimaux avec le préfixe `EVP-`. Le nom choisi par l’utilisateur sert au titre visible de la sauvegarde, sans déterminer cette partie aléatoire de l’adresse. Si la génération cryptographique est indisponible, l’application interrompt le partage ; elle ne se rabat pas sur `Math.random`.
+
+La publication se fait en deux étapes : création d’une page provisoire sans configuration, vérification de la conservation de l’identifiant aléatoire dans le chemin retourné, puis écriture de la configuration et du titre choisi. Si le chemin initial ne conserve pas cet identifiant, aucune configuration n’est envoyée à cette page. Une page provisoire peut donc exister sans contenir de configuration si une étape échoue.
+
+Ces identifiants rendent les nouvelles adresses difficiles à deviner. Ils n’ajoutent ni authentification du lecteur ni chiffrement : la page reste consultable par toute personne disposant du lien. Les anciens liens conservent leur adresse et leur accessibilité ; les rendre privés ou les supprimer n’est pas un effet de cette évolution. Leur import reste pris en charge.
+
 ## Transfert téléphone → Tesla
 
 Le parcours décrit dans l’application et l’aide est le suivant : préparer le tableau sur téléphone, ouvrir « Partager », créer la sauvegarde publique et conserver son code ou son lien. Sur la Tesla, ouvrir **Réglages → Importer depuis Telegra.ph**, saisir le code ou le lien, toucher **Charger mes raccourcis**, puis confirmer avec **Utiliser ces raccourcis** après l’aperçu.
@@ -46,6 +56,8 @@ Le parcours décrit dans l’application et l’aide est le suivant : préparer 
 Le QR code sert à ouvrir le partage sur un téléphone qui le scanne. Le parcours ne suppose pas que la Tesla puisse scanner le QR affiché par le téléphone. La publication est un instantané : les modifications suivantes nécessitent un nouveau partage et un nouvel import. Le compte de publication et les données locales de deux appareils ne sont pas synchronisés automatiquement.
 
 Pour essayer une version locale sur plusieurs appareils, ils doivent pouvoir accéder à la même version d’EvPortal. `localhost` ne désigne pas l’ordinateur depuis le téléphone ou la Tesla. L’adresse de retour du partage doit être une adresse de cet aperçu joignable par les appareils concernés ; l’adresse publique affiche la version publiée, qui peut différer de cet aperçu.
+
+Un parcours de réception par jumelage reste une **proposition, non implémentée** : la Tesla afficherait un QR code de réception, le téléphone le scannerait puis lui enverrait la configuration. L’étude doit définir comment les deux appareils se retrouvent, combien de temps la réception reste active et quand le tableau reçu est appliqué. Le QR code actuel ouvre simplement un partage sur le téléphone ; le transfert vers Tesla utilise toujours le code ou le lien Telegra.ph.
 
 ## Plein écran Tesla
 
@@ -89,7 +101,9 @@ Les icônes de cette révision ont été téléchargées puis décodées avec Ch
 
 La recette de l’interface révisée doit couvrir le classement « Tous » après plusieurs ouvertures et rechargement, l’ordre stable en cas d’égalité, l’absence de déplacement dans cette vue, le glisser-déposer à la souris, au toucher et au clavier dans les catégories et les favoris, les rangées centrées et les nouveaux onglets. Pour les catégories, elle doit distinguer les limites de création de la préservation des anciennes sauvegardes et vérifier l’édition du nom et de l’icône. Le partage doit être vérifié avec des réponses API simulées : code affiché et copié, lien, QR décodé, aller-retour avec aperçu, reprise des anciens formats et absence de jeton publié.
 
-La recette actuelle confirme **59 tests unitaires réussis**, **9 groupes de vérifications navigateur**, **9 groupes d’interactions** et **3 groupes de vérification du partage**. Les interactions utilisent Chromium complet en mode headless : déplacement à la souris, événements tactiles, clavier, ouverture réelle des nouveaux onglets au clic, au clic central et au toucher, compteurs, catégories, thème et changement de langue avec passage de droite à gauche. Le navigateur headless-shell plantait lors du clic central ; la recette d’interactions utilise donc `channel: 'chromium'`.
+La recette de référence du 10 septembre, avant les nouvelles suppressions directes et adresses aléatoires, confirmait **59 tests unitaires réussis**, **9 groupes de vérifications navigateur**, **9 groupes d’interactions** et **3 groupes de vérification du partage**. Les interactions utilisaient Chromium complet en mode headless : déplacement à la souris, événements tactiles, clavier, ouverture réelle des nouveaux onglets au clic, au clic central et au toucher, compteurs, catégories, thème et changement de langue avec passage de droite à gauche. Le navigateur headless-shell plantait lors du clic central ; la recette d’interactions utilise donc `channel: 'chromium'`.
+
+Le complément du 11 septembre est validé par **65 tests unitaires**, **10 groupes d’interactions** et **3 groupes de partage dans Chromium**. Les contrôles couvrent la suppression sans dialogue et sa persistance, la confirmation de réinitialisation conservée, les 16 octets issus du générateur cryptographique, la réservation sans données personnelles, le refus d’un chemin sans identifiant aléatoire, l’écriture finale, les échecs et délais dépassés, les titres lisibles, les anciennes sauvegardes et le QR réellement décodé. Les requêtes Telegra.ph sont simulées : aucune page de test n’a été publiée.
 
 Le partage a été publié et réimporté avec une API simulée : aucune donnée n’a été publiée sur Telegra.ph pendant la recette. Le QR a été décodé et comparé au lien copié ; le code affiché et copié, le collage du lien EvPortal dans l’import, l’aperçu avant remplacement et l’absence du jeton dans le contenu partagé ont été vérifiés. Un changement vers l’arabe pendant une publication conserve le bouton désactivé et ne relance pas la requête. L’historique déjà chargé se traduit ensuite en allemand, y compris les libellés accessibles, sans nouvel appel réseau ni modification des noms personnels.
 
@@ -98,3 +112,5 @@ La recette `npm run test:i18n` passe dans les **huit langues sur six largeurs**,
 Les résultats de la première itération sont conservés dans [l’audit archivé](AUDIT-PREMIERE-ITERATION.md). Ses anciens chiffres de tests et captures ne valident pas à eux seuls cette nouvelle interface. Les commandes reproductibles sont indiquées dans le [README](../README.md) ; les résultats de la recette actuelle sont produits dans `test-results/`.
 
 Aucun essai physique Tesla, publication de page Telegra.ph de test ou déploiement n’est requis pour les contrôles locaux. Le plein écran effectif et le transfert entre le téléphone et le véhicule restent à confirmer dans leur environnement réel. Les résultats Search Console et les performances terrain ne peuvent être mesurés qu’après publication.
+
+Le parcours de réception sans saisie est détaillé dans [la proposition d’appairage téléphone–Tesla](APPAIRAGE-TELEPHONE-TESLA.md). Il reste à implémenter et nécessite un relais temporaire complémentaire à GitHub Pages.

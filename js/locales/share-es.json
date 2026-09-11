@@ -28,5 +28,7 @@
   "share.import": "Importar",
   "share.importNamed": "Importar {name}",
   "share.more": "Ver más",
-  "share.empty": "No hay enlaces compartidos en este dispositivo."
+  "share.empty": "No hay enlaces compartidos en este dispositivo.",
+  "share.secureRandomUnavailable": "No se puede generar un enlace aleatorio para compartir en este navegador. Utiliza un navegador reciente.",
+  "share.unsafePath": "Telegra.ph no ha conservado el identificador aleatorio. No se ha publicado ninguna configuración."
 }

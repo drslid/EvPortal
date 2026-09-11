@@ -28,5 +28,7 @@
   "share.import": "Import",
   "share.importNamed": "Import {name}",
   "share.more": "Show more",
-  "share.empty": "No shares on this device."
+  "share.empty": "No shares on this device.",
+  "share.secureRandomUnavailable": "Unable to generate a random share link in this browser. Use a recent browser.",
+  "share.unsafePath": "Telegra.ph did not preserve the random identifier. No configuration was published."
 }

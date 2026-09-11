@@ -28,5 +28,7 @@
   "share.import": "استيراد",
   "share.importNamed": "استيراد {name}",
   "share.more": "عرض المزيد",
-  "share.empty": "لا توجد مشاركات على هذا الجهاز."
+  "share.empty": "لا توجد مشاركات على هذا الجهاز.",
+  "share.secureRandomUnavailable": "تعذّر إنشاء رابط مشاركة عشوائي في هذا المتصفح. استخدم متصفحًا حديثًا.",
+  "share.unsafePath": "لم يحتفظ Telegra.ph بالمعرّف العشوائي. لم تُنشر أي إعدادات."
 }
