@@ -85,7 +85,7 @@ test('every locale and saved legacy country exposes the same global catalogue an
         const storage = { getItem: key => key === Preferences.STORAGE_KEY ? original : null,
             setItem() { throw new Error('Reading a catalogue must not write preferences'); } };
         const preferences = Preferences.createPreferences(storage, { locale }).read();
-        assert.deepEqual(preferences, { homeFavorites: true, hiddenCategoryIds: ['news'] });
+        assert.deepEqual(preferences, { homeFavorites: true, hiddenCategoryIds: ['news'], shortcutSize: 'standard', showShortcutNames: true });
         assert.deepEqual(Core.catalogServices(catalog, { market, locale }).map(entry => entry.shortcut.serviceId), complete);
         assert.deepEqual(Core.catalogServices(catalog, { market, includeOptional: false }).map(entry => entry.shortcut.serviceId), defaults);
         assert.deepEqual(Core.allShortcutEntries(Core.fromCatalog(catalog, { market, locale })).map(entry => entry.shortcut.serviceId), defaults);

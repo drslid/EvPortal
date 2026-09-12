@@ -100,6 +100,16 @@ let browser;
         assert.equal(await page.locator('#catalogPreferences > summary').textContent(), dictionaries[language]['prefs.title']);
         assert.equal(await page.locator('#marketSelect, #catalogMarketToggle, #addShortcutButton, #addPageButton, #categoryVisibilityHint').count(), 0, 'Settings omit country controls and duplicate creation actions');
         assert.equal(await page.locator('#backupSettingsTitle').textContent(), dictionaries[language]['static.backups']);
+        await page.locator('#appearancePreferences').evaluate(details => { details.open = true; });
+        assert.equal(await page.locator('#appearancePreferences > summary').textContent(), dictionaries[language]['prefs.appearance']);
+        assert.equal(await page.locator('label[for="shortcutSizeSelect"]').textContent(), dictionaries[language]['prefs.shortcutSize']);
+        assert.equal(await page.locator('#shortcutSizeSelect option[value="standard"]').textContent(), dictionaries[language]['prefs.sizeStandard']);
+        assert.equal(await page.locator('#shortcutSizeSelect option[value="small"]').textContent(), dictionaries[language]['prefs.sizeSmall']);
+        assert.equal(await page.locator('#appearancePreferences .preference-check span').textContent(), dictionaries[language]['prefs.showShortcutNames']);
+        await page.locator('#shortcutSizeSelect').selectOption('small');
+        await page.locator('#showShortcutNamesToggle').uncheck();
+        assert.equal(await page.locator('html').getAttribute('data-shortcut-size'), 'small');
+        assert.equal(await page.locator('#dashboard .shortcut-name').first().isVisible(), false);
         assert.ok(await page.locator('#settingsDialog').evaluate(dialog => dialog.scrollWidth <= dialog.clientWidth + 1), language + ' preferences overflow');
         const preferencesBeforeLanguage = await page.evaluate(() => localStorage.getItem(EVPreferences.STORAGE_KEY));
         for (const id of ['shareButton', 'importConfigButton', 'restoreBackupButton']) {

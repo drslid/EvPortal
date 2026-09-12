@@ -39,5 +39,9 @@
   "help.backupHeading": "Codice o link",
   "help.preferencesHeading": "Scegliere la schermata iniziale",
   "help.preferences": "In Impostazioni → Schermata iniziale, scegli le categorie visibili e se aprire i preferiti all’avvio. Queste preferenze restano su questo dispositivo e non vengono incluse nei backup o nei trasferimenti QR. Il catalogo si gestisce con il pulsante «+».",
-  "help.sharedServices": "Un servizio può apparire in più categorie con un solo stato di preferito e un solo contatore; Tutti lo mostra una volta sola. In Modifica, apri Altre categorie per scegliere dove appare. Eliminare una categoria conserva i servizi presenti anche in un’altra categoria."
+  "help.sharedServices": "Un servizio può apparire in più categorie con un solo stato di preferito e un solo contatore; Tutti lo mostra una volta sola. In Modifica, apri Altre categorie per scegliere dove appare. Eliminare una categoria conserva i servizi presenti anche in un’altra categoria.",
+  "help.appearanceHeading": "Aspetto",
+  "help.appearance": "In Impostazioni → Aspetto, mantieni la dimensione Standard oppure scegli Piccola. Mostra i nomi permette di conservare i nomi sotto i loghi o di nasconderli. La dimensione Standard e i nomi visibili sono le impostazioni predefinite; le tue scelte restano su questo dispositivo.",
+  "help.dashboardPreviewAlt": "Schermata di EvPortal in inglese con una selezione di preferiti dimostrativi.",
+  "help.dashboardPreviewCaption": "Schermata del portale in un browser per computer: esempio in inglese con una selezione personalizzata dimostrativa."
 }

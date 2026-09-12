@@ -3,5 +3,10 @@
   "prefs.homeFavorites": "Apri sui miei preferiti",
   "prefs.visibleCategories": "Categorie visibili",
   "prefs.saveFailed": "Le preferenze sono salvate solo per questa sessione.",
-  "prefs.invalid": "Queste preferenze non sono valide."
+  "prefs.invalid": "Queste preferenze non sono valide.",
+  "prefs.appearance": "Aspetto",
+  "prefs.shortcutSize": "Dimensione delle scorciatoie",
+  "prefs.sizeStandard": "Standard",
+  "prefs.sizeSmall": "Piccola",
+  "prefs.showShortcutNames": "Mostra i nomi"
 }

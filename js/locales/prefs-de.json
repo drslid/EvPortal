@@ -3,5 +3,10 @@
   "prefs.homeFavorites": "Mit meinen Favoriten starten",
   "prefs.visibleCategories": "Sichtbare Kategorien",
   "prefs.saveFailed": "Einstellungen werden nur für diese Sitzung gespeichert.",
-  "prefs.invalid": "Diese Einstellungen sind ungültig."
+  "prefs.invalid": "Diese Einstellungen sind ungültig.",
+  "prefs.appearance": "Darstellung",
+  "prefs.shortcutSize": "Größe der Verknüpfungen",
+  "prefs.sizeStandard": "Standard",
+  "prefs.sizeSmall": "Klein",
+  "prefs.showShortcutNames": "Namen anzeigen"
 }

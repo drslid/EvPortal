@@ -354,6 +354,121 @@ const errors = [];
     assert.equal(await multilingual.locator('[data-category="first"] .category-label').textContent(), 'Première');
     console.log('✓ Language setting persists independently, Arabic preserves drafts and custom labels, keyboard reordering follows RTL direction');
 
+    const appearance = await pageFor({ viewport: { width: 390, height: 844 } });
+    appearance.setDefaultTimeout(15000);
+    const originalAppearanceState = await saved(appearance);
+    await appearance.locator('#settingsButton').click();
+    await appearance.locator('#appearancePreferences > summary').click();
+    assert.equal(await appearance.locator('#shortcutSizeSelect').inputValue(), 'standard');
+    assert.equal(await appearance.locator('#showShortcutNamesToggle').isChecked(), true);
+    assert.deepEqual(await appearance.locator('#shortcutSizeSelect option').evaluateAll(options => options.map(option => option.value)), ['standard', 'small']);
+    await appearance.locator('#shortcutSizeSelect').selectOption('small');
+    await appearance.locator('#showShortcutNamesToggle').uncheck();
+    await appearance.locator('#settingsDialog [data-close-dialog]').first().click();
+    assert.deepEqual(await saved(appearance), originalAppearanceState, 'Appearance never changes portable shortcut data');
+    assert.equal(await appearance.locator('[data-shortcut-id="a"] .shortcut-name').isVisible(), false);
+    assert.equal(await appearance.getByRole('link', { name: await appearance.evaluate(() => EVI18n.t('app.openNewTab', { name: 'Alpha' })), exact: true }).count(), 1);
+    assert.equal(await appearance.locator('[data-shortcut-id="a"] .shortcut-link').getAttribute('title'), 'Alpha');
+    assert.equal(await appearance.locator('[data-shortcut-id="a"] .shortcut-icon').textContent(), 'AL', 'Personal shortcuts retain a recognizable monogram without an image');
+    await appearance.locator('#searchToggle').click();
+    await appearance.locator('#searchInput').fill('Alpha');
+    assert.deepEqual(await ids(appearance), ['a'], 'Hidden names remain searchable');
+    await appearance.locator('#searchInput').press('Escape');
+    await appearance.reload({ waitUntil: 'networkidle' });
+    assert.equal(await appearance.locator('html').getAttribute('data-shortcut-size'), 'small');
+    assert.equal(await appearance.locator('[data-shortcut-id="a"] .shortcut-name').isVisible(), false);
+
+    const appearancePeer = await appearance.context().newPage();
+    appearancePeer.on('pageerror', error => errors.push(error.message));
+    await appearancePeer.goto(url, { waitUntil: 'networkidle' });
+    await appearance.locator('#settingsButton').click();
+    await appearance.locator('#appearancePreferences > summary').click();
+    await appearance.locator('#shortcutSizeSelect').selectOption('standard');
+    await appearance.locator('#showShortcutNamesToggle').check();
+    await appearancePeer.waitForFunction(() => document.documentElement.dataset.shortcutSize === 'standard' && !document.getElementById('dashboard').classList.contains('hide-shortcut-names'));
+    await appearance.locator('#shortcutSizeSelect').selectOption('small');
+    await appearance.locator('#showShortcutNamesToggle').uncheck();
+    await appearancePeer.waitForFunction(() => document.documentElement.dataset.shortcutSize === 'small' && document.getElementById('dashboard').classList.contains('hide-shortcut-names'));
+    await appearance.locator('#languageSelect').selectOption('ar');
+    await appearance.locator('#settingsDialog [data-close-dialog]').first().click();
+    await appearance.evaluate(() => {
+        const state = EVState.normalizeState(JSON.parse(localStorage.getItem(EVState.STORAGE_KEY)));
+        state.categories[0].shortcuts[0].name = 'Alpha restored';
+        EVBackups.createLibrary(localStorage).add({ title: 'Appearance transfer check', state, source: 'transfer' });
+    });
+    await appearance.locator('#settingsButton').click();
+    await appearance.locator('#restoreBackupButton').click();
+    await appearance.locator('#localBackupList .backup-select').first().click();
+    await appearance.locator('#confirmRestoreButton').click();
+    assert.equal((await saved(appearance)).categories[0].shortcuts[0].name, 'Alpha restored');
+    assert.equal(await appearance.locator('html').getAttribute('data-shortcut-size'), 'small');
+    assert.equal(await appearance.locator('[data-shortcut-id="a"] .shortcut-name').isVisible(), false);
+    assert.equal(await appearance.locator('html').getAttribute('dir'), 'rtl');
+    await appearancePeer.close();
+    await appearance.bringToFront();
+    console.log('✓ Appearance stays local, searchable and accessible, survives reload/language/backup restoration, and synchronizes between tabs');
+
+    const dimensions = page => page.locator('#content .shortcut').first().boundingBox();
+    for (const width of [320, 390, 680, 1440]) {
+        await appearance.setViewportSize({ width, height: 1000 });
+        for (const language of ['fr', 'ar']) {
+            await appearance.evaluate(language => EVI18n.setLanguage(language), language);
+            for (const theme of ['dark', 'light']) {
+                if (await appearance.locator('html').getAttribute('data-theme') !== theme) await appearance.locator('#themeToggle').click();
+                await appearance.locator('#settingsButton').click();
+                if (!await appearance.locator('#appearancePreferences').evaluate(details => details.open)) await appearance.locator('#appearancePreferences > summary').click();
+                await appearance.locator('#shortcutSizeSelect').selectOption('standard');
+                await appearance.locator('#showShortcutNamesToggle').check();
+                await appearance.locator('#settingsDialog [data-close-dialog]').first().click();
+                const standard = await dimensions(appearance);
+                await appearance.locator('#settingsButton').click();
+                await appearance.locator('#shortcutSizeSelect').selectOption('small');
+                await appearance.locator('#settingsDialog [data-close-dialog]').first().click();
+                for (const names of [true, false]) {
+                    if (!names) {
+                        await appearance.locator('#settingsButton').click();
+                        await appearance.locator('#showShortcutNamesToggle').uncheck();
+                        await appearance.locator('#settingsDialog [data-close-dialog]').first().click();
+                    }
+                    const compact = await dimensions(appearance);
+                    assert.ok(compact.width < standard.width && compact.height <= standard.height, `${width}/${language}/${theme}: Small never enlarges the tiles`);
+                    assert.equal(await appearance.locator('#content .shortcut-name').first().isVisible(), names);
+                    if (!names) {
+                        const centered = await appearance.locator('#content .shortcut-link').first().evaluate(link => {
+                            const card = link.getBoundingClientRect(), mark = link.querySelector('.shortcut-icon').getBoundingClientRect();
+                            return { x: Math.abs(mark.x + mark.width / 2 - card.x - card.width / 2), y: Math.abs(mark.y + mark.height / 2 - card.y - card.height / 2) };
+                        });
+                        assert.ok(centered.x < 1 && centered.y < 1, 'Icons-only tiles center their image horizontally and vertically');
+                    }
+                    assert.equal(await appearance.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, `${width}/${language}/${theme}: no horizontal overflow`);
+                    const lastRow = await appearance.locator('#content .shortcut').evaluateAll(nodes => {
+                        const boxes = nodes.map(node => node.getBoundingClientRect());
+                        const top = Math.max(...boxes.map(box => box.top));
+                        const row = boxes.filter(box => Math.abs(box.top - top) < 1);
+                        return { center: (Math.min(...row.map(box => box.left)) + Math.max(...row.map(box => box.right))) / 2, viewport: innerWidth };
+                    });
+                    assert.ok(Math.abs(lastRow.center - lastRow.viewport / 2) < 1, 'The final compact row stays centered');
+                }
+            }
+        }
+        console.log('✓ Compact appearance layouts at ' + width + 'px');
+    }
+    await appearance.locator('[data-category="first"]').click();
+    await appearance.locator('#editModeToggle').click();
+    await appearance.setViewportSize({ width: 390, height: 844 });
+    const smallControls = await appearance.locator('#content button').evaluateAll(nodes => nodes.map(node => {
+        const rect = node.getBoundingClientRect(), card = node.closest('.shortcut').getBoundingClientRect();
+        return { width: rect.width, height: rect.height, inside: rect.left >= card.left && rect.right <= card.right };
+    }));
+    assert.ok(smallControls.every(control => control.width >= 44 && control.height >= 44 && control.inside), 'Compact edit controls retain 44px touch targets inside their cards');
+    const smallOrder = await ids(appearance);
+    const smallHandle = appearance.locator('[data-shortcut-id="' + smallOrder[0] + '"] .drag-handle');
+    await smallHandle.press('Space');
+    await smallHandle.press('ArrowLeft');
+    await smallHandle.press('Enter');
+    assert.notDeepEqual(await ids(appearance), smallOrder, 'Compact icons-only tiles remain reorderable in RTL');
+    console.log('✓ Compact tiles with/without names stay smaller, centered and usable across 32 viewport/language/theme layouts; editing retains 44px targets');
+
     const tesla = await pageFor({ userAgent: 'Mozilla/5.0 Tesla/2026.20' });
     await tesla.addInitScript(() => Object.defineProperty(document, 'fullscreenEnabled', { value: false, configurable: true }));
     await tesla.reload({ waitUntil: 'networkidle' });

@@ -46,7 +46,7 @@
         function translateDOM(scope) {
             scope = scope || doc;
             if (!scope) return;
-            const attributes = ['text', 'aria-label', 'title', 'placeholder', 'content', 'value'];
+            const attributes = ['text', 'aria-label', 'title', 'placeholder', 'content', 'value', 'alt'];
             const selector = attributes.map(function (attribute) { return '[data-i18n' + (attribute === 'text' ? '' : '-' + attribute) + ']'; }).join(',');
             const nodes = Array.from(scope.querySelectorAll ? scope.querySelectorAll(selector) : []);
             if (scope.matches && scope.matches(selector)) nodes.unshift(scope);

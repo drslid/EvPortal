@@ -3,5 +3,10 @@
   "prefs.homeFavorites": "الفتح على المفضلة",
   "prefs.visibleCategories": "الفئات المعروضة",
   "prefs.saveFailed": "تُحفظ التفضيلات لهذه الجلسة فقط.",
-  "prefs.invalid": "هذه التفضيلات غير صالحة."
+  "prefs.invalid": "هذه التفضيلات غير صالحة.",
+  "prefs.appearance": "المظهر",
+  "prefs.shortcutSize": "حجم الاختصارات",
+  "prefs.sizeStandard": "قياسي",
+  "prefs.sizeSmall": "صغير",
+  "prefs.showShortcutNames": "إظهار الأسماء"
 }

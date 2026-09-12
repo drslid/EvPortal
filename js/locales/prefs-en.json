@@ -3,5 +3,10 @@
   "prefs.homeFavorites": "Open on my favorites",
   "prefs.visibleCategories": "Visible categories",
   "prefs.saveFailed": "Preferences are saved for this session only.",
-  "prefs.invalid": "These preferences are invalid."
+  "prefs.invalid": "These preferences are invalid.",
+  "prefs.appearance": "Appearance",
+  "prefs.shortcutSize": "Shortcut size",
+  "prefs.sizeStandard": "Standard",
+  "prefs.sizeSmall": "Small",
+  "prefs.showShortcutNames": "Show names"
 }

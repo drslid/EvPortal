@@ -39,5 +39,9 @@
   "help.backupHeading": "Code oder Link",
   "help.preferencesHeading": "Deine Startansicht wählen",
   "help.preferences": "Unter Einstellungen → Startansicht wählst du die sichtbaren Kategorien und ob beim Start deine Favoriten geöffnet werden. Diese Einstellungen bleiben auf diesem Gerät und sind nicht in Sicherungen oder QR-Übertragungen enthalten. Den Katalog verwaltest du über „+“.",
-  "help.sharedServices": "Ein Dienst kann in mehreren Kategorien erscheinen und behält dabei einen gemeinsamen Favoritenstatus und Zähler; unter Alle erscheint er nur einmal. Öffne beim Bearbeiten Weitere Kategorien, um die Zuordnung zu wählen. Beim Löschen einer Kategorie bleiben Dienste erhalten, die auch einer anderen Kategorie angehören."
+  "help.sharedServices": "Ein Dienst kann in mehreren Kategorien erscheinen und behält dabei einen gemeinsamen Favoritenstatus und Zähler; unter Alle erscheint er nur einmal. Öffne beim Bearbeiten Weitere Kategorien, um die Zuordnung zu wählen. Beim Löschen einer Kategorie bleiben Dienste erhalten, die auch einer anderen Kategorie angehören.",
+  "help.appearanceHeading": "Darstellung",
+  "help.appearance": "Unter Einstellungen → Darstellung kannst du die Größe Standard beibehalten oder Klein wählen. Mit Namen anzeigen blendest du die Namen unter den Logos ein oder aus. Standardgröße und sichtbare Namen sind voreingestellt; deine Auswahl bleibt auf diesem Gerät.",
+  "help.dashboardPreviewAlt": "EvPortal-Browseraufnahme auf Englisch mit ausgewählten Beispielfavoriten.",
+  "help.dashboardPreviewCaption": "Aufnahme des Portals im Desktop-Browser: ein englisches Beispiel mit einer individuell zusammengestellten Auswahl zur Demonstration."
 }

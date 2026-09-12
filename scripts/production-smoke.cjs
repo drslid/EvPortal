@@ -110,6 +110,13 @@ function matchesResponse(response, method, url) {
     check(await receiver.getByRole('button', { name: 'Ajouter GitHub', exact: true }).isEnabled(), 'Optional services must remain addable');
     await receiver.locator('#catalogDialog [data-close-dialog]').click();
     await receiver.locator('#settingsButton').click();
+    await receiver.locator('#appearancePreferences summary').click();
+    check(await receiver.locator('#shortcutSizeSelect').inputValue() === 'standard', 'Default shortcut size must stay unchanged');
+    check(await receiver.locator('#showShortcutNamesToggle').isChecked(), 'Shortcut names must be shown by default');
+    await receiver.locator('#shortcutSizeSelect').selectOption('small');
+    await receiver.locator('#showShortcutNamesToggle').uncheck();
+    check(await receiver.locator('html').getAttribute('data-shortcut-size') === 'small', 'Small shortcuts were not applied');
+    check(await receiver.locator('#dashboard').evaluate(node => node.classList.contains('hide-shortcut-names')), 'Icon-only display was not applied');
     await receiver.locator('#catalogPreferences summary').click();
     check(await receiver.locator('#marketSelect, #catalogMarketToggle').count() === 0, 'The shared catalogue must not expose country controls');
     check(await receiver.locator('#homeFavoritesToggle').isVisible(), 'Favorites home preference is missing');

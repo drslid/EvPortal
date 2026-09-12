@@ -39,5 +39,9 @@
   "help.backupHeading": "Código ou ligação",
   "help.preferencesHeading": "Escolher a vista inicial",
   "help.preferences": "Em Definições → Início, escolha as categorias visíveis e se pretende abrir os favoritos ao iniciar. Estas preferências ficam neste dispositivo e não são incluídas nas cópias ou transferências QR. O catálogo é gerido através do botão «+».",
-  "help.sharedServices": "Um serviço pode aparecer em várias categorias com um único estado de favorito e contador; Todos apresenta-o uma só vez. Em Editar, abre Outras categorias para escolher onde aparece. Eliminar uma categoria mantém os serviços que também pertencem a outra categoria."
+  "help.sharedServices": "Um serviço pode aparecer em várias categorias com um único estado de favorito e contador; Todos apresenta-o uma só vez. Em Editar, abre Outras categorias para escolher onde aparece. Eliminar uma categoria mantém os serviços que também pertencem a outra categoria.",
+  "help.appearanceHeading": "Aspeto",
+  "help.appearance": "Em Definições → Aspeto, mantenha o tamanho Padrão ou escolha Pequeno. Mostrar nomes permite manter os nomes por baixo dos logótipos ou ocultá-los. O tamanho Padrão e os nomes visíveis são as opções predefinidas; as suas escolhas ficam neste dispositivo.",
+  "help.dashboardPreviewAlt": "Captura do EvPortal em inglês com uma seleção de favoritos de demonstração.",
+  "help.dashboardPreviewCaption": "Captura do portal num navegador de computador: exemplo em inglês com uma seleção personalizada de demonstração."
 }

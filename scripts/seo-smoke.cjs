@@ -7,13 +7,14 @@ const http = require('node:http');
 const { chromium } = require('playwright');
 const dictionaries = require('../js/translations.js');
 const root = path.resolve(__dirname, '..');
-const PUBLIC = 'https://drslid.github.io/EvPortal/';
+const PUBLIC = require('../seo.config.json').baseURL;
+const PROJECT_PATH = new URL(PUBLIC).pathname;
 const languages = ['en', 'fr', 'es', 'de', 'it', 'ru', 'ar', 'pt'];
 const mime = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.webp': 'image/webp', '.png': 'image/png', '.ico': 'image/x-icon', '.xml': 'application/xml' };
 const server = http.createServer(async (request, response) => {
     try {
         const pathname = decodeURIComponent(new URL(request.url, 'http://localhost').pathname);
-        let relative = pathname.replace(/^\/EvPortal(?:\/|$)/, '/').replace(/^\//, '');
+        let relative = (pathname.startsWith(PROJECT_PATH) ? pathname.slice(PROJECT_PATH.length) : pathname).replace(/^\//, '');
         if (!relative || relative.endsWith('/')) relative += 'index.html';
         const filename = path.resolve(root, relative);
         if (!filename.startsWith(root + path.sep)) throw Error('Invalid path');
@@ -34,7 +35,8 @@ const metadata = page => page.evaluate(() => ({
 }));
 const persisted = page => page.evaluate(() => ({
     active: localStorage.getItem(EVState.STORAGE_KEY),
-    backups: localStorage.getItem(EVBackups.STORAGE_KEY)
+    backups: localStorage.getItem(EVBackups.STORAGE_KEY),
+    preferences: localStorage.getItem(EVPreferences.STORAGE_KEY)
 }));
 async function context(options = {}) {
     const value = await browser.newContext({ locale: 'fr-FR', viewport: { width: 1440, height: 1000 }, reducedMotion: 'reduce', ...options });
@@ -73,7 +75,7 @@ async function localImages(page) {
         const initialMetadata = {};
         for (const guide of [false, true]) {
             const suffix = language + '/' + (guide ? 'aide.html' : '');
-            await sourcePage.goto(origin + '/EvPortal/' + suffix, { waitUntil: 'networkidle' });
+            await sourcePage.goto(origin + PROJECT_PATH + suffix, { waitUntil: 'networkidle' });
             initialMetadata[guide] = await metadata(sourcePage);
             assert.equal(await sourcePage.locator('html').getAttribute('lang'), language);
             assert.equal(initialMetadata[guide].canonical, PUBLIC + suffix);
@@ -98,7 +100,7 @@ async function localImages(page) {
         });
         const page = await enabled.newPage();
         for (const guide of [false, true]) {
-            await page.goto(origin + '/EvPortal/' + language + '/' + (guide ? 'aide.html' : ''), { waitUntil: 'networkidle' });
+            await page.goto(origin + PROJECT_PATH + language + '/' + (guide ? 'aide.html' : ''), { waitUntil: 'networkidle' });
             assert.equal(await page.evaluate(() => EVI18n.language), language, 'URL language overrides stored and browser languages');
             assert.equal(await page.locator('html').getAttribute('dir'), language === 'ar' ? 'rtl' : 'ltr');
             assert.deepEqual(await metadata(page), initialMetadata[guide], 'Metadata and structured data remain identical before and after JavaScript');
@@ -108,9 +110,9 @@ async function localImages(page) {
                 await localImages(page);
                 await page.locator('#settingsButton').click();
                 const help = page.locator('.settings-help');
-                assert.equal(new URL(await help.getAttribute('href'), page.url()).pathname, '/EvPortal/' + language + '/aide.html');
+                assert.equal(new URL(await help.getAttribute('href'), page.url()).pathname, PROJECT_PATH + language + '/aide.html');
                 await help.click();
-                await page.waitForURL(origin + '/EvPortal/' + language + '/aide.html');
+                await page.waitForURL(origin + PROJECT_PATH + language + '/aide.html');
             }
         }
         await enabled.close();
@@ -119,23 +121,24 @@ async function localImages(page) {
 
     const navigationContext = await context();
     const page = await navigationContext.newPage();
-    await page.goto(origin + '/EvPortal/de/', { waitUntil: 'networkidle' });
+    await page.goto(origin + PROJECT_PATH + 'de/', { waitUntil: 'networkidle' });
     await page.evaluate(() => {
         const state = EVState.normalizeState({ version: 2, theme: 'dark', activeCategory: 'seo-fixture', categories: [{
             id: 'seo-fixture', label: 'Persönlich', icon: 'music', shortcuts: [{ id: 'seo-link', name: 'Mein Radio', url: 'https://example.org/seo', favorite: true, clickCount: 12 }]
         }] });
         localStorage.setItem(EVState.STORAGE_KEY, JSON.stringify(state));
         EVBackups.createLibrary().add({ title: 'Sauvegarde de test SEO', state, source: 'created' });
+        EVPreferences.createPreferences().patch({ shortcutSize: 'small', showShortcutNames: false });
     });
     await page.reload({ waitUntil: 'networkidle' });
     const before = await persisted(page);
     await page.locator('#settingsButton').click();
     await page.evaluate(() => history.replaceState(null, '', location.pathname + '?code=SEO-Private-Sentinel-09-12#settings'));
     await page.locator('#languageSelect').selectOption('fr');
-    await page.waitForURL(origin + '/EvPortal/fr/?code=SEO-Private-Sentinel-09-12#settings');
+    await page.waitForURL(origin + PROJECT_PATH + 'fr/?code=SEO-Private-Sentinel-09-12#settings');
     await page.waitForLoadState('networkidle');
     assert.equal(await page.evaluate(() => EVI18n.language), 'fr');
-    assert.deepEqual(await persisted(page), before, 'Language navigation preserves the active configuration and local backup library exactly');
+    assert.deepEqual(await persisted(page), before, 'Language navigation preserves shortcuts, local backups and appearance preferences exactly');
     assert.match(await page.locator('meta[name="robots"]').getAttribute('content'), /noindex/);
     assert.doesNotMatch(JSON.stringify(await metadata(page)), /SEO-Private-Sentinel|code=|#settings/);
     assert.equal(await page.locator('#importDialog').isVisible(), true, 'Incoming backup is proposed without being fetched or applied');
@@ -146,13 +149,13 @@ async function localImages(page) {
     const policyContext = await context();
     const policy = await policyContext.newPage();
     for (const parameter of ['code', 'config']) {
-        await policy.goto(origin + '/EvPortal/?' + parameter + '=SEO-Private-Sentinel-09-12', { waitUntil: 'networkidle' });
+        await policy.goto(origin + PROJECT_PATH + '?' + parameter + '=SEO-Private-Sentinel-09-12', { waitUntil: 'networkidle' });
         assert.match(await policy.locator('meta[name="robots"]').getAttribute('content'), /noindex/);
         assert.equal(await policy.locator('#importDialog').isVisible(), true);
         assert.doesNotMatch(JSON.stringify(await metadata(policy)), /SEO-Private-Sentinel|code=|config=/);
     }
     for (const mode of ['receive', 'download']) {
-        await policy.goto(origin + '/EvPortal/ar/#' + mode + '=invalid-test-credentials', { waitUntil: 'networkidle' });
+        await policy.goto(origin + PROJECT_PATH + 'ar/#' + mode + '=invalid-test-credentials', { waitUntil: 'networkidle' });
         assert.doesNotMatch(await policy.locator('meta[name="robots"]').getAttribute('content'), /noindex/, 'QR fragments do not change the indexability of the canonical app');
         assert.equal(new URL(policy.url()).hash, '', 'Invalid transfer fragments are consumed without a network transfer');
         assert.doesNotMatch(JSON.stringify(await metadata(policy)), /invalid-test-credentials|receive=|download=/);

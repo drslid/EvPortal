@@ -135,11 +135,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function updatePreferences(changes) {
         preferences = preferenceStore.patch(changes);
+        applyAppearance();
         if (!preferenceStore.persistent) announce(t('app.storageUnavailable'), true);
+    }
+
+    function applyAppearance() {
+        document.documentElement.dataset.shortcutSize = preferences.shortcutSize;
+        $('dashboard').classList.toggle('hide-shortcut-names', !preferences.showShortcutNames);
     }
 
     function renderPreferences() {
         $('homeFavoritesToggle').checked = preferences.homeFavorites;
+        $('shortcutSizeSelect').value = preferences.shortcutSize;
+        $('showShortcutNamesToggle').checked = preferences.showShortcutNames;
         const fragment = document.createDocumentFragment();
         state.categories.forEach(function (category) {
             const label = element('label', 'category-check');
@@ -159,6 +167,8 @@ document.addEventListener('DOMContentLoaded', function () {
         $('categoryVisibilityOptions').replaceChildren(fragment);
     }
     $('homeFavoritesToggle').addEventListener('change', function () { updatePreferences({ homeFavorites: this.checked }); });
+    $('shortcutSizeSelect').addEventListener('change', function () { updatePreferences({ shortcutSize: this.value }); });
+    $('showShortcutNamesToggle').addEventListener('change', function () { updatePreferences({ showShortcutNames: this.checked }); });
 
     function matchesShortcut(shortcut, category, search) {
         const labels = (shortcut.categoryIds || [category.id]).map(function (id) {
@@ -339,6 +349,7 @@ document.addEventListener('DOMContentLoaded', function () {
         link.rel = 'noopener noreferrer';
         link.draggable = false;
         link.setAttribute('aria-label', t('app.openNewTab', { name: shortcut.name }));
+        link.title = shortcut.name;
         link.dataset.focusKey = 'shortcut-' + shortcut.id;
         function activate(event) {
             if (isEditMode) { event.preventDefault(); return; }
@@ -417,6 +428,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function render(focusKey) {
+        applyAppearance();
         if (preferences.hiddenCategoryIds.includes(state.activeCategory)) state.activeCategory = 'all';
         usageNeedsRender = false;
         keyboardDrag = null;

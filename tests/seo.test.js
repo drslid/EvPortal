@@ -5,7 +5,8 @@ const fs = require('node:fs/promises');
 const path = require('node:path');
 const { execFileSync } = require('node:child_process');
 const root = path.resolve(__dirname, '..');
-const PUBLIC = 'https://drslid.github.io/EvPortal/';
+const config = require('../seo.config.json');
+const PUBLIC = config.baseURL;
 const languages = ['en', 'fr', 'es', 'de', 'it', 'ru', 'ar', 'pt'];
 const locales = { en: 'en_US', fr: 'fr_FR', es: 'es_ES', de: 'de_DE', it: 'it_IT', ru: 'ru_RU', ar: 'ar_SA', pt: 'pt_PT' };
 const dictionaries = require('../js/translations.js');
@@ -45,6 +46,14 @@ for (const page of pages) test('Published HTML has complete localized SEO before
     assert.equal(attributes(one(head, 'link', 'rel', 'canonical')).href, page.url);
     assert.equal(attributes(one(head, 'meta', 'property', 'og:url')).content, page.url);
     assert.equal(attributes(one(head, 'meta', 'property', 'og:locale')).content, locales[page.language]);
+    const image = await fs.readFile(path.join(root, config.socialImage || 'img/evportal-preview.png'));
+    const imageURL = new URL(config.socialImage || 'img/evportal-preview.png', PUBLIC).href;
+    assert.equal(attributes(one(head, 'meta', 'property', 'og:image')).content, imageURL);
+    assert.equal(attributes(one(head, 'meta', 'property', 'og:image:secure_url')).content, imageURL);
+    assert.equal(attributes(one(head, 'meta', 'property', 'og:image:type')).content, 'image/png');
+    assert.equal(Number(attributes(one(head, 'meta', 'property', 'og:image:width')).content), image.readUInt32BE(16));
+    assert.equal(Number(attributes(one(head, 'meta', 'property', 'og:image:height')).content), image.readUInt32BE(20));
+    assert.equal(attributes(one(head, 'meta', 'name', 'twitter:image')).content, imageURL);
     const title = text(one(head, 'title')).trim();
     const description = attributes(one(head, 'meta', 'name', 'description')).content;
     assert.ok(title.includes('EvPortal') && title.length > 20, 'A descriptive branded title exists');
@@ -64,6 +73,7 @@ for (const page of pages) test('Published HTML has complete localized SEO before
     assert.ok(entity, type + ' structured data exists');
     assert.equal(entity.url, page.url);
     assert.ok(entity.inLanguage === page.language || Array.isArray(entity.inLanguage) && entity.inLanguage.includes(page.language));
+    if (!page.guide) assert.equal(entity.softwareHelp.url, new URL((page.explicit ? page.language + '/' : '') + 'aide.html', PUBLIC).href);
     assert.ok(structured.every(node => !('aggregateRating' in node) && !('reviewRating' in node) && node['@type'] !== 'FAQPage'), 'No invented rating or FAQ rich result markup');
 
     const translations = dictionaries[page.language];
@@ -73,7 +83,7 @@ for (const page of pages) test('Published HTML has complete localized SEO before
         if (key && Object.hasOwn(translations, key) && !/\{[a-zA-Z]/.test(translations[key])) {
             assert.equal(text(node).trim(), translations[key].trim(), page.file + ': untranslated response text ' + key);
         }
-        for (const name of ['content', 'aria-label', 'title', 'placeholder']) {
+        for (const name of ['content', 'aria-label', 'title', 'placeholder', 'alt']) {
             const attributeKey = attrs['data-i18n-' + name];
             if (attributeKey && Object.hasOwn(translations, attributeKey) && !/\{[a-zA-Z]/.test(translations[attributeKey])) {
                 assert.equal(attrs[name], translations[attributeKey], page.file + ': untranslated ' + name + ' ' + attributeKey);
@@ -89,6 +99,11 @@ for (const page of pages) test('Published HTML has complete localized SEO before
         assert.ok(links.every(node => text(node).trim()), 'Language links have visible names');
         assert.equal(text(one(nodes, 'h1')), translations['help.heading']);
         assert.ok(matching(nodes, 'p').map(text).join(' ').length > 1000, 'The guide has real translated content without JavaScript');
+        const preview = one(nodes, 'img', 'data-i18n-alt', 'help.dashboardPreviewAlt');
+        assert.equal(attributes(preview).alt, translations['help.dashboardPreviewAlt']);
+        assert.equal(attributes(preview).width, '1440');
+        assert.equal(attributes(preview).height, '900');
+        assert.equal(attributes(preview).loading, 'lazy', 'The guide image does not block the first view');
     } else {
         const help = nodes.find(node => node.tagName === 'a' && (attributes(node).class || '').split(/\s+/).includes('settings-help'));
         assert.ok(help);
@@ -103,7 +118,7 @@ for (const page of pages) test('Published HTML has complete localized SEO before
         if (!asset || /^(?:data:|#)/.test(asset)) continue;
         const url = new URL(asset, assetBase);
         assert.ok(url.href.startsWith(PUBLIC), 'Startup asset remains local: ' + url.pathname);
-        await fs.access(path.join(root, decodeURIComponent(url.pathname.slice('/EvPortal/'.length))));
+        await fs.access(path.join(root, decodeURIComponent(url.pathname.slice(new URL(PUBLIC).pathname.length))));
     }
 });
 
