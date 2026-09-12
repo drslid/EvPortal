@@ -39,5 +39,9 @@
   "help.backupHeading": "Code or link",
   "help.preferencesHeading": "Choose your home view",
   "help.preferences": "In Settings → Home, choose which categories to show and whether to open on your favourites. These preferences stay on this device and are not included in backups or QR transfers. Manage the catalogue using the “+” button.",
-  "help.sharedServices": "A service can appear in several categories with one favorite status and one counter; All shows it only once. In Edit, open Other categories to choose where it appears. Deleting a category keeps services that also belong to another category."
+  "help.sharedServices": "A service can appear in several categories with one favorite status and one counter; All shows it only once. In Edit, open Other categories to choose where it appears. Deleting a category keeps services that also belong to another category.",
+  "help.appearanceHeading": "Appearance",
+  "help.appearance": "In Settings → Appearance, keep the Standard size or choose Small. Show names lets you keep the names below the logos or hide them. Standard size and visible names are the defaults; your choices stay on this device.",
+  "help.dashboardPreviewAlt": "EvPortal browser screenshot in English with a selection of demonstration favourites.",
+  "help.dashboardPreviewCaption": "Desktop browser screenshot of the portal: an English example with a customised demonstration selection."
 }

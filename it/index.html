@@ -55,15 +55,17 @@
     <meta property="og:title" content="EvPortal — Scorciatoie per il browser Tesla" data-i18n-content="static.title">
     <meta property="og:description" content="Personalizza il tuo portale Tesla con scorciatoie per ricarica, musica e meteo, preferiti e backup. Gratuito, con trasferimenti QR dal telefono." data-i18n-content="static.description">
     <meta property="og:url" content="https://drslid.github.io/EvPortal/it/">
-    <meta property="og:image" content="https://drslid.github.io/EvPortal/img/evportal-preview.png">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="EvPortal: collegamenti per ricarica, musica, streaming e navigazione." data-i18n-content="static.previewAlt">
+    <meta property="og:image" content="https://drslid.github.io/EvPortal/img/evportal-social.png">
+    <meta property="og:image:secure_url" content="https://drslid.github.io/EvPortal/img/evportal-social.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1280">
+    <meta property="og:image:height" content="640">
+    <meta property="og:image:alt" content="Illustrazione di EvPortal: uno schermo di scorciatoie per Tesla davanti a una strada al tramonto." data-i18n-content="static.previewAlt">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="EvPortal — Scorciatoie per il browser Tesla" data-i18n-content="static.title">
     <meta name="twitter:description" content="Personalizza il tuo portale Tesla con scorciatoie per ricarica, musica e meteo, preferiti e backup. Gratuito, con trasferimenti QR dal telefono." data-i18n-content="static.description">
-    <meta name="twitter:image" content="https://drslid.github.io/EvPortal/img/evportal-preview.png">
-    <meta name="twitter:image:alt" content="EvPortal: collegamenti per ricarica, musica, streaming e navigazione." data-i18n-content="static.previewAlt">
+    <meta name="twitter:image" content="https://drslid.github.io/EvPortal/img/evportal-social.png">
+    <meta name="twitter:image:alt" content="Illustrazione di EvPortal: uno schermo di scorciatoie per Tesla davanti a una strada al tramonto." data-i18n-content="static.previewAlt">
     <script type="application/ld+json" data-seo-generated="">{
   "@context": "https://schema.org",
   "@type": "WebApplication",
@@ -81,7 +83,13 @@
     "price": "0",
     "priceCurrency": "EUR"
   },
-  "image": "https://drslid.github.io/EvPortal/img/evportal-preview.png",
+  "image": "https://drslid.github.io/EvPortal/img/evportal-social.png",
+  "softwareHelp": {
+    "@type": "WebPage",
+    "@id": "https://drslid.github.io/EvPortal/it/aide.html#page",
+    "url": "https://drslid.github.io/EvPortal/it/aide.html",
+    "inLanguage": "it"
+  },
   "author": {
     "@type": "Person",
     "name": "DrSliD"
@@ -168,6 +176,10 @@
             <details id="catalogPreferences"><summary data-i18n="prefs.title">Schermata iniziale</summary>
                 <label class="preference-check"><input id="homeFavoritesToggle" type="checkbox"><span data-i18n="prefs.homeFavorites">Apri sui miei preferiti</span></label>
                 <fieldset class="category-visibility"><legend data-i18n="prefs.visibleCategories">Categorie visibili</legend><div id="categoryVisibilityOptions" class="category-checks"></div></fieldset>
+            </details>
+            <details id="appearancePreferences"><summary data-i18n="prefs.appearance">Aspetto</summary>
+                <div class="appearance-size-setting"><label for="shortcutSizeSelect" data-i18n="prefs.shortcutSize">Dimensione delle scorciatoie</label><select id="shortcutSizeSelect"><option value="standard" data-i18n="prefs.sizeStandard">Standard</option><option value="small" data-i18n="prefs.sizeSmall">Piccola</option></select></div>
+                <label class="preference-check"><input id="showShortcutNamesToggle" type="checkbox" checked=""><span data-i18n="prefs.showShortcutNames">Mostra i nomi</span></label>
             </details>
             <div class="language-setting"><label for="languageSelect" data-i18n="static.language">Lingua</label><select id="languageSelect" dir="ltr"><option value="en" lang="en">🇬🇧 English</option><option value="fr" lang="fr">🇫🇷 Français</option><option value="es" lang="es">🇪🇸 Español</option><option value="de" lang="de">🇩🇪 Deutsch</option><option value="it" lang="it" selected="">🇮🇹 Italiano</option><option value="ru" lang="ru">🇷🇺 Русский</option><option value="ar" lang="ar">🇸🇦 العربية</option><option value="pt" lang="pt">🇵🇹 Português</option></select></div>
             <section id="backupSettings" class="settings-backups" aria-labelledby="backupSettingsTitle">

@@ -3,5 +3,10 @@
   "prefs.homeFavorites": "Abrir en mis favoritos",
   "prefs.visibleCategories": "Categorías visibles",
   "prefs.saveFailed": "Las preferencias solo se guardan durante esta sesión.",
-  "prefs.invalid": "Estas preferencias no son válidas."
+  "prefs.invalid": "Estas preferencias no son válidas.",
+  "prefs.appearance": "Apariencia",
+  "prefs.shortcutSize": "Tamaño de los accesos directos",
+  "prefs.sizeStandard": "Estándar",
+  "prefs.sizeSmall": "Pequeño",
+  "prefs.showShortcutNames": "Mostrar nombres"
 }

@@ -39,5 +39,9 @@
   "help.backupHeading": "Code ou lien",
   "help.preferencesHeading": "Choisir son accueil",
   "help.preferences": "Dans Paramètres → Accueil, choisissez les catégories à afficher et l’ouverture sur vos favoris. Ces préférences restent sur cet appareil et ne sont pas transmises dans les sauvegardes ou par QR. Le catalogue se gère avec le bouton « + ».",
-  "help.sharedServices": "Un service peut apparaître dans plusieurs catégories avec un seul favori et un seul compteur ; Tous ne l’affiche qu’une fois. Dans Modifier, ouvrez Autres catégories pour choisir où il apparaît. Supprimer une catégorie conserve les services encore présents dans une autre catégorie."
+  "help.sharedServices": "Un service peut apparaître dans plusieurs catégories avec un seul favori et un seul compteur ; Tous ne l’affiche qu’une fois. Dans Modifier, ouvrez Autres catégories pour choisir où il apparaît. Supprimer une catégorie conserve les services encore présents dans une autre catégorie.",
+  "help.appearanceHeading": "Apparence",
+  "help.appearance": "Dans Paramètres → Apparence, gardez la taille Standard ou choisissez Petite. Afficher les noms permet de conserver les noms sous les logos ou de les masquer. La taille Standard et les noms visibles sont les réglages par défaut ; vos choix restent sur cet appareil.",
+  "help.dashboardPreviewAlt": "Capture d’EvPortal en anglais avec une sélection de favoris de démonstration.",
+  "help.dashboardPreviewCaption": "Capture du portail dans un navigateur d’ordinateur : exemple en anglais avec une sélection personnalisée de démonstration."
 }

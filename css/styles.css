@@ -142,3 +142,19 @@ dialog{width:min(510px,calc(100% - 32px));max-height:calc(100dvh - 40px);padding
 @media(max-width:480px){.settings-backups{padding:14px}.catalog-group>summary{font-size:15px;gap:9px}.catalog-group .catalog-item{margin-inline:10px;gap:9px}.catalog-item>.shortcut-icon{width:30px;height:30px;min-width:30px}.catalog-item .catalog-add{min-width:44px;width:44px;max-width:44px;padding:8px}.catalog-item .catalog-add>span:not(.catalog-action-icon){display:none}.catalog-copy strong{font-size:14px}}
 
 .catalog-action-icon{font-size:20px;line-height:1;flex-shrink:0}
+
+/* Device appearance choices affect dashboard tiles only. Standard keeps the existing dimensions. */
+#appearancePreferences{margin:0 0 14px;padding-bottom:10px}
+.appearance-size-setting{display:flex;align-items:center;gap:14px;padding:0 0 10px}
+.appearance-size-setting label{flex:1;min-width:0;margin:0;color:var(--text);overflow-wrap:anywhere}
+.appearance-size-setting select{width:auto;min-width:110px;max-width:55%;cursor:pointer}
+#dashboard.hide-shortcut-names .shortcut-copy,#dashboard.hide-shortcut-names .shortcut-name{display:none}
+:root[data-shortcut-size="small"] #dashboard .shortcuts-grid{--tile-width:clamp(104px,9vw,132px);gap:12px}
+:root[data-shortcut-size="small"] #dashboard .shortcut,:root[data-shortcut-size="small"] #dashboard .shortcut-link{min-height:130px;border-radius:14px}
+:root[data-shortcut-size="small"] #dashboard .shortcut-link{gap:10px;padding:32px 6px 16px}
+:root[data-shortcut-size="small"] #dashboard .shortcut-icon,:root[data-shortcut-size="small"] #dashboard .shortcut-logo{width:50px;height:50px;font-size:25px;border-radius:12px}
+:root[data-shortcut-size="small"] #dashboard .shortcut-name{font-size:13px}
+:root[data-shortcut-size="small"] .is-editing #dashboard .shortcut-link{min-height:138px;padding:46px 6px 12px}
+:root[data-shortcut-size="small"] #dashboard .shortcut-actions{gap:4px;padding-inline:4px}
+body:not(.is-editing) #dashboard.hide-shortcut-names .shortcut-link{padding-block:16px;gap:0}
+.help-preview{margin:24px 0}.help-preview img{display:block;width:100%;height:auto;border-radius:16px}.help-preview figcaption{font-size:13px;color:var(--muted);margin-top:8px}

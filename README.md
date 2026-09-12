@@ -1,242 +1,87 @@
 # EvPortal
 
-EvPortal est un lanceur de sites pour l’écran d’une Tesla ou d’un véhicule électrique : de grands raccourcis, un logo et un nom. La navigation reste courte et tactile ; les paramètres et les explications s’ouvrent à la demande.
+A simple shortcut dashboard for the Tesla browser. Keep charging, maps, music and entertainment a tap away, and personalize your shortcuts from your phone or computer.
 
-**[Ouvrir EvPortal](https://drslid.github.io/EvPortal/)** · [Aide](aide.html) · [Signaler un problème](https://github.com/drslid/EvPortal/issues) · [Audit et propositions d’évolution](docs/AUDIT-AMELIORATIONS.md)
+## [Open EvPortal →](https://drslid.github.io/EvPortal/en/)
 
-![Aperçu des raccourcis EvPortal en thème sombre](img/evportal-preview.png)
+[User guide](https://drslid.github.io/EvPortal/en/aide.html) · [Guide français](https://drslid.github.io/EvPortal/fr/aide.html) · [Report an issue](https://github.com/drslid/EvPortal/issues)
 
-Le projet utilise HTML, CSS et JavaScript natifs : aucun compte EvPortal, aucun serveur d’application pour le tableau et aucune dépendance à un CDN pour l’afficher. Les pages HTML traduites sont générées après modification des sources. Les sites ouverts depuis les raccourcis conservent leurs propres abonnements, restrictions et conditions d’accès.
+[![EvPortal project illustration](img/evportal-social.png)](https://drslid.github.io/EvPortal/en/)
 
-## Fonctionnalités
+*Project illustration.*
 
-- **Écran épuré** : logo EvPortal d’origine centré, rangées de grands raccourcis centrées et changement de thème directement dans l’en-tête.
-- **147 services, 10 catégories** : recharge, navigation, vidéo, musique, télévision, jeux et services pratiques. Le catalogue est identique pour tous : 112 services dans la sélection initiale et 35 à ajouter à la demande.
-- **Vue « Tous » automatique** : les raccourcis les plus ouverts passent en premier ; l’ordre manuel départage les égalités.
-- **Personnalisation tactile** : glisser-déposer dans les catégories et les favoris ; création, modification et choix de l’icône des catégories. Un même service peut apparaître dans plusieurs catégories tout en conservant un seul favori et un seul compteur.
-- **Suppression directe** : raccourcis et catégories sont supprimés immédiatement, sans fenêtre de confirmation. La réinitialisation complète reste confirmée.
-- **Catalogue direct** : le bouton « + » ouvre des catégories repliables, avec « Ajouter » ou « Supprimer » sur chaque service. « Créer un raccourci » et « Créer une catégorie » restent en haut du catalogue.
-- **Catégories personnelles** : jusqu’à cinq catégories créées, avec un nom de 16 caractères maximum et 25 icônes proposées, dont les choix supplémentaires dans « Plus d’icônes » ; anciennes configurations préservées.
-- **Navigation adaptée** : choisissez les catégories à afficher et ouvrez directement vos favoris ; les catégories visibles se répartissent sans défilement horizontal. Masquer une catégorie conserve ses raccourcis dans Tous et Favoris.
-- **Catalogue commun** : aucun choix de pays ni filtre géographique ; les personnalisations existantes sont conservées. Les services externes gardent leurs propres restrictions régionales.
-- **Recherche, favoris et thèmes** : le thème sombre est proposé par défaut et un choix clair existant reste conservé. Les raccourcis ouvrent les services dans un nouvel onglet.
-- **Huit langues** : anglais, français, espagnol, allemand, italien, russe, arabe et portugais ; interface et aide traduites, noms natifs et drapeaux dans le sélecteur, présentation de droite à gauche en arabe.
-- **Sauvegarde locale** : catégories, liens, ordre, favoris, compteurs d’ouverture et préférences restent dans la configuration de l’appareil.
-- **Trois parcours de sauvegarde** : Code ou lien → Créer / Ajouter ; Téléphone → Envoyer / Recevoir ; Mes sauvegardes → Restaurer. Ajouter conserve une sauvegarde ; Restaurer applique son contenu.
-- **QR dans les deux sens** : envoyez une sauvegarde vers le téléphone ou recevez-en une depuis celui-ci. Le transfert chiffré nécessite le relais configuré et ne remplace jamais directement les raccourcis.
-- **Liste locale de sauvegardes** : les codes, liens et fichiers JSON sont validés puis enregistrés sur l’appareil. La restauration est explicite et peut être annulée.
-- **Plein écran Tesla** : retour au lancement par la redirection YouTube utilisée par la version historique ; l’API Fullscreen classique reste disponible pour les autres navigateurs.
+Free, open source and usable without an EvPortal account. The dashboard runs on HTML, CSS and JavaScript, with its fonts, icons and interface libraries served locally.
 
-## Utilisation
+## What you can do
 
-1. Choisissez une catégorie et touchez un raccourci pour ouvrir le service dans un nouvel onglet.
-2. Dans « Tous », les services les plus ouverts sont placés en premier automatiquement. Pour réorganiser manuellement, choisissez une catégorie ou « Favoris », touchez « Modifier », déplacez les raccourcis puis touchez « Terminer ».
-3. Touchez « + », ouvrez une catégorie du catalogue, puis utilisez **Ajouter** ou **Supprimer** sur un service. Les catégories se replient pour garder une liste courte. Les actions **Créer un raccourci** et **Créer une catégorie** sont placées en haut du catalogue.
-4. Pour renommer une catégorie ou changer son icône, utilisez son crayon en mode « Modifier ». Les noms des nouvelles catégories sont limités à 16 caractères et leur nombre à cinq catégories personnelles.
-5. Pour afficher un service dans plusieurs catégories, modifiez son raccourci, choisissez sa catégorie principale puis **Autres catégories**. Le service reste unique dans **Tous** et **Favoris** : nom, lien, favori et compteur sont partagés entre ses catégories.
+| Feature | How it works |
+| --- | --- |
+| Common catalogue | 147 services: 112 in the initial selection and 35 optional additions. The same catalogue is available to everyone. |
+| Direct controls | Open **+** to add or remove services, create a shortcut or create a category. |
+| Personal organization | Drag shortcuts in categories or Favorites. A service can belong to several categories while keeping one favorite status and one usage counter. |
+| Custom categories | Create up to five personal categories and choose from 25 icons. Existing configurations remain supported. |
+| Quick access | Search across shortcuts, open on Favorites, hide category tabs and use **All** to see your most-opened services first. |
+| Display choices | Dark by default, an optional light theme, **Standard / Small** shortcuts and optional shortcut names. |
+| Backups | Save JSON files or public Telegra.ph links, keep a local backup library, restore explicitly and undo the last restoration. |
+| Phone transfers | Send or receive an encrypted backup by QR. Sessions last five minutes and use a separate temporary relay. |
 
-### Choisir son accueil
+![EvPortal dashboard running in a desktop browser](img/evportal-dashboard.png)
 
-Dans **Paramètres → Accueil**, choisissez les catégories affichées et **Ouvrir sur mes favoris**. Masquer une catégorie retire son onglet, sans supprimer ses raccourcis de **Tous** ou **Favoris**. La gestion du catalogue et la création de raccourcis ou de catégories passent par le bouton **« + »**.
+*Actual web interface captured in a desktop browser.*
 
-Ces préférences restent propres à cet appareil : elles ne sont pas ajoutées aux fichiers de sauvegarde, aux pages Telegra.ph ou aux transferts QR. Le catalogue est le même pour tous, sans déduction de pays ni géolocalisation.
+## Make the screen yours
 
-### Code ou lien : créer et ajouter
+In **Settings → Appearance**, choose **Standard** or **Small** shortcuts and switch **Show names** on or off. Standard size and visible names are the defaults. These settings stay on the device, alongside your home-screen and category-visibility choices; backups do not replace them. [Preview the compact view without names](img/evportal-compact.png).
 
-Dans **Paramètres → Sauvegardes → Code ou lien → Créer**, un nom facultatif accompagne la création d’un code et d’un lien EvPortal à copier. Ce parcours n’affiche pas de QR. La page créée apparaît dans **Mes sauvegardes → En ligne** ; sa création n’ajoute pas automatiquement une seconde copie locale.
+The theme button is always available in the header. A saved light-theme choice is respected.
 
-**Ajouter** accepte un code ou un lien EvPortal. Un clic valide et charge le contenu, puis enregistre un instantané dans **Sur cet appareil**, sans remplacer les raccourcis actuels. Les anciens liens Telegra.ph restent acceptés. Choisir un fichier JSON dans **Plus d’options** ajoute également une sauvegarde locale après validation. La liste s’ouvre ensuite pour permettre de choisir une sauvegarde et, séparément, de la restaurer.
+## Back up, then restore when ready
 
-Les nouveaux liens utilisent un identifiant aléatoire difficile à deviner. La page Telegra.ph reste **publique et non chiffrée** ; toute personne disposant de son adresse peut lire son contenu tant qu’il n’est pas effacé. Le jeton du compte et le reste du stockage du navigateur ne sont pas publiés. Les anciennes adresses restent prises en charge.
+**Add saves a backup. Restore applies it.** Importing a code, a link, a JSON file or a phone transfer leaves the current dashboard unchanged. Open **My backups → Restore** to select and apply a saved configuration.
 
-### Téléphone : envoyer et recevoir par QR
+For a phone transfer, choose **Send** or **Receive**, scan the QR and follow the prompts. QR transfer requires the configured relay and a supported secure browser connection. Creating a Telegra.ph code or link is a separate action; those pages are public and unencrypted. [Transfer details](docs/APPAIRAGE-TELEPHONE-TESLA.md) · [Detailed usage, in French](docs/UTILISATION.md)
 
-Dans **Paramètres → Sauvegardes → Téléphone**, **Envoyer** affiche un QR à scanner avec le téléphone pour récupérer une sauvegarde de cet écran. **Recevoir** affiche le QR permettant au téléphone d’envoyer ses raccourcis actuels ou une sauvegarde choisie. Dans les deux sens, l’écran destinataire propose **Ajouter** pour conserver la sauvegarde dans sa liste locale ; aucun transfert ne remplace directement les raccourcis.
+## Guides in eight languages
 
-Le transfert est chiffré et valable cinq minutes, sans synchronisation automatique. Il nécessite le relais configuré et accessible aux deux appareils. Les parcours et sa mise en service sont décrits dans [la documentation d’appairage](docs/APPAIRAGE-TELEPHONE-TESLA.md).
+[🇬🇧 English](https://drslid.github.io/EvPortal/en/aide.html) · [🇫🇷 Français](https://drslid.github.io/EvPortal/fr/aide.html) · [🇪🇸 Español](https://drslid.github.io/EvPortal/es/aide.html) · [🇩🇪 Deutsch](https://drslid.github.io/EvPortal/de/aide.html)<br>
+[🇮🇹 Italiano](https://drslid.github.io/EvPortal/it/aide.html) · [🇷🇺 Русский](https://drslid.github.io/EvPortal/ru/aide.html) · [🇸🇦 العربية](https://drslid.github.io/EvPortal/ar/aide.html) · [🇵🇹 Português](https://drslid.github.io/EvPortal/pt/aide.html)
 
-### Mes sauvegardes : restaurer et gérer
+The Arabic interface supports right-to-left layout. Personal shortcut and category names stay as you wrote them.
 
-Ouvrez **Paramètres → Sauvegardes → Mes sauvegardes → Restaurer**. **Sur cet appareil** contient les instantanés ajoutés localement ; **En ligne** affiche les pages du compte Telegra.ph présent dans ce navigateur. Choisissez une sauvegarde, vérifiez son contenu puis touchez **Restaurer**. Cette dernière action remplace les raccourcis actifs. **Annuler la dernière restauration**, dans les options des paramètres, permet de retrouver la configuration précédente.
+## Run locally
 
-La liste locale conserve jusqu’à 50 sauvegardes, avec une limite de 2 Mo par sauvegarde et selon l’espace disponible dans le navigateur. Les contenus locaux restent utilisables pour une restauration après la suppression de leur page d’origine ; ils ne sont pas synchronisés avec celle-ci. Le fichier JSON permet aussi de conserver une copie en dehors du navigateur et de dépasser les limites de taille du transfert direct ou de Telegra.ph.
-
-La corbeille retire une sauvegarde locale sans modifier les raccourcis actifs. Pour une page **En ligne**, elle efface les données de la page sans confirmation ; un échec conserve la ligne pour réessayer. Telegra.ph ne propose pas de suppression définitive par son API : EvPortal remplace les données par un message neutre, efface l’auteur et remplace le titre, puis masque l’entrée. L’adresse continue d’exister. Effacer la copie locale et effacer la page en ligne sont deux actions distinctes.
-
-### Anciennes configurations
-
-Les anciennes clés `pages` et les données de leurs catégories sont reprises automatiquement lorsqu'aucune configuration récente n'existe. Les clés historiques sont conservées ; les nouvelles modifications utilisent `evportal.state.v2`. Les anciennes adresses connues sont actualisées. Un ancien nom de service est corrigé uniquement s’il correspond exactement au libellé historique, pour préserver vos noms personnalisés.
-
-La limite de cinq catégories personnelles et les noms courts encadrent la création dans l’interface. Les anciennes catégories déjà plus nombreuses ou portant un nom plus long ne sont pas supprimées ou tronquées lors de la reprise. La validation des anciennes sauvegardes conserve sa limite globale de 50 catégories.
-
-L'import comprend les anciens fichiers organisés comme `{ "pages": ["cinema"], "cinema": [...] }` et les dictionnaires de catégories. Pour un ancien lien Telegra.ph, ouvrez Code ou lien → Ajouter et renseignez son identifiant ou son URL. Un lien EvPortal contenant `?code=...` ou `?config=...` prépare le formulaire : la configuration n'est ni téléchargée ni appliquée automatiquement.
-
-Le partage utilise l’API Telegra.ph après un clic explicite. Le compte historique est repris lorsqu’il est disponible ; la rubrique « En ligne » permet de retrouver ses pages. Une nouvelle publication crée une adresse aléatoire, puis y enregistre la configuration et le nom choisi avant de fournir le code et le lien EvPortal. Si le navigateur ne peut pas générer cet identifiant de façon sûre ou si Telegra.ph ne le conserve pas lors de la création de l’adresse, la publication de la configuration est interrompue. Le contenu est limité à 64 Kio UTF-8 par Telegra.ph ; une configuration trop volumineuse peut être sauvegardée en JSON. Les pages publiées ne sont pas supprimées par une réinitialisation locale.
-
-### Navigateur Tesla et accès aux services
-
-EvPortal ouvre des sites web. La présence d'un service dans le catalogue indique un lien utile ; elle ne garantit pas la lecture vidéo, l'authentification ou la compatibilité avec chaque écran Tesla. Le navigateur, la version logicielle, les restrictions régionales, la connexion et les protections multimédias du service peuvent limiter son fonctionnement.
-
-Tesla indique que les options de divertissement dépendent du véhicule et de la région et présente le Théâtre pour un usage en stationnement, avec une connexion adaptée. Consultez le [manuel Tesla correspondant au véhicule](https://www.tesla.com/ownersmanual/modely/fr_fr/GUID-79A49D40-A028-435B-A7F6-8E48846AB9E9.html). Utilisez le portail de divertissement à l'arrêt.
-
-Dans une Tesla, le bouton plein écran utilise le lancement via YouTube avec une URL de retour vers EvPortal, comme dans la version historique. Choisissez « Accéder au site » ou « Go to site » sur YouTube pour revenir au portail en mode Théâtre. Le même parcours est décrit par [myTesla](https://mytesla.nu/). Si le navigateur n’est pas reconnu comme une Tesla, l’entrée « Ouvrir le mode Théâtre Tesla » reste accessible dans Paramètres.
-
-Ce mécanisme dépend du navigateur et du logiciel du véhicule ; un essai sur Tesla est nécessaire pour valider son résultat. Il ne s’agit pas d’une API officielle Tesla. Sur les autres navigateurs, le bouton utilise l’[API Fullscreen](https://developer.mozilla.org/en-US/docs/Web/API/Fullscreen_API) lorsqu’elle est disponible. L’ajout à l’écran d’accueil dépend également du navigateur. Le manifeste ne fournit pas de mode hors connexion complet : les services externes nécessitent Internet et aucun service worker de cache n’est inclus.
-
-## Données et confidentialité
-
-La configuration est stockée dans le `localStorage` du navigateur, sous la clé `evportal.state.v2`. Les informations du compte Telegra.ph restent séparées sous `evportal.telegraph.v1`. Les instantanés de la liste locale sont stockés séparément sous `evportal.backups.v1` ; ajouter ou retirer un instantané ne modifie pas la configuration active. Effacer les données du site ou changer de navigateur peut faire perdre la personnalisation : un partage Telegra.ph ou un export JSON permet de la retrouver. Si le stockage est bloqué ou une sauvegarde est illisible, un message explique la situation et l'export reste disponible pour préserver la session.
-
-La langue se choisit dans Paramètres et reste enregistrée sur cet appareil, séparément de la configuration partagée. Les catégories affichées et l’accueil Favoris utilisent leur propre clé `evportal.preferences.v1`, indépendamment de la langue. Une adresse traduite impose sa langue ; sur l’adresse historique, le choix enregistré puis la langue du navigateur sont utilisés lorsqu’ils sont pris en charge. Changer de langue adapte les libellés, les dialogues, les erreurs et l’aide ; vos noms de raccourcis et de catégories personnels restent conservés. Le sélecteur affiche les langues dans leur écriture d’origine, accompagnées de drapeaux. Le thème sombre est utilisé par défaut ; un thème clair déjà choisi reste conservé.
-
-Le classement « Tous » utilise un compteur d’ouvertures par raccourci, associé à son identifiant et conservé après rechargement. Ce compteur reste dans la configuration locale et ses sauvegardes ; aucun service d’analyse d’audience n’est nécessaire. Le glisser-déposer est désactivé dans cette vue automatique. Les catégories et les favoris gardent leur ordre manuel.
-
-Les logos du catalogue sont embarqués dans le dépôt, sans requête de favicon à un tiers pendant l’utilisation. Le portail n’intègre aucun outil d’analyse d’audience ni publication automatique de configuration. Publier, importer ou consulter ses partages Telegra.ph déclenche une requête vers ce service après une action explicite. Le jeton du compte n’est ni affiché dans le partage ni inclus dans l’export. Ouvrir un raccourci transmet la navigation au site choisi, qui applique sa propre politique de confidentialité. L'hébergeur du portail peut également traiter les informations techniques d'une requête web.
-
-En mode « Modifier », supprimer un raccourci ou une catégorie prend effet immédiatement. La suppression d’une catégorie conserve les services qui appartiennent encore à une autre catégorie ; ceux qui n’appartiennent qu’à la catégorie supprimée sont retirés. La réinitialisation complète demande toujours confirmation et remplace uniquement l’état EvPortal récent. L’application n’efface pas l’ensemble du stockage de l’origine, qui peut être partagé avec d’autres projets GitHub Pages.
-
-## Développement local
-
-Pour tester **le portail et la réception QR réelle** sur cet ordinateur, utilisez Node.js 22 ou supérieur, puis, depuis la racine du dépôt :
-
-```bash
-npm ci --prefix relay
-npm run dev
-```
-
-Ouvrez **http://127.0.0.1:4187/** et choisissez **Paramètres → Sauvegardes → Téléphone → Recevoir**. Le serveur configure le relais local dans la réponse `/js/config.js`, sans modifier le fichier destiné à la publication. Il démarre Wrangler sur le port 8787 si nécessaire, ou vérifie un relais EvPortal déjà présent : origine autorisée, création d’une session, réception et suppression. Le bouton fonctionne dans un navigateur ordinaire disposant de Web Crypto ; aucun remplacement de configuration par Playwright n’est nécessaire. [Développement local Cloudflare](https://developers.cloudflare.com/workers/local-development/).
-
-`Ctrl+C` arrête le serveur et uniquement le Worker qu’il a lui-même démarré. Un relais préexistant est conservé. Si un port est occupé par un autre programme, le démarrage s’interrompt sans arrêter ce programme. Pour choisir d’autres ports : `npm run dev -- --port 4188 --relay-port 8788`.
-
-Ce mode écoute uniquement sur la boucle locale. Le QR de réception utilise l’adresse de l’aperçu courant : **127.0.0.1/localhost désigne le téléphone lui-même après un scan sur téléphone**, et ne permet donc pas de joindre le PC. Pour tester deux navigateurs sur le même ordinateur, ouvrez l’adresse décodée du QR dans un second profil ou une fenêtre privée. Pour un vrai téléphone et une Tesla, le portail et le relais doivent être accessibles aux deux appareils en HTTPS, avec les origines du portail autorisées côté relais ; le simple remplacement de localhost par une IP réseau en HTTP ne fournit pas le contexte sécurisé nécessaire au chiffrement. Les liens de sauvegarde Telegra.ph continuent à utiliser l’adresse publique du portail.
-
-Pour afficher uniquement les fichiers statiques, sans relais de réception local, `python3 -m http.server 8080` reste possible. Ouvrez alors `http://localhost:8080/` ; cette commande sert la configuration publique telle quelle. Un aperçu local peut différer de la version publiée.
-
-```text
-index.html                 Tableau de raccourcis et métadonnées SEO
-aide.html                  Explications, transfert téléphone et mode Théâtre
-css/styles.css             Interface responsive et thèmes
-js/catalog.js              Catalogue de services et corrections d’anciennes URL
-js/icons.js                Correspondance entre services et logos embarqués
-js/i18n.js                 Langue, traduction des éléments et direction du texte
-js/locales/                Textes sources JSON des huit langues
-js/translations.js         Traductions embarquées générées depuis les JSON
-js/state.js                Validation, migrations et modèle de sauvegarde
-js/preferences.js          Pays, accueil et catégories affichées propres à cet appareil
-js/script.js               Raccourcis, déplacement tactile, recherche et dialogues
-js/telegraph.js            Sauvegardes Telegra.ph, historique et effacement
-js/backups.js              Liste locale de sauvegardes validées
-js/pairing.js              Transfert QR chiffré dans les deux sens avec un téléphone
-js/config.js               Adresse du service de réception
-js/tesla.js                Redirection Théâtre et plein écran classique
-js/vendor/                 QRCode.js, SortableJS et leurs licences
-scripts/check-links.mjs    Vérification HTTP du catalogue depuis Node.js
-scripts/fetch-icons.mjs    Actualisation ponctuelle des logos du catalogue
-tests/state.test.js        Tests du stockage et des données importées
-scripts/browser-smoke.cjs  Recette navigateur et contrôles d’accessibilité
-scripts/catalog-smoke.cjs  Services partagés, préférences et migrations dans le navigateur
-scripts/interaction-smoke.cjs Déplacement tactile/clavier et parcours Tesla
-package.json               Outils de vérification, sans dépendance de production
-img/                       Logos, icônes et manifeste
-robots.txt                 Directives à exposer à la racine de l'hôte
-sitemap.xml                Pages publiques indexables
-README.md                  Utilisation et contribution
-docs/                      Audit, sources et propositions
-```
-
-### Vérifications de développement
-
-Avec Node.js 20 ou plus récent, sans installer de dépendance :
-
-```bash
-node --test tests/*.test.js
-node scripts/check-links.mjs --output /tmp/evportal-links.json
-```
-
-La première commande vérifie les données, les catégories, les compteurs, les sauvegardes et le parcours plein écran. La seconde consulte les sites externes pour inventorier les réponses HTTP et produit un rapport local ; elle ne teste pas la lecture multimédia.
-
-Pour la recette automatisée dans Chromium et les contrôles d'accessibilité, installez les outils de développement :
+**Node.js 24 is recommended; Node.js 22 or newer is required.** From the repository root:
 
 ```bash
 npm ci
 npm ci --prefix relay
-npx playwright install chromium
-npm test
-npm run build:locales
-npm run test:browser
-npm run test:catalog
-npm run test:interactions
-npm run test:share
-npm run test:pairing
-npm run test:relay
-npm run test:i18n
+npm run dev
 ```
 
-Les scripts navigateur démarrent leur propre serveur local temporaire. La recette d’interactions peut aussi être lancée avec `node scripts/interaction-smoke.cjs`. Sur une machine Linux qui ne possède pas les bibliothèques nécessaires à Chromium, utilisez `npx playwright install --with-deps chromium`. Playwright et axe servent uniquement aux vérifications ; les bibliothèques utilisées par le portail sont embarquées dans le site. Complétez cette recette par un essai sur le véhicule visé.
+Open **http://127.0.0.1:4187/**. This starts the portal with a real local relay on port 8787. A phone cannot reach your computer through a `localhost` QR: testing across devices requires HTTPS addresses accessible to both.
 
-Le relais nécessite Node.js 22 ou supérieur. Pour tester le transfert complet avec le vrai moteur Cloudflare local, démarrez `npm run dev`, puis lancez `npm run test:pairing:live` dans un autre terminal. Utilisez cette recette avec deux navigateurs isolés pour vérifier le QR, l’envoi chiffré, l’ajout à la liste locale, puis la restauration explicite et son annulation, y compris lorsque le stockage est plein. Elle vérifie aussi le dialogue de partage sur mobile et en arabe. Elle utilise la configuration fournie par le serveur de développement et ouvre directement l’adresse décodée du QR, sans substitution de configuration ou d’URL ; la configuration publique reste intacte.
-
-### Vérifier la publication
-
-Après publication sur GitHub Pages, `npm run test:production -- --frontend-only` contrôle le catalogue, les réglages et les sauvegardes réellement servis, et indique si la réception QR est inactive. Lorsque le relais public est configuré, `npm run test:production` vérifie un transfert chiffré avec deux navigateurs isolés et des données synthétiques : QR suivi sans modification, ajout de la sauvegarde et suppression de la session ; la restauration reste une action explicite distincte. Aucune sauvegarde Telegra.ph réelle n’est publiée.
-
-### Faire évoluer le catalogue
-
-La première révision de septembre 2026 comprenait 22 destinations actualisées, 18 nouveaux raccourcis et 4 retraits de la sélection initiale. Le catalogue révisé regroupe les services présents dans plusieurs catégories et distingue les ajouts facultatifs. Il est désormais commun à tous ; les indications régionales des éditeurs servent à documenter les limites des services, sans filtrer l’interface. Consultez [le détail, les sources et les limites du contrôle des liens](docs/LIENS.md).
-
-Modifiez `js/catalog.js` en conservant des identifiants stables pour les catégories et les services. Préférez l’adresse officielle du service et ajoutez une description utile à la recherche et à la maintenance, sans l’afficher dans les raccourcis. Lancez `node scripts/fetch-icons.mjs` pour récupérer les logos manquants ; `--refresh` actualise également les existants. Les sources et conditions de maintenance figurent dans [le dossier des icônes](img/services/README.md). Quand un ancien lien change, documentez la correction et utilisez les remplacements d'URL prévus par le catalogue.
-
-Une redirection, une page d'authentification, une restriction géographique ou une réponse HTTP `403` ne prouvent pas qu'un service a fermé. Documentez séparément l'accessibilité du lien et les essais de lecture sur un véhicule réel.
-
-Une mise à jour ne doit pas réinsérer des raccourcis qu'une personne a supprimés. Vérifiez les parcours avec une configuration neuve et avec une ancienne configuration personnalisée avant de publier.
-
-### Faire évoluer les traductions
-
-Les textes de l’interface, du partage et de l’aide sont séparés dans `js/locales/`. Chaque famille de fichiers possède les mêmes clés dans les huit langues. Le navigateur charge `js/translations.js` depuis le site ; aucun service externe de traduction n’est appelé. Les annotations `data-i18n` traduisent le texte, et leurs variantes les titres, descriptions et libellés accessibles. Les noms et liens personnalisés ne sont pas remplacés par des traductions.
-
-Après modification des JSON, lancez `npm run build:seo` pour régénérer le bundle et les pages HTML traduites, puis `npm run check:seo`. La génération vérifie la présence des mêmes clés et paramètres dans les huit langues. `npm run test:i18n` vérifie l’interface, les dialogues, le thème, la persistance et l’aide dans ces langues, sur six largeurs ; `npm run test:seo` contrôle les adresses traduites et leurs métadonnées.
-
-Vérifiez les libellés longs, le passage de gauche à droite et de droite à gauche, les dialogues ouverts lors d’un changement de langue et la conservation du choix après rechargement.
-
-### Format de sauvegarde
-
-Le JSON exporté utilise `version: 2`, une `catalogVersion`, le `theme`, la catégorie active `activeCategory`, l’ordre manuel `shortcutOrder` et une liste `categories`. Chaque catégorie contient son `id`, son `label`, son `icon`, sa `description` et ses `shortcuts`. Chaque raccourci possède un identifiant, un nom, une URL et ses métadonnées, dont l’état de favori et le compteur `clickCount`. Un service du catalogue conserve son `serviceId`, et `categoryIds` décrit ses catégories d’appartenance. Il n’est enregistré qu’une fois dans la collection d’une catégorie propriétaire ; les autres catégories l’affichent par appartenance. Les compteurs absents des anciens formats sont initialisés à zéro.
-
-Le format exact à réutiliser est celui produit par le bouton d'export. Les données importées sont validées avant application ; les URL doivent utiliser HTTP ou HTTPS, sans identifiants dans l’adresse. Les imports JSON sont limités à 2 Mo, 50 catégories et 5 000 raccourcis. La publication Telegra.ph possède une limite distincte de 64 Kio pour son contenu sérialisé. [Référence de l’API Telegra.ph](https://telegra.ph/api#createPage).
-
-## Hébergement et référencement
-
-L’adresse publique de référence est `https://drslid.github.io/EvPortal/`. Le projet produit **18 pages HTML explorables** : les deux adresses historiques, huit tableaux `/{lang}/` et huit guides `/{lang}/aide.html`, sous ce chemin de projet. Chaque page possède son titre, sa description, sa canonique, neuf variantes `hreflang` dont `x-default`, et des données JSON-LD descriptives sans notes ni avis inventés. Le contenu explicatif reste dans l’aide ; l’écran de raccourcis demeure épuré.
-
-Sur une URL traduite, la langue du chemin est prioritaire et aucune redirection automatique n’est imposée. Les adresses historiques gardent un HTML initial français et leur choix de langue habituel. Les sources éditables restent `index.html`, `aide.html` et `js/locales/` ; les pages dans les dossiers de langue sont générées. Après modification, lancez :
+For browser checks, install Chromium, then build and verify:
 
 ```bash
+npx playwright install chromium
 npm run build:seo
 npm run check:seo
-npm run test:seo
+npm test
+npm run test:browser
 ```
 
-Publiez les sorties avec les sources sur GitHub Pages ou un hébergeur HTTPS. `seo.config.json` centralise l’adresse SEO et les codes facultatifs de vérification Google/Bing. Ces codes sont actuellement vides : aucune propriété n’a été validée ni aucun sitemap soumis dans cette intervention. Les démarches à effectuer après publication sont décrites dans [la documentation SEO multilingue](docs/SEO-MULTILINGUE.md).
+[Development and test commands](docs/DEVELOPMENT.md) · [SEO and deployment](docs/SEO-MULTILINGUE.md) · [Relay documentation](relay/README.md)
 
-**GitHub Pages :** `/EvPortal/robots.txt` ne remplace pas `/robots.txt` à la racine de l’hôte. Cette dernière adresse renvoyait HTTP 404 lors du contrôle ; ce statut n’interdit pas l’exploration Google. Il reste pertinent de soumettre directement le [sitemap](https://drslid.github.io/EvPortal/sitemap.xml) dans Search Console et Bing Webmaster Tools après validation. [Règles Google pour robots.txt](https://developers.google.com/crawling/docs/robots-txt/robots-txt-spec).
+## Browser support and privacy
 
-Un changement de domaine implique de mettre à jour `baseURL`, de régénérer les pages et de vérifier aussi le partage, le manifeste et le relais QR. La documentation détaille la maintenance, les démarches d’indexation et les pistes d’acquisition à mesurer, sans promesse de trafic.
+Use entertainment while parked. Tesla fullscreen follows the YouTube return-to-site route; other browsers use the standard Fullscreen API. Vehicle software and external services can affect availability, sign-in and playback. The web screenshots above are not a physical Tesla test.
 
-## Évolutions proposées
+Shortcuts, usage counts and preferences stay in browser storage. EvPortal includes no audience analytics. Telegra.ph is contacted for explicit backup actions; QR transfers use the configured relay. External services apply their own policies. Keep a JSON copy before clearing site data. There is no offline mode.
 
-Les prochaines améliorations doivent préserver l’écran de raccourcis :
+## Contribute
 
-- Annuler la dernière suppression ou le dernier import.
-- Régler discrètement la taille des raccourcis.
-- Signaler un lien inaccessible depuis son raccourci.
-- Ajouter des profils simples « quotidien » et « voyage » si les essais en montrent l’utilité.
+[Report a broken link or suggest an improvement](https://github.com/drslid/EvPortal/issues), or open a pull request with the change and its validation. For browser problems, include the device, browser or Tesla software version and steps to reproduce.
 
-Le contrôle régulier des liens relève de la maintenance. Le plein écran, le déplacement tactile et le transfert téléphone → Tesla restent à valider sur le véhicule visé. Les réglages avancés et l’aide restent à l’écart de l’écran principal. Voir [l’audit révisé et les priorités](docs/AUDIT-AMELIORATIONS.md).
+[Catalogue maintenance](docs/LIENS.md) · [Local icon provenance](img/services/README.md) · [Development guide](docs/DEVELOPMENT.md)
 
-## Contribution et licence
-
-Signalez un lien obsolète ou proposez une fonctionnalité dans les [issues GitHub](https://github.com/drslid/EvPortal/issues). Pour un problème de navigateur, précisez le modèle d'appareil, la version du navigateur ou du logiciel Tesla, la région et les étapes pour le reproduire.
-
-Pour une contribution au code, créez une branche, effectuez vos modifications et ouvrez une pull request décrivant le problème résolu et les vérifications effectuées. Le projet est distribué sous [licence MIT](LICENSE). EvPortal est un projet indépendant, sans affiliation avec Tesla ou les services référencés.
-
-Le [transfert par QR vers la Tesla](docs/APPAIRAGE-TELEPHONE-TESLA.md) utilise un relais temporaire distinct des sauvegardes Telegra.ph. Son activation dépend de la configuration et du déploiement de ce relais.
+Code is released under the [MIT licence](LICENSE). EvPortal is independent and is not affiliated with Tesla or the listed services. Bundled third-party assets retain their respective licences.

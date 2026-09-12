@@ -144,13 +144,15 @@ test('text, accessible labels, titles, placeholders and metadata translate throu
     const button = new Element({ 'data-i18n-aria-label': 'app.move', 'data-i18n-title': 'app.move', 'data-i18n-params': JSON.stringify({ name: '<img src=x onerror=alert(1)>' }) });
     const input = new Element({ 'data-i18n-placeholder': 'app.newCategory' });
     const meta = new Element({ 'data-i18n-content': 'app.allDescription' });
-    const { api } = environment([text, button, input, meta]);
+    const image = new Element({ 'data-i18n-alt': 'static.previewAlt' });
+    const { api } = environment([text, button, input, meta, image]);
     api.setLanguage('en');
     assert.equal(text.textContent, 'All');
     assert.equal(button.getAttribute('aria-label'), 'Move <img src=x onerror=alert(1)>');
     assert.equal(button.getAttribute('title'), button.getAttribute('aria-label'));
     assert.equal(input.getAttribute('placeholder'), 'New category');
     assert.equal(meta.getAttribute('content'), translations.en['app.allDescription']);
+    assert.equal(image.getAttribute('alt'), translations.en['static.previewAlt']);
     const dynamicRoot = new Element({ 'data-i18n': 'app.favorites' });
     api.translateDOM(dynamicRoot);
     assert.equal(dynamicRoot.textContent, 'Favorites');

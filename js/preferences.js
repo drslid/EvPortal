@@ -20,7 +20,9 @@
         if (!isObject(value)) throw invalid();
         const result = {
             homeFavorites: initial.homeFavorites,
-            hiddenCategoryIds: initial.hiddenCategoryIds.slice()
+            hiddenCategoryIds: initial.hiddenCategoryIds.slice(),
+            shortcutSize: initial.shortcutSize,
+            showShortcutNames: initial.showShortcutNames
         };
         if (Object.prototype.hasOwnProperty.call(value, 'homeFavorites')) {
             if (typeof value.homeFavorites !== 'boolean') throw invalid();
@@ -32,6 +34,14 @@
             })) throw invalid();
             result.hiddenCategoryIds = Array.from(new Set(value.hiddenCategoryIds));
         }
+        if (Object.prototype.hasOwnProperty.call(value, 'shortcutSize')) {
+            if (value.shortcutSize !== 'standard' && value.shortcutSize !== 'small') throw invalid();
+            result.shortcutSize = value.shortcutSize;
+        }
+        if (Object.prototype.hasOwnProperty.call(value, 'showShortcutNames')) {
+            if (typeof value.showShortcutNames !== 'boolean') throw invalid();
+            result.showShortcutNames = value.showShortcutNames;
+        }
         return result;
     }
 
@@ -39,7 +49,7 @@
         if (storage === undefined) {
             try { storage = root.localStorage || null; } catch (_) { storage = null; }
         }
-        let current = { homeFavorites: false, hiddenCategoryIds: [] };
+        let current = { homeFavorites: false, hiddenCategoryIds: [], shortcutSize: 'standard', showShortcutNames: true };
         let savedFields = Object.create(null);
         let canWrite = Boolean(storage && typeof storage.getItem === 'function' && typeof storage.setItem === 'function');
         let persistent = canWrite;
@@ -58,7 +68,7 @@
         }
 
         function read() {
-            return { homeFavorites: current.homeFavorites, hiddenCategoryIds: current.hiddenCategoryIds.slice() };
+            return { homeFavorites: current.homeFavorites, hiddenCategoryIds: current.hiddenCategoryIds.slice(), shortcutSize: current.shortcutSize, showShortcutNames: current.showShortcutNames };
         }
 
         function patch(changes) {

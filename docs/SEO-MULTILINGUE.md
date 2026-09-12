@@ -28,7 +28,11 @@ Les titres, descriptions, URL canoniques, métadonnées Open Graph et Twitter so
 
 Le JSON-LD décrit une `WebApplication` gratuite pour le tableau, et une `WebPage` avec fil d’Ariane pour le guide. Il ne contient ni note, ni avis, ni nombre d’utilisateurs inventé. Il n’annonce aucune compatibilité universelle avec les services externes. Ces données descriptives ne constituent pas une promesse d’affichage enrichi dans un moteur de recherche.
 
+Le tableau relie aussi son guide traduit avec la propriété [`softwareHelp`](https://schema.org/softwareHelp). Le balisage descriptif reste volontairement distinct d’une promesse de résultat enrichi : [Google exige notamment un avis ou une note pour son résultat enrichi d’application](https://developers.google.com/search/docs/appearance/structured-data/software-app), données dont EvPortal ne dispose pas. Les titres décrivent la page dans sa langue, sans accumulation de mots-clés, conformément aux [recommandations Google sur les titres](https://developers.google.com/search/docs/appearance/title-link).
+
 Les textes supplémentaires restent dans l’aide : démarrage dans le navigateur Tesla à l’arrêt, accès aux services pendant une recharge, gratuité, transfert avec le téléphone et absence de mode hors connexion. Ils distinguent **Ajouter**, qui conserve une sauvegarde, de **Restaurer**, qui remplace explicitement les raccourcis. Aucun paragraphe SEO supplémentaire n’encombre le tableau.
+
+L’aide présente une capture réelle du portail dans un navigateur d’ordinateur, avec une sélection de démonstration en anglais. Son texte alternatif et sa légende sont traduits ; largeur et hauteur explicites réservent sa place, et son chargement différé évite de retarder le haut de page. L’illustration de partage est un fichier distinct. Les métadonnées sociales utilisent son format PNG et ses dimensions réellement lues dans le fichier, ainsi qu’un texte alternatif qui la décrit comme une illustration. Les propriétés d’image suivent le [protocole Open Graph](https://ogp.me/).
 
 ## Modifier et générer les pages
 
@@ -42,17 +46,18 @@ npm run check:seo
 npm run test:seo
 ```
 
-`build:seo` régénère d’abord le bundle des traductions, puis les pages HTML, le sitemap et `robots.txt`. Il actualise aussi les métadonnées des deux pages sources en français. `check:seo` vérifie que les fichiers générés correspondent aux sources, sans les réécrire. `test:seo` exerce les adresses traduites avec et sans JavaScript, la priorité de langue, les métadonnées, les ressources et la conservation des données lors d’un changement de langue. Ce test utilise Chromium via Playwright.
+`build:seo` régénère d’abord le bundle des traductions, puis les pages HTML, le sitemap, `robots.txt` et l’empreinte `seo-release.json`. Il actualise aussi les métadonnées des deux pages sources en français. `check:seo` vérifie que les fichiers générés correspondent aux sources, sans les réécrire. `test:seo` exerce les adresses traduites avec et sans JavaScript, la priorité de langue, les métadonnées, les ressources et la conservation des raccourcis, sauvegardes et préférences d’apparence lors d’un changement de langue. Ce test utilise Chromium via Playwright.
 
 Les fichiers `en/index.html`, `fr/aide.html` et leurs équivalents sont **générés : ne les modifiez pas directement**. Livrez les sources et leurs sorties régénérées ensemble ; GitHub Pages sert ces fichiers statiques. Cette génération ne modifie pas le Worker du relais QR.
 
 Le workflow GitHub Actions `Site quality` vérifie les fichiers générés et exécute les tests unitaires à chaque pull request et chaque mise à jour de `main`. Il signale une traduction ou une page modifiée sans régénération.
 
-La configuration SEO est centralisée dans [`seo.config.json`](../seo.config.json) :
+La configuration SEO est centralisée dans [`seo.config.json`](../seo.config.json). Ses paramètres principaux sont :
 
 ```json
 {
   "baseURL": "https://drslid.github.io/EvPortal/",
+  "socialImage": "img/evportal-social.png",
   "verification": {
     "google": "",
     "bing": ""
@@ -62,13 +67,34 @@ La configuration SEO est centralisée dans [`seo.config.json`](../seo.config.jso
 
 `baseURL` doit être une adresse HTTPS terminée par `/`. Elle alimente les URL SEO absolues. Un changement d’hébergement nécessite aussi de vérifier les adresses publiques utilisées par le partage, le manifeste et la configuration du relais ; ce fichier ne réalise pas à lui seul une migration du service.
 
-Les deux champs de vérification sont facultatifs et actuellement vides. Lorsqu’un code est fourni, sa valeur `content` seule permet de générer la balise `google-site-verification` ou `msvalidate.01`. Les codes ont été demandés au propriétaire, mais n’ont pas été reçus à ce stade. Dans cette intervention, aucun compte webmaster n’a été créé, aucune propriété n’a été validée et aucun sitemap n’a été soumis.
+`socialImage` désigne un PNG local dans `img/`. La génération refuse un fichier absent, un format incorrect ou des dimensions nulles. Régénérez après toute modification d’image, de script ou de CSS : l’empreinte de publication couvre aussi ces ressources. La section `indexNow.keyFile` référence le fichier public de preuve d’hébergement créé pour ce projet ; elle est décrite ci-dessous.
+
+Les champs `verification.google` et `verification.bing` sont facultatifs et actuellement vides. Lorsqu’un code est fourni, sa valeur `content` seule permet de générer la balise `google-site-verification` ou `msvalidate.01`. La validation de propriété et la soumission du sitemap nécessitent l’accès au compte webmaster du propriétaire ; la génération des pages ne réalise pas ces opérations. Une propriété peut aussi avoir été validée par une autre méthode, indépendamment de ces champs.
 
 ## Particularité de robots.txt sur GitHub Pages
 
 Le fichier `/EvPortal/robots.txt` est dans un sous-dossier. Il ne définit pas les règles de tout l’hôte `drslid.github.io` : les robots recherchent `/robots.txt` à la racine de l’hôte. Lors de la vérification accompagnant cette documentation, cette adresse renvoyait HTTP 404. Pour Google, ce statut signifie qu’aucune règle d’interdiction n’est disponible ; il ne bloque donc pas à lui seul l’exploration. Voir les [règles officielles concernant l’emplacement et les erreurs de robots.txt](https://developers.google.com/crawling/docs/robots-txt/robots-txt-spec).
 
 Si la racine de l’hôte devient administrable, elle peut annoncer le sitemap du projet. La soumission directe dans les outils webmaster reste adaptée à cet hébergement en sous-dossier. Un fichier présent dans le dépôt et une soumission dans un compte webmaster sont deux opérations distinctes.
+
+Le sous-dossier impose aussi une limite d’identité dans Google : le [nom de site](https://developers.google.com/search/docs/appearance/site-names) et le [favicon des résultats](https://developers.google.com/search/docs/appearance/favicon-in-search) se rattachent au domaine ou sous-domaine, pas à chaque projet hébergé sous un chemin. Les titres « EvPortal » et les icônes du navigateur restent utiles, mais un logo ou nom de résultat propre au seul sous-dossier ne peut pas être promis.
+
+## Notifications IndexNow après publication
+
+IndexNow accepte une clé hébergée dans un sous-dossier via `keyLocation`. Sa portée couvre alors les URL de ce sous-dossier. EvPortal utilise un fichier public `indexnow-…txt` à la racine du projet, référencé par `indexNow.keyFile`. La notification contient seulement les 18 URL canoniques présentes dans le sitemap. Aucune URL avec code de sauvegarde, paramètre, fragment QR ou chemin extérieur au projet n’est acceptée. Voir la [documentation officielle IndexNow, option 2](https://www.indexnow.org/documentation).
+
+Le workflow [Notify search engines after Pages](../.github/workflows/indexnow.yml) se déclenche après une construction Pages réussie, ou manuellement. Il extrait la révision de cette construction et attend jusqu’à cinq minutes sa disponibilité. Avant le moindre envoi, le script contrôle l’empreinte de la publication, le fichier de preuve d’hébergement, le sitemap et le contenu exact des 18 pages publiées. Une révision ancienne, un fichier manquant ou une page différente bloque la notification. L’empreinte est calculée à partir des HTML et des ressources publiques JavaScript, CSS et images, sans horodatage inventé ; des changements locaux non régénérés sont également refusés.
+
+Pour contrôler la préparation sans réseau, puis notifier après publication :
+
+```bash
+node scripts/notify-indexnow.mjs
+node scripts/notify-indexnow.mjs --submit --wait=300
+```
+
+La première commande prépare uniquement la liste. La seconde vérifie le site public, puis adresse une seule requête au point d’entrée IndexNow. Une réponse HTTP 200 confirme la réception ; 202 signifie que la vérification de la clé reste en attente. Aucun de ces statuts ne prouve une indexation ni un classement. Un refus du service est signalé, sans soumissions répétées automatiques. Les journaux n’affichent ni la clé ni le contenu des pages.
+
+Les tests automatisés utilisent des réponses simulées : ils contrôlent les exclusions d’URL, les révisions périmées, les fichiers absents, l’identité des contenus et les réponses 200/202/429. La réussite d’une notification réelle doit être constatée dans le journal du workflow ou de la commande après le déploiement. Ce parcours ne remplace pas la validation d’une propriété Search Console ou Bing Webmaster Tools.
 
 ## Démarches après publication
 

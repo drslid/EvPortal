@@ -3,5 +3,10 @@
   "prefs.homeFavorites": "Открывать мои избранные",
   "prefs.visibleCategories": "Показываемые категории",
   "prefs.saveFailed": "Настройки сохранены только на время этого сеанса.",
-  "prefs.invalid": "Эти настройки недопустимы."
+  "prefs.invalid": "Эти настройки недопустимы.",
+  "prefs.appearance": "Оформление",
+  "prefs.shortcutSize": "Размер ярлыков",
+  "prefs.sizeStandard": "Стандартный",
+  "prefs.sizeSmall": "Маленький",
+  "prefs.showShortcutNames": "Показывать названия"
 }

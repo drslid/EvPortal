@@ -4,6 +4,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
 import { parse, parseFragment, serialize } from 'parse5';
+import { releaseFingerprint } from './seo-release.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const require = createRequire(import.meta.url);
@@ -14,6 +15,13 @@ const locales = { en: 'en_US', fr: 'fr_FR', es: 'es_ES', de: 'de_DE', it: 'it_IT
 const config = JSON.parse(fs.readFileSync(path.join(root, 'seo.config.json'), 'utf8'));
 const base = new URL(config.baseURL);
 if (base.protocol !== 'https:' || base.username || base.password || base.search || base.hash || !base.pathname.endsWith('/')) throw new Error('seo.config.json: baseURL must be a clean HTTPS directory URL');
+const socialImage = config.socialImage || 'img/evportal-preview.png';
+if (typeof socialImage !== 'string' || !/^img\/[a-zA-Z0-9/_-]+\.png$/.test(socialImage)) throw new Error('seo.config.json: socialImage must name a local PNG inside img/');
+const socialBuffer = fs.readFileSync(path.join(root, socialImage));
+if (socialBuffer.length < 33 || socialBuffer.subarray(0, 8).toString('hex') !== '89504e470d0a1a0a'
+    || socialBuffer.toString('ascii', 12, 16) !== 'IHDR') throw new Error('The social image must be a valid PNG');
+const socialWidth = socialBuffer.readUInt32BE(16), socialHeight = socialBuffer.readUInt32BE(20);
+if (!socialWidth || !socialHeight) throw new Error('The social image has invalid dimensions');
 const checkOnly = process.argv.includes('--check');
 if (process.argv.slice(2).some(value => value !== '--check')) throw new Error('Only --check is supported');
 const output = new Map();
@@ -46,7 +54,7 @@ function t(language, key) {
 function translate(doc, language) {
     walk(doc, node => {
         if (!node.attrs) return;
-        for (const kind of ['text', 'content', 'title', 'placeholder', 'aria-label', 'value']) {
+        for (const kind of ['text', 'content', 'title', 'placeholder', 'aria-label', 'alt', 'value']) {
             const key = attr(node, 'data-i18n' + (kind === 'text' ? '' : '-' + kind));
             if (!key) continue;
             const params = JSON.parse(attr(node, 'data-i18n-params') || '{}');
@@ -100,9 +108,11 @@ function build(kind, language, localized) {
     metadata('property', 'og:title', t(language, titleKey), titleKey);
     metadata('property', 'og:description', t(language, descriptionKey), descriptionKey);
     metadata('property', 'og:url', url);
-    const image = new URL('img/evportal-preview.png', base).href;
+    const image = new URL(socialImage, base).href;
     metadata('property', 'og:image', image);
-    metadata('property', 'og:image:width', '1200'); metadata('property', 'og:image:height', '630');
+    metadata('property', 'og:image:secure_url', image);
+    metadata('property', 'og:image:type', 'image/png');
+    metadata('property', 'og:image:width', socialWidth); metadata('property', 'og:image:height', socialHeight);
     metadata('property', 'og:image:alt', t(language, 'static.previewAlt'), 'static.previewAlt');
     metadata('name', 'twitter:card', 'summary_large_image');
     metadata('name', 'twitter:title', t(language, titleKey), titleKey);
@@ -123,6 +133,7 @@ function build(kind, language, localized) {
         operatingSystem: t(language, 'seo.operatingSystem'), browserRequirements: t(language, 'seo.browserRequirements'),
         inLanguage: localized ? language : languages, isAccessibleForFree: true,
         offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' }, image,
+        softwareHelp: { '@type': 'WebPage', '@id': pageURL('help', localized ? language : null) + '#page', url: pageURL('help', localized ? language : null), inLanguage: language },
         author: { '@type': 'Person', name: 'DrSliD' }, sameAs: 'https://github.com/drslid/EvPortal',
         featureList: ['seo.featureFavorites', 'seo.featureDrag', 'seo.featureQR', 'seo.featureBackup'].map(key => t(language, key))
     } : {
@@ -181,6 +192,10 @@ const urls = [];
 for (const kind of ['portal', 'help']) for (const language of [null, ...languages]) urls.push(pageURL(kind, language));
 output.set('sitemap.xml', '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + urls.map(url => '    <url><loc>' + escapeXML(url) + '</loc></url>').join('\n') + '\n</urlset>\n');
 output.set('robots.txt', 'User-agent: *\nDisallow:\n\n# This project file is not the host-root /robots.txt.\n# Submit the sitemap directly in Google Search Console and Bing Webmaster Tools.\nSitemap: ' + new URL('sitemap.xml', base).href + '\n');
+// A reproducible fingerprint identifies the actual public release, including
+// changes to JavaScript or images that do not alter the HTML. The notifier
+// compares this artifact and the public pages before contacting IndexNow.
+output.set('seo-release.json', JSON.stringify({ version: 1, fingerprint: releaseFingerprint(root, output) }, null, 2) + '\n');
 const changed = [];
 for (const [filename, value] of output) {
     const target = path.join(root, filename);
@@ -190,4 +205,4 @@ for (const [filename, value] of output) {
     }
 }
 if (checkOnly && changed.length) { console.error('Rebuild SEO pages: ' + changed.join(', ')); process.exitCode = 1; }
-else console.log((checkOnly ? 'Verified' : 'Built') + ' 18 crawlable HTML pages, sitemap and robots.txt.');
+else console.log((checkOnly ? 'Verified' : 'Built') + ' 18 crawlable HTML pages, sitemap, robots.txt and release fingerprint.');

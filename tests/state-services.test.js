@@ -130,9 +130,9 @@ test('duplicate explicit service identities reject imports and cannot overwrite 
 });
 
 test('foreign local preferences are excluded from JSON and Telegraph state exports', () => {
-    const source = { ...Core.fromCatalog(catalog), market: 'US', hiddenCategoryIds: ['tv'], homeFavorites: true, language: 'ru' };
+    const source = { ...Core.fromCatalog(catalog), market: 'US', hiddenCategoryIds: ['tv'], homeFavorites: true, language: 'ru', shortcutSize: 'small', showShortcutNames: false };
     const normalized = Core.normalizeState(source);
-    for (const key of ['market', 'hiddenCategoryIds', 'homeFavorites', 'language']) assert.equal(Object.hasOwn(normalized, key), false);
+    for (const key of ['market', 'hiddenCategoryIds', 'homeFavorites', 'language', 'shortcutSize', 'showShortcutNames']) assert.equal(Object.hasOwn(normalized, key), false);
     const json = Core.parseImport(JSON.stringify(source), catalog);
     const nodes = JSON.parse(Telegraph.contentForState(source));
     assert.deepEqual(json, normalized);
