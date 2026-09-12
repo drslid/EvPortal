@@ -11,15 +11,15 @@ Le projet utilise HTML, CSS et JavaScript natifs : aucun compte EvPortal, aucun 
 ## Fonctionnalités
 
 - **Écran épuré** : logo EvPortal d’origine centré, rangées de grands raccourcis centrées et changement de thème directement dans l’en-tête.
-- **147 services, 10 catégories** : recharge, navigation, vidéo, musique, télévision, jeux et services pratiques. Le catalogue comprend 35 services à ajouter à la demande ; 112 appartiennent à la sélection initiale avant filtrage par pays, dont 108 pour la France.
+- **147 services, 10 catégories** : recharge, navigation, vidéo, musique, télévision, jeux et services pratiques. Le catalogue est identique pour tous : 112 services dans la sélection initiale et 35 à ajouter à la demande.
 - **Vue « Tous » automatique** : les raccourcis les plus ouverts passent en premier ; l’ordre manuel départage les égalités.
 - **Personnalisation tactile** : glisser-déposer dans les catégories et les favoris ; création, modification et choix de l’icône des catégories. Un même service peut apparaître dans plusieurs catégories tout en conservant un seul favori et un seul compteur.
 - **Suppression directe** : raccourcis et catégories sont supprimés immédiatement, sans fenêtre de confirmation. La réinitialisation complète reste confirmée.
-- **Ajout direct** : le bouton « + » donne accès au catalogue, à « Créer un raccourci » et à « Créer une catégorie ».
-- **Catégories personnelles** : jusqu’à cinq catégories créées, avec un nom de 16 caractères maximum ; anciennes configurations préservées.
+- **Catalogue direct** : le bouton « + » ouvre des catégories repliables, avec « Ajouter » ou « Supprimer » sur chaque service. « Créer un raccourci » et « Créer une catégorie » restent en haut du catalogue.
+- **Catégories personnelles** : jusqu’à cinq catégories créées, avec un nom de 16 caractères maximum et 25 icônes proposées, dont les choix supplémentaires dans « Plus d’icônes » ; anciennes configurations préservées.
 - **Navigation adaptée** : choisissez les catégories à afficher et ouvrez directement vos favoris ; les catégories visibles se répartissent sans défilement horizontal. Masquer une catégorie conserve ses raccourcis dans Tous et Favoris.
-- **Catalogue par pays** : le pays choisi adapte les suggestions dans Ajouter ; « Voir tous les pays » donne accès à la sélection complète, sans supprimer les raccourcis existants.
-- **Recherche, favoris et thèmes** : accès aux services habituels et choix clair ou sombre. Les raccourcis ouvrent les services dans un nouvel onglet.
+- **Catalogue commun** : aucun choix de pays ni filtre géographique ; les personnalisations existantes sont conservées. Les services externes gardent leurs propres restrictions régionales.
+- **Recherche, favoris et thèmes** : le thème sombre est proposé par défaut et un choix clair existant reste conservé. Les raccourcis ouvrent les services dans un nouvel onglet.
 - **Huit langues** : anglais, français, espagnol, allemand, italien, russe, arabe et portugais ; interface et aide traduites, noms natifs et drapeaux dans le sélecteur, présentation de droite à gauche en arabe.
 - **Sauvegarde locale** : catégories, liens, ordre, favoris, compteurs d’ouverture et préférences restent dans la configuration de l’appareil.
 - **Trois parcours de sauvegarde** : Code ou lien → Créer / Ajouter ; Téléphone → Envoyer / Recevoir ; Mes sauvegardes → Restaurer. Ajouter conserve une sauvegarde ; Restaurer applique son contenu.
@@ -31,19 +31,19 @@ Le projet utilise HTML, CSS et JavaScript natifs : aucun compte EvPortal, aucun 
 
 1. Choisissez une catégorie et touchez un raccourci pour ouvrir le service dans un nouvel onglet.
 2. Dans « Tous », les services les plus ouverts sont placés en premier automatiquement. Pour réorganiser manuellement, choisissez une catégorie ou « Favoris », touchez « Modifier », déplacez les raccourcis puis touchez « Terminer ».
-3. Touchez « + » pour choisir un service du catalogue ou créer un raccourci ou une catégorie. Un service marqué « Déjà présent » est déjà dans votre tableau.
+3. Touchez « + », ouvrez une catégorie du catalogue, puis utilisez **Ajouter** ou **Supprimer** sur un service. Les catégories se replient pour garder une liste courte. Les actions **Créer un raccourci** et **Créer une catégorie** sont placées en haut du catalogue.
 4. Pour renommer une catégorie ou changer son icône, utilisez son crayon en mode « Modifier ». Les noms des nouvelles catégories sont limités à 16 caractères et leur nombre à cinq catégories personnelles.
 5. Pour afficher un service dans plusieurs catégories, modifiez son raccourci, choisissez sa catégorie principale puis **Autres catégories**. Le service reste unique dans **Tous** et **Favoris** : nom, lien, favori et compteur sont partagés entre ses catégories.
 
-### Choisir son catalogue et son accueil
+### Choisir son accueil
 
-Dans **Paramètres → Catalogue et accueil**, choisissez votre pays, les catégories affichées et **Ouvrir sur mes favoris**. Le pays adapte les suggestions dans **Ajouter**, et la sélection proposée à une nouvelle installation ; un changement de pays conserve la configuration existante. **Voir tous les pays** affiche le catalogue complet. Masquer une catégorie retire son onglet, sans supprimer ses raccourcis de **Tous** ou **Favoris**.
+Dans **Paramètres → Accueil**, choisissez les catégories affichées et **Ouvrir sur mes favoris**. Masquer une catégorie retire son onglet, sans supprimer ses raccourcis de **Tous** ou **Favoris**. La gestion du catalogue et la création de raccourcis ou de catégories passent par le bouton **« + »**.
 
-Ces préférences restent propres à cet appareil : elles ne sont pas ajoutées aux fichiers de sauvegarde, aux pages Telegra.ph ou aux transferts QR. La région explicite du navigateur suggère le pays initial si elle est reconnue ; une langue seule ne détermine pas de pays. Le choix manuel reste prioritaire. Aucune position GPS, permission de géolocalisation ou recherche de pays auprès d’un service tiers n’est utilisée.
+Ces préférences restent propres à cet appareil : elles ne sont pas ajoutées aux fichiers de sauvegarde, aux pages Telegra.ph ou aux transferts QR. Le catalogue est le même pour tous, sans déduction de pays ni géolocalisation.
 
 ### Code ou lien : créer et ajouter
 
-Dans **Paramètres → Code ou lien → Créer**, un nom facultatif accompagne la création d’un code et d’un lien EvPortal à copier. Ce parcours n’affiche pas de QR. La page créée apparaît dans **Mes sauvegardes → En ligne** ; sa création n’ajoute pas automatiquement une seconde copie locale.
+Dans **Paramètres → Sauvegardes → Code ou lien → Créer**, un nom facultatif accompagne la création d’un code et d’un lien EvPortal à copier. Ce parcours n’affiche pas de QR. La page créée apparaît dans **Mes sauvegardes → En ligne** ; sa création n’ajoute pas automatiquement une seconde copie locale.
 
 **Ajouter** accepte un code ou un lien EvPortal. Un clic valide et charge le contenu, puis enregistre un instantané dans **Sur cet appareil**, sans remplacer les raccourcis actuels. Les anciens liens Telegra.ph restent acceptés. Choisir un fichier JSON dans **Plus d’options** ajoute également une sauvegarde locale après validation. La liste s’ouvre ensuite pour permettre de choisir une sauvegarde et, séparément, de la restaurer.
 
@@ -51,13 +51,13 @@ Les nouveaux liens utilisent un identifiant aléatoire difficile à deviner. La 
 
 ### Téléphone : envoyer et recevoir par QR
 
-Dans **Paramètres → Téléphone**, **Envoyer** affiche un QR à scanner avec le téléphone pour récupérer une sauvegarde de cet écran. **Recevoir** affiche le QR permettant au téléphone d’envoyer ses raccourcis actuels ou une sauvegarde choisie. Dans les deux sens, l’écran destinataire propose **Ajouter** pour conserver la sauvegarde dans sa liste locale ; aucun transfert ne remplace directement les raccourcis.
+Dans **Paramètres → Sauvegardes → Téléphone**, **Envoyer** affiche un QR à scanner avec le téléphone pour récupérer une sauvegarde de cet écran. **Recevoir** affiche le QR permettant au téléphone d’envoyer ses raccourcis actuels ou une sauvegarde choisie. Dans les deux sens, l’écran destinataire propose **Ajouter** pour conserver la sauvegarde dans sa liste locale ; aucun transfert ne remplace directement les raccourcis.
 
 Le transfert est chiffré et valable cinq minutes, sans synchronisation automatique. Il nécessite le relais configuré et accessible aux deux appareils. Les parcours et sa mise en service sont décrits dans [la documentation d’appairage](docs/APPAIRAGE-TELEPHONE-TESLA.md).
 
 ### Mes sauvegardes : restaurer et gérer
 
-Ouvrez **Paramètres → Mes sauvegardes → Restaurer**. **Sur cet appareil** contient les instantanés ajoutés localement ; **En ligne** affiche les pages du compte Telegra.ph présent dans ce navigateur. Choisissez une sauvegarde, vérifiez son contenu puis touchez **Restaurer**. Cette dernière action remplace les raccourcis actifs. **Annuler la dernière restauration**, dans les options des paramètres, permet de retrouver la configuration précédente.
+Ouvrez **Paramètres → Sauvegardes → Mes sauvegardes → Restaurer**. **Sur cet appareil** contient les instantanés ajoutés localement ; **En ligne** affiche les pages du compte Telegra.ph présent dans ce navigateur. Choisissez une sauvegarde, vérifiez son contenu puis touchez **Restaurer**. Cette dernière action remplace les raccourcis actifs. **Annuler la dernière restauration**, dans les options des paramètres, permet de retrouver la configuration précédente.
 
 La liste locale conserve jusqu’à 50 sauvegardes, avec une limite de 2 Mo par sauvegarde et selon l’espace disponible dans le navigateur. Les contenus locaux restent utilisables pour une restauration après la suppression de leur page d’origine ; ils ne sont pas synchronisés avec celle-ci. Le fichier JSON permet aussi de conserver une copie en dehors du navigateur et de dépasser les limites de taille du transfert direct ou de Telegra.ph.
 
@@ -87,7 +87,7 @@ Ce mécanisme dépend du navigateur et du logiciel du véhicule ; un essai sur T
 
 La configuration est stockée dans le `localStorage` du navigateur, sous la clé `evportal.state.v2`. Les informations du compte Telegra.ph restent séparées sous `evportal.telegraph.v1`. Les instantanés de la liste locale sont stockés séparément sous `evportal.backups.v1` ; ajouter ou retirer un instantané ne modifie pas la configuration active. Effacer les données du site ou changer de navigateur peut faire perdre la personnalisation : un partage Telegra.ph ou un export JSON permet de la retrouver. Si le stockage est bloqué ou une sauvegarde est illisible, un message explique la situation et l'export reste disponible pour préserver la session.
 
-La langue se choisit dans Paramètres et reste enregistrée sur cet appareil, séparément de la configuration partagée. Le pays du catalogue, les catégories affichées et l’accueil Favoris utilisent leur propre clé `evportal.preferences.v1`, indépendamment de la langue. Au premier lancement, la langue du navigateur est utilisée lorsqu’elle est prise en charge. Changer de langue adapte les libellés, les dialogues, les erreurs et l’aide ; vos noms de raccourcis et de catégories personnels restent conservés. Le sélecteur affiche les langues dans leur écriture d’origine, accompagnées de drapeaux. Les deux modes de thème disponibles sont clair et sombre.
+La langue se choisit dans Paramètres et reste enregistrée sur cet appareil, séparément de la configuration partagée. Les catégories affichées et l’accueil Favoris utilisent leur propre clé `evportal.preferences.v1`, indépendamment de la langue. Une adresse traduite impose sa langue ; sur l’adresse historique, le choix enregistré puis la langue du navigateur sont utilisés lorsqu’ils sont pris en charge. Changer de langue adapte les libellés, les dialogues, les erreurs et l’aide ; vos noms de raccourcis et de catégories personnels restent conservés. Le sélecteur affiche les langues dans leur écriture d’origine, accompagnées de drapeaux. Le thème sombre est utilisé par défaut ; un thème clair déjà choisi reste conservé.
 
 Le classement « Tous » utilise un compteur d’ouvertures par raccourci, associé à son identifiant et conservé après rechargement. Ce compteur reste dans la configuration locale et ses sauvegardes ; aucun service d’analyse d’audience n’est nécessaire. Le glisser-déposer est désactivé dans cette vue automatique. Les catégories et les favoris gardent leur ordre manuel.
 
@@ -104,7 +104,7 @@ npm ci --prefix relay
 npm run dev
 ```
 
-Ouvrez **http://127.0.0.1:4187/** et choisissez **Paramètres → Téléphone → Recevoir**. Le serveur configure le relais local dans la réponse `/js/config.js`, sans modifier le fichier destiné à la publication. Il démarre Wrangler sur le port 8787 si nécessaire, ou vérifie un relais EvPortal déjà présent : origine autorisée, création d’une session, réception et suppression. Le bouton fonctionne dans un navigateur ordinaire disposant de Web Crypto ; aucun remplacement de configuration par Playwright n’est nécessaire. [Développement local Cloudflare](https://developers.cloudflare.com/workers/local-development/).
+Ouvrez **http://127.0.0.1:4187/** et choisissez **Paramètres → Sauvegardes → Téléphone → Recevoir**. Le serveur configure le relais local dans la réponse `/js/config.js`, sans modifier le fichier destiné à la publication. Il démarre Wrangler sur le port 8787 si nécessaire, ou vérifie un relais EvPortal déjà présent : origine autorisée, création d’une session, réception et suppression. Le bouton fonctionne dans un navigateur ordinaire disposant de Web Crypto ; aucun remplacement de configuration par Playwright n’est nécessaire. [Développement local Cloudflare](https://developers.cloudflare.com/workers/local-development/).
 
 `Ctrl+C` arrête le serveur et uniquement le Worker qu’il a lui-même démarré. Un relais préexistant est conservé. Si un port est occupé par un autre programme, le démarrage s’interrompt sans arrêter ce programme. Pour choisir d’autres ports : `npm run dev -- --port 4188 --relay-port 8788`.
 
@@ -182,7 +182,7 @@ Après publication sur GitHub Pages, `npm run test:production -- --frontend-only
 
 ### Faire évoluer le catalogue
 
-La première révision de septembre 2026 comprenait 22 destinations actualisées, 18 nouveaux raccourcis et 4 retraits de la sélection initiale. Le catalogue révisé regroupe les services présents dans plusieurs catégories, distingue les ajouts facultatifs et adapte la sélection au pays. Consultez [le détail, les sources et les limites du contrôle des liens](docs/LIENS.md).
+La première révision de septembre 2026 comprenait 22 destinations actualisées, 18 nouveaux raccourcis et 4 retraits de la sélection initiale. Le catalogue révisé regroupe les services présents dans plusieurs catégories et distingue les ajouts facultatifs. Il est désormais commun à tous ; les indications régionales des éditeurs servent à documenter les limites des services, sans filtrer l’interface. Consultez [le détail, les sources et les limites du contrôle des liens](docs/LIENS.md).
 
 Modifiez `js/catalog.js` en conservant des identifiants stables pour les catégories et les services. Préférez l’adresse officielle du service et ajoutez une description utile à la recherche et à la maintenance, sans l’afficher dans les raccourcis. Lancez `node scripts/fetch-icons.mjs` pour récupérer les logos manquants ; `--refresh` actualise également les existants. Les sources et conditions de maintenance figurent dans [le dossier des icônes](img/services/README.md). Quand un ancien lien change, documentez la correction et utilisez les remplacements d'URL prévus par le catalogue.
 

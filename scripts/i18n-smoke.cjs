@@ -65,6 +65,7 @@ let browser;
                 const buttons = [...menu.querySelectorAll('.menu-link')].map(button => button.getBoundingClientRect());
                 const logo = document.querySelector('.brand-logo').getBoundingClientRect();
                 const content = document.getElementById('content').getBoundingClientRect();
+                const dock = document.getElementById('fullscreenDock').getBoundingClientRect();
                 const rows = new Map();
                 document.querySelectorAll('#content > .shortcut').forEach(card => {
                     const r = card.getBoundingClientRect(), y = Math.round(r.top);
@@ -72,6 +73,8 @@ let browser;
                     row.left = Math.min(row.left, r.left); row.right = Math.max(row.right, r.right); rows.set(y, row);
                 });
                 return {
+                    dockCentered: Math.abs((dock.left + dock.right) / 2 - innerWidth / 2) < 1,
+                    dockBottom: Math.abs(dock.bottom - innerHeight) < 1,
                     pageOverflow: document.documentElement.scrollWidth - innerWidth,
                     menuOverflow: menu.scrollWidth - menu.clientWidth,
                     allCategoriesVisible: buttons.every(r => r.width > 0 && r.left >= bounds.left - 1 && r.right <= bounds.right + 1),
@@ -80,6 +83,7 @@ let browser;
                     centeredRows: [...rows.values()].every(r => Math.abs((r.left + r.right) / 2 - (content.left + content.right) / 2) < 1)
                 };
             });
+            assert.ok(geometry.dockCentered && geometry.dockBottom, language + ' fullscreen dock at ' + width);
             assert.ok(geometry.pageOverflow <= 1, language + ' page overflow at ' + width);
             assert.ok(geometry.menuOverflow <= 1, language + ' category overflow at ' + width);
             assert.ok(geometry.allCategoriesVisible, language + ' hidden category at ' + width);
@@ -94,10 +98,10 @@ let browser;
         await verifyLanguageOptions(page);
         await page.locator('#catalogPreferences').evaluate(details => { details.open = true; });
         assert.equal(await page.locator('#catalogPreferences > summary').textContent(), dictionaries[language]['prefs.title']);
-        assert.equal(await page.locator('#marketSelect option[value="DE"]').textContent(), dictionaries[language]['prefs.country.DE']);
-        assert.equal(await page.locator('#marketSelect option[value="MX"]').textContent(), dictionaries[language]['prefs.country.MX']);
+        assert.equal(await page.locator('#marketSelect, #catalogMarketToggle, #addShortcutButton, #addPageButton, #categoryVisibilityHint').count(), 0, 'Settings omit country controls and duplicate creation actions');
+        assert.equal(await page.locator('#backupSettingsTitle').textContent(), dictionaries[language]['static.backups']);
         assert.ok(await page.locator('#settingsDialog').evaluate(dialog => dialog.scrollWidth <= dialog.clientWidth + 1), language + ' preferences overflow');
-        const marketBeforeLanguage = await page.locator('#marketSelect').inputValue();
+        const preferencesBeforeLanguage = await page.evaluate(() => localStorage.getItem(EVPreferences.STORAGE_KEY));
         for (const id of ['shareButton', 'importConfigButton', 'restoreBackupButton']) {
             assert.equal(await page.locator('#backupSettings #' + id).isVisible(), true, 'Create, Add and Restore remain distinct Settings actions');
         }
@@ -117,8 +121,8 @@ let browser;
         const other = language === 'en' ? 'fr' : 'en';
         await page.locator('#languageSelect').selectOption(other);
         assert.equal(await page.locator('html').getAttribute('lang'), other);
-        assert.equal(await page.locator('#marketSelect').inputValue(), marketBeforeLanguage, 'Interface language never changes the catalog country');
-        assert.equal(await page.locator('#marketSelect option[value="DE"]').textContent(), dictionaries[other]['prefs.country.DE']);
+        assert.equal(await page.evaluate(() => localStorage.getItem(EVPreferences.STORAGE_KEY)), preferencesBeforeLanguage, 'Interface language leaves home preferences untouched');
+        assert.equal(await page.locator('#backupSettingsTitle').textContent(), dictionaries[other]['static.backups']);
         await page.locator('#languageSelect').selectOption(language);
         assert.equal(await page.evaluate(() => localStorage.getItem(EVState.STORAGE_KEY)), before, 'Language leaves shortcut configuration untouched');
         await page.locator('#importConfigButton').click();
@@ -154,7 +158,11 @@ let browser;
         assert.ok(await page.locator('#catalogDialog').evaluate(node => node.scrollWidth <= node.clientWidth + 1));
         await page.locator('#catalogCategoryButton').click();
         assert.equal(await page.locator('#pageDialogTitle').textContent(), dictionaries[language]['app.newCategory']);
-        assert.equal(await page.locator('#categoryIconPicker input').count(), 13);
+        assert.equal(await page.locator('#categoryIconPicker input').count(), 25);
+        assert.equal(await page.locator('#categoryIconPicker > .category-icon-options label:visible').count(), 8);
+        assert.equal(await page.locator('#moreCategoryIcons > summary').textContent(), dictionaries[language]['app.moreIcons']);
+        await page.locator('#moreCategoryIcons > summary').click();
+        assert.equal(await page.locator('#categoryIconPicker label:visible').count(), 25);
         assert.ok(await page.locator('#pageDialog').evaluate(node => node.scrollWidth <= node.clientWidth + 1));
         await page.reload({ waitUntil: 'networkidle' });
         assert.equal(await page.locator('html').getAttribute('lang'), language);

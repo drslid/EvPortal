@@ -4,6 +4,8 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const { createHash } = require('node:crypto');
+const Core = require('../js/state.js');
+const Preferences = require('../js/preferences.js');
 
 const root = path.resolve(__dirname, '..');
 const context = { window: {} };
@@ -65,7 +67,7 @@ test('default games are one portal and four direct games; social and work servic
     }
 });
 
-test('known regional recommendations follow publisher availability, including recent TF1+ markets', () => {
+test('regional service notes remain descriptive metadata without defining a separate catalogue', () => {
     assert.deepEqual(find('crave').countries, ['CA']);
     assert.deepEqual(find('starz').countries, ['US']);
     assert.deepEqual(find('iheartradio').countries, ['US', 'CA', 'MX', 'AU', 'NZ']);
@@ -73,6 +75,22 @@ test('known regional recommendations follow publisher availability, including re
     assert.deepEqual(find('molotov').countries, ['FR']);
     assert.ok(['FR', 'BE', 'LU', 'CH'].every(country => find('tf1-plus').countries.includes(country)));
     assert.equal(find('tf1-plus').countries.length, 26);
+});
+
+test('every locale and saved legacy country exposes the same global catalogue and initial service selection', () => {
+    const complete = services.map(service => service.serviceId);
+    const defaults = services.filter(service => service.defaultIncluded !== false).map(service => service.serviceId);
+    for (const [locale, market] of [['fr-FR', 'FR'], ['fr-CA', 'CA'], ['en-US', 'US'], ['de-DE', 'DE'], ['es-ES', 'ES'], ['it-IT', 'IT'], ['ru-RU', 'ALL'], ['ar-SA', 'ALL'], ['pt-PT', 'PT']]) {
+        const original = JSON.stringify({ version: 1, market, homeFavorites: true, hiddenCategoryIds: ['news'] });
+        const storage = { getItem: key => key === Preferences.STORAGE_KEY ? original : null,
+            setItem() { throw new Error('Reading a catalogue must not write preferences'); } };
+        const preferences = Preferences.createPreferences(storage, { locale }).read();
+        assert.deepEqual(preferences, { homeFavorites: true, hiddenCategoryIds: ['news'] });
+        assert.deepEqual(Core.catalogServices(catalog, { market, locale }).map(entry => entry.shortcut.serviceId), complete);
+        assert.deepEqual(Core.catalogServices(catalog, { market, includeOptional: false }).map(entry => entry.shortcut.serviceId), defaults);
+        assert.deepEqual(Core.allShortcutEntries(Core.fromCatalog(catalog, { market, locale })).map(entry => entry.shortcut.serviceId), defaults);
+        assert.equal(storage.getItem(Preferences.STORAGE_KEY), original);
+    }
 });
 
 test('all fifteen additions have the requested address and a complete local logo with provenance', () => {

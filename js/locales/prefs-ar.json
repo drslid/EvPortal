@@ -1,26 +1,7 @@
 {
-  "prefs.title": "الكتالوج والشاشة الرئيسية",
-  "prefs.country": "بلد الكتالوج",
-  "prefs.marketHint": "يكيّف البلد الاختيار المقترح في إضافة.",
+  "prefs.title": "الشاشة الرئيسية",
   "prefs.homeFavorites": "الفتح على المفضلة",
   "prefs.visibleCategories": "الفئات المعروضة",
-  "prefs.categoriesHint": "تبقى الاختصارات متاحة في الكل والمفضلة.",
-  "prefs.allMarkets": "جميع البلدان",
-  "prefs.showAllMarkets": "عرض جميع البلدان",
   "prefs.saveFailed": "تُحفظ التفضيلات لهذه الجلسة فقط.",
-  "prefs.invalid": "هذه التفضيلات غير صالحة.",
-  "prefs.country.FR": "فرنسا",
-  "prefs.country.CA": "كندا",
-  "prefs.country.US": "الولايات المتحدة",
-  "prefs.country.BE": "بلجيكا",
-  "prefs.country.GB": "المملكة المتحدة",
-  "prefs.country.DE": "ألمانيا",
-  "prefs.country.ES": "إسبانيا",
-  "prefs.country.IT": "إيطاليا",
-  "prefs.country.PT": "البرتغال",
-  "prefs.country.AU": "أستراليا",
-  "prefs.country.NZ": "نيوزيلندا",
-  "prefs.country.CH": "سويسرا",
-  "prefs.country.ALL": "جميع البلدان",
-  "prefs.country.MX": "المكسيك"
+  "prefs.invalid": "هذه التفضيلات غير صالحة."
 }

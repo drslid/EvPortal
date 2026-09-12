@@ -1,17 +1,17 @@
 # Échanger des sauvegardes entre le téléphone et la Tesla
 
-**Le relais et son protocole sont implémentés dans [relay/](../relay/README.md).** Les actions **Paramètres → Téléphone → Envoyer / Recevoir** dépendent de sa configuration et de sa disponibilité. Le téléphone scanne un QR affiché sur l’autre écran ; le transfert fonctionne dans les deux sens. La création d’un code ou lien EvPortal reste un parcours distinct, sans QR.
+**Le relais et son protocole sont implémentés dans [relay/](../relay/README.md).** Les actions **Paramètres → Sauvegardes → Téléphone → Envoyer / Recevoir** dépendent de sa configuration et de sa disponibilité. Le téléphone scanne un QR affiché sur l’autre écran ; le transfert fonctionne dans les deux sens. La création d’un code ou lien EvPortal reste un parcours distinct, sans QR.
 
 ## Recevoir depuis le téléphone
 
-1. **Tesla :** ouvrir **Paramètres → Téléphone → Recevoir** ; un QR de réception apparaît.
+1. **Tesla :** ouvrir **Paramètres → Sauvegardes → Téléphone → Recevoir** ; un QR de réception apparaît.
 2. **Téléphone :** scanner le QR, puis choisir ses raccourcis actuels ou une sauvegarde.
 3. **Téléphone :** toucher **Envoyer**.
 4. **Tesla :** après réception, toucher **Ajouter** pour conserver la sauvegarde dans **Sur cet appareil**.
 
 ## Envoyer vers le téléphone
 
-1. **Tesla :** ouvrir **Paramètres → Téléphone → Envoyer** ; un QR donne accès à la sauvegarde chiffrée préparée pour le téléphone.
+1. **Tesla :** ouvrir **Paramètres → Sauvegardes → Téléphone → Envoyer** ; un QR donne accès à la sauvegarde chiffrée préparée pour le téléphone.
 2. **Téléphone :** scanner le QR, puis toucher **Ajouter** après réception pour conserver la sauvegarde localement.
 
 Dans les deux sens, **Ajouter ne remplace aucun raccourci**. Pour utiliser le contenu reçu, ouvrir **Mes sauvegardes → Restaurer**, choisir la sauvegarde puis toucher **Restaurer**. La dernière restauration peut être annulée dans les options des paramètres. La liste de sauvegardes et les préférences propres à chaque appareil restent séparées de la configuration active.

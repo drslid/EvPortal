@@ -3,6 +3,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const Core = require('../js/state.js');
 const Telegraph = require('../js/telegraph.js');
+const Backups = require('../js/backups.js');
 
 const catalog = {
     version: 'test',
@@ -116,6 +117,26 @@ test('only existing sprite icons can be imported or selected, while absent icons
         assert.throws(() => Core.normalizeState({ version: 2, categories: [customCategory(1, { icon })] }), /Icône/);
     }
     assert.equal(Core.normalizeState({ version: 2, categories: [customCategory(1)] }).categories[0].icon, 'folder');
+});
+
+test('all new category icons survive state, local-backup and Telegraph round-trips without removing historical icons', () => {
+    const historical = ['all', 'favorites', 'cinema', 'music', 'tv', 'charging', 'games', 'navigation', 'social', 'news', 'weather', 'productivity', 'folder'];
+    const added = ['home', 'car', 'parking', 'map', 'globe', 'compass', 'coffee', 'food', 'shopping', 'heart', 'camera', 'tools'];
+    assert.deepEqual(Core.CATEGORY_ICONS, [...historical, ...added]);
+    for (const icon of added) {
+        const state = Core.normalizeState({ version: 2, categories: [customCategory(1, { icon, shortcuts: [
+            { id: 'my-link', name: 'Ma pause', url: 'https://example.org/', favorite: true, clickCount: 8 }
+        ] })] });
+        const saved = storage();
+        assert.equal(Core.saveState(saved, state), true);
+        assert.deepEqual(Core.loadState(saved, catalog).state.categories, state.categories);
+        assert.deepEqual(Core.parseImport(JSON.stringify(state)).categories, state.categories);
+        const library = Backups.createLibrary(saved);
+        const record = library.add({ title: 'Ma catégorie', state, source: 'file' });
+        assert.deepEqual(Backups.createLibrary(saved).get(record.id).state, state);
+        const content = JSON.parse(Telegraph.contentForState(state));
+        assert.deepEqual(Core.parseImport(content[0].children[0]), state);
+    }
 });
 
 test('the creation cap counts five personal categories independently from the remaining default categories', () => {

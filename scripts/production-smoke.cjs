@@ -83,6 +83,8 @@ function matchesResponse(response, method, url) {
     const deployed = await receiver.evaluate(() => ({
         relay: window.EV_CONFIG && EV_CONFIG.pairingRelayURL,
         catalogue: window.EV_CATALOG && EV_CATALOG.categories.flatMap(category => category.shortcuts).map(shortcut => ({ id: shortcut.serviceId, url: shortcut.url })),
+        installed: window.EVState && EVState.allShortcutEntries(JSON.parse(localStorage.getItem(EVState.STORAGE_KEY))).map(entry => entry.shortcut.serviceId),
+        theme: document.documentElement.dataset.theme,
         hasPreferences: Boolean(window.EVPreferences && typeof EVPreferences.createPreferences === 'function'),
         hasPairing: Boolean(window.EVPairing && typeof EVPairing.parseFragment === 'function')
     }));
@@ -97,9 +99,19 @@ function matchesResponse(response, method, url) {
     for (const [id, url] of Object.entries(additions)) {
         check(deployed.catalogue.filter(item => item.id === id && item.url === url).length === 1, 'Missing or duplicated catalogue addition: ' + id);
     }
+    check(deployed.theme === 'dark', 'A new browser must start in dark mode');
+    check(deployed.installed.includes('crave') && !deployed.installed.includes('github'), 'Global defaults must include Crave while GitHub remains optional');
+    await receiver.locator('#catalogButton').click();
+    check(await receiver.locator('#catalogCategoryButton').isVisible(), 'Category creation is missing from the catalogue');
+    check(await receiver.locator('#catalogCustomButton').isVisible(), 'Custom shortcut creation is missing from the catalogue');
+    await receiver.locator('#catalogSearch').fill('Crave');
+    check(await receiver.getByRole('button', { name: 'Supprimer Crave', exact: true }).isEnabled(), 'Installed services must have an enabled removal action');
+    await receiver.locator('#catalogSearch').fill('GitHub');
+    check(await receiver.getByRole('button', { name: 'Ajouter GitHub', exact: true }).isEnabled(), 'Optional services must remain addable');
+    await receiver.locator('#catalogDialog [data-close-dialog]').click();
     await receiver.locator('#settingsButton').click();
     await receiver.locator('#catalogPreferences summary').click();
-    check(await receiver.locator('#marketSelect').inputValue() === 'FR', 'French context must suggest France');
+    check(await receiver.locator('#marketSelect, #catalogMarketToggle').count() === 0, 'The shared catalogue must not expose country controls');
     check(await receiver.locator('#homeFavoritesToggle').isVisible(), 'Favorites home preference is missing');
     check(await receiver.locator('#categoryVisibilityOptions input').count() > 0, 'Category visibility preferences are missing');
     check(await receiver.locator('#backupSettings #shareButton').isVisible(), 'Export backup action is missing from settings');
@@ -166,7 +178,7 @@ function matchesResponse(response, method, url) {
     const expected = await sender.evaluate(initial => {
         const state = EVState.normalizeState(initial);
         localStorage.setItem(EVState.STORAGE_KEY, JSON.stringify(state));
-        EVPreferences.createPreferences().patch({ market: 'CA', homeFavorites: true });
+        EVPreferences.createPreferences().patch({ homeFavorites: true, hiddenCategoryIds: ['smoke-tools'] });
         return state;
     }, fixture);
     await sender.reload({ waitUntil: 'networkidle' });

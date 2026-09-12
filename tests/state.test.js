@@ -24,6 +24,24 @@ function fakeStorage(initial) {
     };
 }
 
+test('new, missing-theme and legacy configurations default to dark while explicit themes remain unchanged', () => {
+    assert.equal(Core.fromCatalog(catalog).theme, 'dark');
+    assert.equal(Core.loadState(fakeStorage(), catalog).state.theme, 'dark');
+    const old = { version: 2, categories: [] };
+    assert.equal(Core.normalizeState(old).theme, 'dark');
+    assert.equal(Core.parseImport(JSON.stringify(old), catalog).theme, 'dark');
+    assert.equal(Core.loadState(fakeStorage({ [Core.STORAGE_KEY]: JSON.stringify(old) }), catalog).state.theme, 'dark');
+    const legacy = { pages: ['cinema'], cinema: [{ name: 'Mon cinéma', url: 'https://example.org/' }] };
+    assert.equal(Core.fromLegacy(legacy, catalog).theme, 'dark');
+    assert.equal(Core.parseImport(JSON.stringify(legacy), catalog).theme, 'dark');
+    for (const theme of ['light', 'dark', 'auto']) {
+        const input = { ...old, theme };
+        assert.equal(Core.normalizeState(input).theme, theme);
+        assert.equal(Core.parseImport(JSON.stringify(input), catalog).theme, theme);
+        assert.equal(Core.loadState(fakeStorage({ [Core.STORAGE_KEY]: JSON.stringify(input) }), catalog).state.theme, theme);
+    }
+});
+
 test('global tile order is optional in old v2 backups and survives saving and import', () => {
     const initial = Core.fromCatalog(catalog);
     delete initial.shortcutOrder;

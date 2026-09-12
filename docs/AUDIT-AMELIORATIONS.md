@@ -1,5 +1,21 @@
 # EvPortal — audit révisé pour l’écran Tesla
 
+## Complément actuel : catalogue commun et paramètres simplifiés
+
+Le catalogue est désormais identique pour tous : 147 services, dont 112 proposés au départ et 35 facultatifs. Le bouton « + » ouvre des catégories repliables ; chaque service dispose directement d’Ajouter ou Supprimer. La création d’un raccourci ou d’une catégorie reste en haut du catalogue. Le sélecteur de catégorie propose 25 icônes, avec les choix supplémentaires dans « Plus d’icônes ».
+
+Dans les paramètres, « Accueil » regroupe les catégories affichées et l’ouverture sur les favoris. Le choix de pays et son filtre ont été retirés. Les préférences d’accueil restent locales, les raccourcis déjà personnalisés sont préservés et les restrictions régionales des services externes restent applicables. Le thème sombre est proposé par défaut ; un thème clair déjà choisi est conservé.
+
+Le titre « Sauvegardes » rend explicites les trois parcours : Code ou lien → Créer / Ajouter ; Téléphone → Envoyer / Recevoir ; Mes sauvegardes → Restaurer. Ajouter conserve un instantané, puis Restaurer seul applique son contenu. La création d’un code ou lien n’affiche pas de QR ; les QR servent aux transferts dans les deux sens avec le téléphone.
+
+Le bouton plein écran est fixé au bord inférieur, au centre, avec une marge qui laisse les derniers raccourcis accessibles. Les icônes des paramètres et de la météo ont été redessinées ; les services du catalogue affichent leurs logos locaux.
+
+La recette locale du 12 septembre valide 149 tests unitaires, 12 groupes navigateur, 11 groupes catalogue, 11 groupes d’interactions et les huit langues sur 48 dispositions. Les pages et guides SEO générés sont vérifiés. Les 24 vues inspectées en français et en arabe n’ont montré ni débordement ni violation WCAG A/AA détectée par Axe ; les captures et rapports sont dans `test-results/`. Le plein écran Tesla reste à essayer sur un véhicule physique.
+
+Les titres, descriptions et guides sont disponibles dans les huit langues sur 18 pages HTML explorables. La maintenance actuelle figure dans le [README](../README.md) et la [documentation SEO](SEO-MULTILINGUE.md). Les sections suivantes conservent l’audit du 11 septembre et ses résultats historiques : les anciens choix de pays, parcours de sauvegarde et chiffres de tests ne décrivent pas à eux seuls cette dernière interface.
+
+## Historique de la révision du 11 septembre 2026
+
 Révision : 11 septembre 2026. Les retours utilisateur fixent la priorité : un lanceur de raccourcis simple, lisible d’un regard, facile à toucher. La première proposition ajoutait trop de texte et avait remplacé deux parcours utiles : le partage Telegra.ph avec QR code et le lancement plein écran particulier à Tesla. Ces parcours sont rétablis. Les compléments du 11 septembre ajoutent la suppression directe, des adresses de partage aléatoires et un groupe « Sauvegardes » dans les paramètres qui rassemble export, import et réception depuis le téléphone. Le catalogue est ensuite allégé par une identité unique par service, une sélection par pays et des ajouts à la demande ; les préférences d’accueil et de catégories restent dans les paramètres.
 
 Publication sur GitHub Pages autorisée après la recette locale. Aucun résultat sur véhicule physique ou dans Search Console n’est présenté comme acquis.

@@ -1,6 +1,6 @@
 # Audit et entretien du catalogue EvPortal
 
-Version actuelle : **2026-09-curated**, revue le **11 septembre 2026**. Le catalogue contient **147 services uniques**, dont **35 facultatifs** ; les 112 autres sont proposés à la première installation selon le pays choisi. Les contrôles historiques du 10 septembre sont conservés plus bas avec leurs résultats d’origine.
+Catalogue : **2026-09-curated**, revue des liens du **11 septembre 2026**. Il contient **147 services uniques**, dont **35 facultatifs** ; les 112 autres constituent désormais la même sélection initiale pour tous. Le filtre par pays a été retiré de l’interface. Les contrôles historiques du 10 septembre sont conservés plus bas avec leurs résultats d’origine.
 
 ## Sélection du 11 septembre 2026
 
@@ -10,11 +10,11 @@ Pluto TV utilise désormais l’accueil [pluto.tv](https://pluto.tv/), commun au
 
 La catégorie Jeux démarre avec **CrazyGames, 2048, Lichess, Little Alchemy 2 et Infinite Craft**. Les autres jeux, notamment Poki et les portails similaires, restent disponibles dans Ajouter. Tous les réseaux sociaux et les outils de travail Google Drive, Gmail, Google Agenda, GitHub, Notion, Google Docs, Outlook et OneDrive sont facultatifs (`defaultIncluded: false`). DeepL, Wikipédia et FAST.com restent proposés par défaut.
 
-Les préférences de pays filtrent la sélection initiale et les propositions d’Ajouter ; elles ne suppriment aucun raccourci déjà installé. Le choix **Tous les pays** désactive ce filtre. Les pays proposés sont FR, CA, US, MX, BE, GB, DE, ES, IT, PT, AU, NZ et CH. Le catalogue conserve aussi les codes d’autres pays cités par un éditeur, comme les pays africains couverts par TF1+.
+Le catalogue est maintenant commun à tous. Le bouton **« + »** l’ouvre par catégories repliables ; chaque service propose **Ajouter** ou **Supprimer** selon sa présence dans le tableau. Les raccourcis déjà personnalisés restent conservés. Les informations régionales relevées ci-dessous documentent les services externes ; elles ne déterminent plus leur présence dans le catalogue ou la sélection initiale.
 
 ### Régions documentées
 
-`countries` constitue une recommandation éditoriale par pays pour cette destination. L’absence de ce champ signifie qu’aucun filtre régional n’a été défini, pas qu’un service est garanti partout. Les droits peuvent varier selon le programme, le compte, le pays de résidence et le voyage en cours.
+Le champ historique `countries` conserve les régions documentées pour une destination. Il ne filtre plus l’interface. Son absence ne garantit pas qu’un service fonctionne partout. Les droits peuvent varier selon le programme, le compte, le pays de résidence et le voyage en cours.
 
 | Service | Pays recommandés | Source et nuance |
 | --- | --- | --- |

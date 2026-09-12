@@ -16,7 +16,8 @@
     // Creation limits keep the navigation concise; older imports retain their categories.
     const MAX_CUSTOM_CATEGORIES = 5;
     const MAX_NEW_CATEGORY_NAME = 16;
-    const CATEGORY_ICONS = Object.freeze(['all', 'favorites', 'cinema', 'music', 'tv', 'charging', 'games', 'navigation', 'social', 'news', 'weather', 'productivity', 'folder']);
+    const CATEGORY_ICONS = Object.freeze(['all', 'favorites', 'cinema', 'music', 'tv', 'charging', 'games', 'navigation', 'social', 'news', 'weather', 'productivity', 'folder',
+        'home', 'car', 'parking', 'map', 'globe', 'compass', 'coffee', 'food', 'shopping', 'heart', 'camera', 'tools']);
     const MAX_SHORTCUTS = 5000;
     const ID_PATTERN = /^[a-zA-Z0-9_-]{1,100}$/;
     let sequence = 0;
@@ -146,7 +147,7 @@
         return {
             version: 2,
             catalogVersion: string(raw.catalogVersion, t('state.catalogVersion'), 50, false),
-            theme: raw.theme || 'auto',
+            theme: raw.theme || 'dark',
             activeCategory: activeCategory,
             shortcutOrder: shortcutOrder,
             categories: categories
@@ -155,15 +156,13 @@
 
     function catalogServices(catalog, options) {
         const settings = options || {};
-        const market = settings.market || 'ALL';
         const seen = new Set();
         return catalog.categories.flatMap(function (category) {
             return category.shortcuts.filter(function (shortcut) {
                 const serviceID = shortcut.serviceId;
                 if (serviceID && seen.has(serviceID)) return false;
                 if (serviceID) seen.add(serviceID);
-                return (settings.includeOptional !== false || shortcut.defaultIncluded !== false)
-                    && (market === 'ALL' || !shortcut.countries || !shortcut.countries.length || shortcut.countries.includes(market));
+                return settings.includeOptional !== false || shortcut.defaultIncluded !== false;
             }).map(function (shortcut) { return { category: category, shortcut: shortcut }; });
         });
     }
@@ -190,7 +189,7 @@
         return normalizeState({
             version: 2,
             catalogVersion: catalog.version,
-            theme: 'auto',
+            theme: 'dark',
             activeCategory: categories.some(function (category) { return category.id === 'cinema'; }) ? 'cinema' : (categories[0]?.id || 'all'),
             categories: categories
         });
@@ -247,7 +246,7 @@
                 shortcuts: shortcuts
             };
         });
-        return normalizeState({ version: 2, categories: categories, theme: 'auto', activeCategory: 'all' });
+        return normalizeState({ version: 2, categories: categories, theme: 'dark', activeCategory: 'all' });
     }
 
     function parseImport(text, catalog) {

@@ -139,29 +139,36 @@ test('foreign local preferences are excluded from JSON and Telegraph state expor
     assert.deepEqual(JSON.parse(nodes[0].children[0]), normalized);
 });
 
-test('initial catalogue filters country and optional entries while retaining secondary-only categories', () => {
-    const france = Core.fromCatalog(catalog, { market: 'FR' });
-    const us = Core.fromCatalog(catalog, { market: 'US' });
+test('initial catalogue is global even with legacy country options, while optional entries remain opt-in', () => {
     const all = Core.fromCatalog(catalog);
     const ids = state => Core.allShortcutEntries(state).map(entry => entry.shortcut.serviceId);
-    assert.deepEqual(ids(france), ['canal-plus', 'pluto-tv', 'gulli', 'abrp']);
-    assert.deepEqual(ids(us), ['pluto-tv', 'tubitv', 'abrp']);
-    assert.ok(ids(all).includes('tubitv'));
-    assert.ok(ids(all).includes('gulli'));
+    const expected = ['canal-plus', 'pluto-tv', 'gulli', 'tubitv', 'abrp'];
+    assert.deepEqual(ids(all), expected);
+    for (const market of ['ALL', 'FR', 'CA', 'US', 'BE', 'GB', 'AU', 'unknown', undefined]) {
+        const initial = Core.fromCatalog(catalog, { market });
+        assert.deepEqual(ids(initial), expected, String(market));
+        assert.deepEqual(Core.catalogServices(catalog, { market }), Core.catalogServices(catalog));
+        assert.deepEqual(ids(Core.loadState(storage(), catalog, { market }).state), expected);
+        assert.equal(initial.categories.find(category => category.id === 'navigation').shortcuts.length, 0);
+        assert.equal(Core.shortcutsForCategory(initial, 'navigation').length, 1);
+    }
     assert.equal(all.categories.some(category => category.id === 'social'), false);
-    assert.equal(us.categories.find(category => category.id === 'navigation').shortcuts.length, 0);
-    assert.equal(Core.shortcutsForCategory(us, 'navigation').length, 1);
     assert.equal(Core.catalogServices(catalog, { market: 'FR' }).some(entry => entry.shortcut.serviceId === 'mastodon'), true);
     assert.equal(Core.catalogServices(catalog, { market: 'FR', includeOptional: false }).some(entry => entry.shortcut.serviceId === 'mastodon'), false);
     assert.equal(Core.loadState(storage(), catalog, { market: 'US' }).state.categories.some(category => category.id === 'social'), false);
 });
 
-test('country changes and catalogue updates preserve installed optional or other-country personal state', () => {
+test('global catalogue changes preserve installed services and never reinsert deleted links or categories', () => {
     let state = Core.fromCatalog(catalog, { market: 'FR' });
     state = Core.addCatalogService(state, catalog, 'mastodon');
+    const gulli = Core.allShortcutEntries(state).find(entry => entry.shortcut.serviceId === 'gulli');
+    state = Core.removeShortcut(state, gulli.shortcut.id);
+    const abrp = Core.allShortcutEntries(state).find(entry => entry.shortcut.serviceId === 'abrp');
+    state = Core.updateShortcut(state, abrp.shortcut.id, { name: 'Mes étapes', favorite: true, clickCount: 17 });
     const saved = storage();
     Core.saveState(saved, state);
     assert.deepEqual(Core.loadState(saved, catalog, { market: 'US' }).state, state);
+    assert.equal(Core.allShortcutEntries(Core.applyCatalogUpdates(state, catalog).state).some(entry => entry.shortcut.serviceId === 'gulli'), false);
     const empty = Core.normalizeState({ version: 2, categories: [] });
     assert.deepEqual(Core.applyCatalogUpdates(empty, catalog).state.categories, []);
 });
