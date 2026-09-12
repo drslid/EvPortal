@@ -61,7 +61,9 @@ export async function checkPublished(plan, fetcher = fetch) {
             response = await fetcher(url, { redirect: 'error', cache: 'no-store', signal: AbortSignal.timeout(8000) });
         } catch (_) { throw pending('The public release cannot be checked yet.'); }
         if (response.status !== 200) throw pending('The public release is not fully available yet.');
-        const body = Buffer.from(await response.arrayBuffer());
+        let body;
+        try { body = Buffer.from(await response.arrayBuffer()); }
+        catch (_) { throw pending('The public release response was interrupted.'); }
         if (body.length > 2 * 1024 * 1024) throw new Error('Unexpectedly large public page response.');
         return body;
     }

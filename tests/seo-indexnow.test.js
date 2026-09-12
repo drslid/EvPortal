@@ -113,6 +113,23 @@ test('a fully matching release sends exactly one request and distinguishes recei
     }
 });
 
+test('an interrupted public response can be retried without submitting an unchecked release', async t => {
+    const f = await fixture(t), plan = f.notificationPlan(f.root);
+    let interrupt = true;
+    const fetcher = async (url, options) => {
+        const response = await f.fetcher(url, options);
+        if (url === plan.release.url && interrupt) {
+            interrupt = false;
+            return { status: 200, arrayBuffer: async () => { throw new Error('Connection interrupted'); } };
+        }
+        return response;
+    };
+    await assert.rejects(f.submitNotification(plan, fetcher), { code: 'NOT_DEPLOYED' });
+    assert.ok(f.requests.every(request => request.options.method !== 'POST'));
+    assert.equal((await f.submitNotification(plan, fetcher)).status, 200);
+    assert.equal(f.requests.filter(request => request.options.method === 'POST').length, 1);
+});
+
 test('IndexNow rejection is reported without an automatic second submission', async t => {
     const f = await fixture(t), plan = f.notificationPlan(f.root);
     f.setStatus(429);
