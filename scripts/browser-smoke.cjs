@@ -25,12 +25,19 @@ const check = (label) => { checks.push(label); console.log('✓ ' + label); };
 const file = (data) => ({ name: 'configuration.json', mimeType: 'application/json', buffer: Buffer.from(typeof data === 'string' ? data : JSON.stringify(data)) });
 (async () => {
     await fs.mkdir(output, { recursive: true });
-    await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
-    const origin = 'http://127.0.0.1:' + server.address().port;
-    const url = origin + '/EvPortal/';
+    let url;
+    if (process.env.EVPORTAL_TEST_URL) {
+        const target = new URL(process.env.EVPORTAL_TEST_URL);
+        assert.ok(target.protocol === 'http:' && ['127.0.0.1', 'localhost', '[::1]'].includes(target.hostname), 'Browser tests require a local HTTP portal');
+        url = target.href;
+    } else {
+        await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+        url = 'http://127.0.0.1:' + server.address().port + '/EvPortal/';
+    }
+    const origin = new URL(url).origin;
     browser = await chromium.launch({ headless: true });
     async function context(options = {}) {
-        const c = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: 'fr-FR', colorScheme: 'dark', reducedMotion: 'reduce', ...options });
+        const c = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: 'fr-FR', colorScheme: 'light', reducedMotion: 'reduce', ...options });
         c.on('page', page => page.on('pageerror', error => errors.push(error.message)));
         await c.route('**/*', route => new URL(route.request().url()).origin === origin ? route.continue() : route.abort());
         return c;
@@ -40,12 +47,13 @@ const file = (data) => ({ name: 'configuration.json', mimeType: 'application/jso
     const requests = [];
     page.on('request', req => requests.push(req.url()));
     await page.goto(url, { waitUntil: 'networkidle' });
-    const total = await page.evaluate(() => EVState.catalogServices(EV_CATALOG, { market: EVPreferences.suggestMarket(navigator.language), includeOptional: false }).length);
+    const total = await page.evaluate(() => EVState.catalogServices(EV_CATALOG, { includeOptional: false }).length);
     assert.equal(Number(await page.locator('#shortcutTotal').textContent()), total);
     assert.equal(await page.locator('h1').count(), 1);
     assert.equal(requests.filter(req => new URL(req).origin !== origin).length, 0);
     assert.ok(await page.locator('.shortcut').count() > 0);
-    check('Catalogue chargé sous /EvPortal/, un H1, aucune requête tierce au démarrage');
+    assert.equal(await page.locator('html').getAttribute('data-theme'), 'dark');
+    check('Catalogue global chargé, sombre initial, un H1, aucune requête tierce au démarrage');
 
     await page.locator('#editModeToggle').click();
     await page.getByRole('button', { name: 'Ajouter Netflix aux favoris', exact: true }).click();
@@ -67,14 +75,14 @@ const file = (data) => ({ name: 'configuration.json', mimeType: 'application/jso
 
     await page.evaluate(() => localStorage.setItem('other-app-secret', 'do-not-export'));
     await page.locator('#editModeToggle').click();
-    await page.locator('#settingsButton').click();
-    await page.locator('#addPageButton').click();
+    await page.locator('#catalogButton').click();
+    await page.locator('#catalogCategoryButton').click();
     const customLabel = 'Voyages d’été';
     await page.locator('#newPageName').fill(customLabel);
     await page.locator('#addPageForm [type="submit"]').click();
     assert.equal(await page.locator('#sectionTitle').textContent(), customLabel);
-    await page.locator('#settingsButton').click();
-    await page.locator('#addShortcutButton').click();
+    await page.locator('#catalogButton').click();
+    await page.locator('#catalogCustomButton').click();
     const literalName = '<img src=x onerror=alert(1)>';
     await page.locator('#shortcutName').fill(literalName);
     await page.locator('#shortcutURL').fill('https://example.org/mes-voyages');
@@ -250,27 +258,26 @@ const file = (data) => ({ name: 'configuration.json', mimeType: 'application/jso
     check('Suppression dans un autre onglet invalide la sauvegarde sélectionnée sans toucher aux raccourcis');
 
     const preferencesContext = await context();
+    await preferencesContext.addInitScript(() => {
+        if (location.protocol !== 'http:') return;
+        if (!localStorage.getItem('evportal.preferences.v1')) localStorage.setItem('evportal.preferences.v1', JSON.stringify({ version: 1, market: 'FR', homeFavorites: false, hiddenCategoryIds: [] }));
+    });
     const preferencesPage = await preferencesContext.newPage();
     await preferencesPage.goto(url, { waitUntil: 'networkidle' });
     const installedIDs = () => preferencesPage.evaluate(() => JSON.parse(localStorage.getItem(EVState.STORAGE_KEY)).categories.flatMap(category => category.shortcuts).map(shortcut => shortcut.serviceId));
     assert.equal((await installedIDs()).includes('github'), false, 'GitHub is available on demand, not installed by default');
+    assert.equal((await installedIDs()).includes('crave'), true, 'Crave is initially present even with a saved French country preference');
     await preferencesPage.locator('#editModeToggle').click();
     await preferencesPage.getByRole('button', { name: 'Ajouter Netflix aux favoris', exact: true }).click();
     await preferencesPage.locator('#editModeToggle').click();
     await preferencesPage.locator('#catalogButton').click();
     await preferencesPage.locator('#catalogSearch').fill('Crave');
-    assert.equal(await preferencesPage.locator('.catalog-item[data-service-id="crave"]').count(), 0);
-    await preferencesPage.locator('#catalogMarketToggle').check();
-    assert.equal(await preferencesPage.getByRole('button', { name: 'Ajouter Crave', exact: true }).isVisible(), true);
-    await preferencesPage.locator('#catalogMarketToggle').uncheck();
-    assert.equal(await preferencesPage.locator('.catalog-item[data-service-id="crave"]').count(), 0);
+    assert.equal(await preferencesPage.locator('.catalog-item[data-service-id="crave"]').count(), 1);
+    assert.equal(await preferencesPage.getByRole('button', { name: 'Supprimer Crave', exact: true }).isEnabled(), true);
+    assert.equal(await preferencesPage.locator('#catalogMarketToggle, #marketSelect').count(), 0);
     await preferencesPage.locator('#catalogDialog [data-close-dialog]').click();
-    const beforeCountry = await preferencesPage.evaluate(() => localStorage.getItem(EVState.STORAGE_KEY));
     await preferencesPage.locator('#settingsButton').click();
     await preferencesPage.locator('#catalogPreferences').evaluate(details => { details.open = true; });
-    assert.equal(await preferencesPage.locator('#marketSelect').inputValue(), 'FR');
-    await preferencesPage.locator('#marketSelect').selectOption('CA');
-    assert.equal(await preferencesPage.evaluate(() => localStorage.getItem(EVState.STORAGE_KEY)), beforeCountry, 'Country changes suggestions without rewriting installed shortcuts');
     await preferencesPage.locator('#homeFavoritesToggle').check();
     await preferencesPage.locator('#categoryVisibilityOptions input[value="cinema"]').uncheck();
     await preferencesPage.locator('#settingsDialog [data-close-dialog]').first().click();
@@ -285,18 +292,22 @@ const file = (data) => ({ name: 'configuration.json', mimeType: 'application/jso
     assert.equal(await preferencesPage.locator('#menu [data-category="cinema"]').count(), 0);
     await preferencesPage.locator('#catalogButton').click();
     await preferencesPage.locator('#catalogSearch').fill('Crave');
-    assert.equal(await preferencesPage.getByRole('button', { name: 'Ajouter Crave', exact: true }).isVisible(), true);
+    assert.equal(await preferencesPage.getByRole('button', { name: 'Supprimer Crave', exact: true }).isEnabled(), true);
     await preferencesPage.locator('#catalogSearch').fill('GitHub');
     await preferencesPage.getByRole('button', { name: 'Ajouter GitHub', exact: true }).click();
     assert.equal((await installedIDs()).filter(id => id === 'github').length, 1);
-    assert.equal(await preferencesPage.getByRole('button', { name: 'Déjà présent : GitHub', exact: true }).isDisabled(), true);
+    assert.equal(await preferencesPage.getByRole('button', { name: 'Supprimer GitHub', exact: true }).isEnabled(), true);
+    await preferencesPage.getByRole('button', { name: 'Supprimer GitHub', exact: true }).click();
+    assert.equal((await installedIDs()).includes('github'), false);
+    await preferencesPage.getByRole('button', { name: 'Ajouter GitHub', exact: true }).click();
+    assert.equal((await installedIDs()).filter(id => id === 'github').length, 1);
     await preferencesPage.locator('#catalogDialog [data-close-dialog]').click();
     await preferencesPage.locator('#settingsButton').click();
-    assert.equal(await preferencesPage.locator('#marketSelect').inputValue(), 'CA');
+    assert.equal(await preferencesPage.locator('#marketSelect').count(), 0);
     const localPreferences = await preferencesPage.evaluate(() => localStorage.getItem(EVPreferences.STORAGE_KEY));
     await preferencesPage.locator('#languageSelect').selectOption('en');
-    assert.equal(await preferencesPage.locator('#marketSelect').inputValue(), 'CA');
     assert.equal(await preferencesPage.evaluate(() => localStorage.getItem(EVPreferences.STORAGE_KEY)), localPreferences);
+    assert.equal(await preferencesPage.evaluate(() => Object.hasOwn(EVPreferences.createPreferences().read(), 'market')), false);
     await preferencesPage.locator('#languageSelect').selectOption('fr');
     await preferencesPage.locator('#shareButton').click();
     await preferencesPage.locator('#exportConfigButton').evaluate(button => { button.closest('details').open = true; });
@@ -308,7 +319,7 @@ const file = (data) => ({ name: 'configuration.json', mimeType: 'application/jso
         assert.equal(portableJSON.includes('"' + key + '":'), false, 'JSON excludes device preference ' + key);
         assert.equal(telegraphContent.includes('\\"' + key + '\\":'), false, 'Telegra.ph excludes device preference ' + key);
     }
-    check('Pays indépendant de la langue, catalogue international à la demande, GitHub optionnel, catégories masquées sans perte, accueil Favoris local et préférences absentes des exports');
+    check('Ancien pays ignoré, Crave initial, ajout/suppression GitHub, catégories masquées sans perte, accueil Favoris et préférences conservés après changement de langue et absents des exports');
 
     // Accessibility and layout checks on a clean dashboard, in both themes.
     const visualContext = await context();
@@ -339,5 +350,5 @@ const file = (data) => ({ name: 'configuration.json', mimeType: 'application/jso
     console.log('\n' + checks.length + ' groupes de vérifications réussis. Captures et rapports : test-results/');
 })().catch(error => { console.error(error); process.exitCode = 1; }).finally(async () => {
     if (browser) await browser.close();
-    await new Promise(resolve => server.close(resolve));
+    if (server.listening) await new Promise(resolve => server.close(resolve));
 });

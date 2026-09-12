@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
     try { storage = window.localStorage; } catch (_) { storage = null; }
     let preferenceStore = window.EVPreferences.createPreferences(storage);
     let preferences = preferenceStore.read();
-    const loaded = Core.loadState(storage, catalog, { market: preferences.market });
+    const loaded = Core.loadState(storage, catalog);
     let state = loaded.state;
     if (preferences.homeFavorites) state.activeCategory = 'favorites';
     else if (preferences.hiddenCategoryIds.includes(state.activeCategory)) state.activeCategory = 'all';
@@ -64,7 +64,8 @@ document.addEventListener('DOMContentLoaded', function () {
     let announcementTimer;
     let usageNeedsRender = false;
     let previousLanguage = I18n.language;
-    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
+    const catalogGroupOpen = new Map();
+    let catalogSearchActive = false;
     const editLabel = $('editModeToggle').querySelector('span') || document.createElement('span');
     Array.from($('editModeToggle').childNodes).forEach(function (node) { if (node.nodeType === Node.TEXT_NODE) node.remove(); });
     if (!editLabel.parentElement) $('editModeToggle').appendChild(editLabel);
@@ -138,14 +139,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function renderPreferences() {
-        const country = $('marketSelect');
-        country.replaceChildren();
-        window.EVPreferences.MARKETS.forEach(function (market) {
-            const option = element('option', '', t('prefs.country.' + market));
-            option.value = market;
-            country.append(option);
-        });
-        country.value = preferences.market;
         $('homeFavoritesToggle').checked = preferences.homeFavorites;
         const fragment = document.createDocumentFragment();
         state.categories.forEach(function (category) {
@@ -165,7 +158,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         $('categoryVisibilityOptions').replaceChildren(fragment);
     }
-    $('marketSelect').addEventListener('change', function () { updatePreferences({ market: this.value }); });
     $('homeFavoritesToggle').addEventListener('change', function () { updatePreferences({ homeFavorites: this.checked }); });
 
     function matchesShortcut(shortcut, category, search) {
@@ -575,26 +567,33 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         const picker = $('categoryIconPicker');
         if (picker) {
-            const previousOptions = picker.querySelector('.category-icon-options');
-            if (previousOptions) previousOptions.remove();
+            picker.querySelectorAll(':scope > .category-icon-options, :scope > #moreCategoryIcons').forEach(function (node) { node.remove(); });
+            const selected = category ? (category.icon || (knownIcons.has(category.id) ? category.id : 'folder')) : 'folder';
+            const usual = ['folder', 'charging', 'navigation', 'music', 'cinema', 'games', 'weather', 'home'];
+            if (!usual.includes(selected) && knownIcons.has(selected)) usual.push(selected);
             const options = element('div', 'category-icon-options');
-            Core.CATEGORY_ICONS.forEach(function (name) {
+            const more = element('details');
+            more.id = 'moreCategoryIcons';
+            const summary = element('summary', '', t('app.moreIcons'));
+            summary.dataset.i18n = 'app.moreIcons';
+            const otherOptions = element('div', 'category-icon-options');
+            more.append(summary, otherOptions);
+            usual.concat(Core.CATEGORY_ICONS.filter(function (name) { return !usual.includes(name); })).forEach(function (name) {
                 const label = element('label', 'category-icon-option');
                 label.title = t('app.icon.' + name);
                 const input = element('input');
                 input.type = 'radio';
                 input.name = 'categoryIcon';
                 input.value = name;
-                input.checked = name === (category ? (category.icon || (knownIcons.has(category.id) ? category.id : 'folder')) : 'folder');
+                input.checked = name === selected;
                 label.append(input, icon(name), element('span', 'visually-hidden', t('app.icon.' + name)));
-                options.appendChild(label);
+                (usual.includes(name) ? options : otherOptions).appendChild(label);
             });
-            picker.appendChild(options);
+            picker.append(options, more);
         }
         openDialog($('pageDialog'));
         $('newPageName').focus();
     }
-    $('addPageButton').addEventListener('click', function () { openCategoryDialog(); });
     $('addPageForm').addEventListener('submit', function (event) {
         event.preventDefault();
         const inputLabel = $('newPageName').value.trim();
@@ -624,7 +623,6 @@ document.addEventListener('DOMContentLoaded', function () {
         closeDialog($('pageDialog'));
         render('nav-' + category.id);
     });
-    $('addShortcutButton').addEventListener('click', function () { openShortcutDialog(); });
     $('addShortcutForm').addEventListener('submit', function (event) {
         event.preventDefault();
         try {
@@ -654,18 +652,26 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function renderCatalog() {
         const search = $('catalogSearch').value.trim();
+        if (!catalogSearchActive) $('catalogContent').querySelectorAll('.catalog-group').forEach(function (group) {
+            catalogGroupOpen.set(group.dataset.categoryId, group.open);
+        });
+        catalogSearchActive = Boolean(search);
         const installed = allShortcuts();
-        const existingURLs = new Set(installed.map(function (row) { return row.shortcut.url; }));
-        const existingServices = new Set(installed.map(function (row) { return row.shortcut.serviceId; }).filter(Boolean));
-        const entries = Core.catalogServices(catalog, { market: $('catalogMarketToggle').checked ? 'ALL' : preferences.market, includeOptional: true });
+        const entries = Core.catalogServices(catalog, { includeOptional: true });
         const fragment = document.createDocumentFragment();
         let count = 0;
-        let available = 0;
         catalog.categories.forEach(function (category) {
             const shortcuts = entries.filter(function (entry) { return entry.category.id === category.id && matchesShortcut(entry.shortcut, category, search); }).map(function (entry) { return entry.shortcut; });
             if (!shortcuts.length) return;
-            const section = element('section', 'catalog-section');
-            section.appendChild(element('h3', '', categoryLabel(category)));
+            const section = element('details', 'catalog-group');
+            section.dataset.categoryId = category.id;
+            section.open = catalogSearchActive || (catalogGroupOpen.has(category.id) ? catalogGroupOpen.get(category.id) : count === 0);
+            section.addEventListener('toggle', function () {
+                if (section.isConnected && !catalogSearchActive) catalogGroupOpen.set(category.id, section.open);
+            });
+            const summary = element('summary');
+            summary.append(icon(category.icon || category.id), element('span', 'catalog-group-label', categoryLabel(category)), element('span', 'catalog-count', String(shortcuts.length)));
+            section.appendChild(summary);
             shortcuts.forEach(function (shortcut) {
                 count += 1;
                 const row = element('div', 'catalog-item');
@@ -675,31 +681,36 @@ document.addEventListener('DOMContentLoaded', function () {
                     const member = catalog.categories.find(function (item) { return item.id === id; });
                     return member ? categoryLabel(member) : '';
                 }).filter(Boolean);
-                copy.append(element('strong', '', shortcut.name), element('p', '', memberships.length > 1 ? memberships.join(' · ') : new URL(shortcut.url).hostname));
-                const present = existingServices.has(shortcut.serviceId) || existingURLs.has(Core.normalizeURL(shortcut.url));
-                if (!present) available += 1;
-                const add = action(t(present ? 'app.alreadyPresentNamed' : 'app.addNamed', { name: shortcut.name }), present ? t('app.alreadyPresent') : t('app.add'), function () {
+                const serviceName = element('strong', '', shortcut.name);
+                serviceName.dir = 'auto';
+                copy.append(serviceName, element('p', '', memberships.length > 1 ? memberships.join(' · ') : new URL(shortcut.url).hostname));
+                const present = installed.some(function (entry) { return entry.shortcut.serviceId === shortcut.serviceId; });
+                const add = action(t(present ? 'app.removeCatalogNamed' : 'app.addNamed', { name: shortcut.name }), undefined, function () {
                     try {
-                        if (allShortcuts().length >= Core.MAX_SHORTCUTS) throw new Error(t('app.shortcutLimit'));
-                        state = Core.addCatalogService(state, catalog, shortcut.serviceId);
-                        persist(t('app.addedToCategory', { name: shortcut.name, category: categoryLabel(category) }));
+                        const current = allShortcuts().find(function (entry) { return entry.shortcut.serviceId === shortcut.serviceId; });
+                        if (current) state = Core.removeShortcut(state, current.shortcut.id);
+                        else {
+                            if (allShortcuts().length >= Core.MAX_SHORTCUTS) throw new Error(t('app.shortcutLimit'));
+                            state = Core.addCatalogService(state, catalog, shortcut.serviceId);
+                        }
+                        persist(current ? t('app.catalogRemoved', { name: shortcut.name }) : t('app.addedToCategory', { name: shortcut.name, category: categoryLabel(category) }));
                         render();
                         renderCatalog();
-                        const next = Array.from($('catalogContent').querySelectorAll('.catalog-add')).find(function (button) { return !button.disabled; });
-                        if (next) next.focus({ preventScroll: true });
+                        const next = Array.from($('catalogContent').querySelectorAll('.catalog-item')).find(function (item) { return item.dataset.serviceId === shortcut.serviceId; });
+                        if (next) next.querySelector('button').focus({ preventScroll: true });
                     } catch (error) { announce(error.message, true); }
-                }, 'button catalog-add' + (present ? ' is-added' : ''));
-                add.disabled = present;
-                row.append(copy, add);
+                }, 'button catalog-add' + (present ? ' catalog-remove is-added' : ''));
+                const glyph = element('span', 'catalog-action-icon', present ? '×' : '+');
+                glyph.setAttribute('aria-hidden', 'true');
+                add.append(glyph, element('span', '', t(present ? 'app.remove' : 'app.add')));
+                row.append(shortcutMark(shortcut), copy, add);
                 section.appendChild(row);
             });
             fragment.appendChild(section);
         });
         if (!count) fragment.appendChild(element('p', 'empty-state', t('app.noServices')));
         if ($('catalogStatus')) {
-            $('catalogStatus').textContent = !search && !available
-                ? t('app.catalogComplete')
-                : (count ? t('app.catalogHint') : '');
+            $('catalogStatus').textContent = count ? t('app.catalogHint') : '';
             $('catalogStatus').hidden = !$('catalogStatus').textContent;
         }
         $('catalogContent').replaceChildren(fragment);
@@ -707,7 +718,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function openCatalog() {
         $('catalogSearch').value = '';
-        $('catalogMarketToggle').checked = false;
         renderCatalog();
         openDialog($('catalogDialog'));
         $('catalogSearch').focus();
@@ -722,7 +732,6 @@ document.addEventListener('DOMContentLoaded', function () {
         openCategoryDialog();
     });
     $('catalogSearch').addEventListener('input', renderCatalog);
-    $('catalogMarketToggle').addEventListener('change', renderCatalog);
 
     function backupError(error) {
         return error.i18nKey ? t(error.i18nKey, error.i18nParams) : error.name === 'AbortError' ? t('app.connectionTimeout')
@@ -1051,7 +1060,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if ($('settingsDialog')) closeDialog($('settingsDialog'));
         if (!window.confirm(t('app.confirmReset'))) return;
         const theme = state.theme;
-        state = Core.fromCatalog(catalog, { market: preferences.market });
+        state = Core.fromCatalog(catalog);
         state.theme = theme;
         storageLocked = false;
         storageWarningKey = '';
@@ -1064,7 +1073,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function applyTheme() {
         if (state.theme === 'auto') {
-            state.theme = systemTheme.matches ? 'dark' : 'light';
+            state.theme = 'dark';
             persist();
         }
         const resolved = state.theme;
@@ -1086,6 +1095,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const tesla = window.EVTesla;
     const inTesla = tesla && tesla.isTesla(navigator.userAgent);
     $('fullscreenButton').hidden = !(inTesla || (document.fullscreenEnabled && document.documentElement.requestFullscreen));
+    if ($('fullscreenDock')) $('fullscreenDock').hidden = $('fullscreenButton').hidden;
     async function fullscreen(forceTesla) {
         if ($('settingsDialog') && $('settingsDialog').open) closeDialog($('settingsDialog'));
         try {
@@ -1095,12 +1105,19 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     $('fullscreenButton').addEventListener('click', function () { fullscreen(false); });
     if ($('teslaFullscreenButton')) $('teslaFullscreenButton').addEventListener('click', function () { fullscreen(true); });
-    document.addEventListener('fullscreenchange', function () {
+    function refreshFullscreen() {
         const active = Boolean(document.fullscreenElement);
+        const label = t(active ? 'app.exitFullscreen' : 'app.enterFullscreen');
         $('fullscreenButton').setAttribute('aria-pressed', String(active));
-        $('fullscreenButton').setAttribute('aria-label', active ? t('app.exitFullscreen') : t('app.enterFullscreen'));
-        $('fullscreenButton').title = active ? t('app.exitFullscreen') : t('app.enterFullscreen');
-    });
+        $('fullscreenButton').setAttribute('aria-label', label);
+        $('fullscreenButton').title = label;
+        const text = $('fullscreenButton').querySelector('span');
+        if (text) {
+            text.dataset.i18n = active ? 'app.exitFullscreen' : 'static.fullscreen';
+            text.textContent = t(text.dataset.i18n);
+        }
+    }
+    document.addEventListener('fullscreenchange', refreshFullscreen);
     if ($('settingsButton')) $('settingsButton').addEventListener('click', function () { renderPreferences(); openDialog($('settingsDialog')); });
     function toggleSearch(show) {
         const panel = $('searchPanel');
@@ -1193,10 +1210,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if ($('restoreDialog').open) { renderLocalBackups(); if (selectedBackup) $('restoreSummary').textContent = backupSummary(selectedBackup.state); }
         if ($('catalogDialog').open) renderCatalog();
         if ($('shortcutDialog').open) renderAdditionalCategories(selectedAdditionalCategories());
-        const activeFullscreen = Boolean(document.fullscreenElement);
-        const fullscreenLabel = t(activeFullscreen ? 'app.exitFullscreen' : 'app.enterFullscreen');
-        $('fullscreenButton').setAttribute('aria-label', fullscreenLabel);
-        $('fullscreenButton').title = fullscreenLabel;
+        refreshFullscreen();
         previousLanguage = I18n.language;
     }
     if ($('languageSelect')) {
@@ -1210,6 +1224,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     I18n.translateDOM(document);
     applyTheme();
+    refreshFullscreen();
     render();
     if (!storageLocked) persist([loaded.source === 'legacy' ? t('app.legacyRecovered') : '', loaded.updates ? t('app.catalogUpdated', { count: loaded.updates }) : ''].filter(Boolean).join(' '));
     else announce('');

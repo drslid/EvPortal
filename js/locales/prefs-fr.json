@@ -1,26 +1,7 @@
 {
-  "prefs.title": "Catalogue et accueil",
-  "prefs.country": "Pays du catalogue",
-  "prefs.marketHint": "Le pays adapte la sélection proposée dans Ajouter.",
+  "prefs.title": "Accueil",
   "prefs.homeFavorites": "Ouvrir sur mes favoris",
   "prefs.visibleCategories": "Catégories affichées",
-  "prefs.categoriesHint": "Les raccourcis restent accessibles dans Tous et Favoris.",
-  "prefs.allMarkets": "Tous les pays",
-  "prefs.showAllMarkets": "Voir tous les pays",
   "prefs.saveFailed": "Préférences conservées pour cette session seulement.",
-  "prefs.invalid": "Ces préférences ne sont pas valides.",
-  "prefs.country.FR": "France",
-  "prefs.country.CA": "Canada",
-  "prefs.country.US": "États-Unis",
-  "prefs.country.BE": "Belgique",
-  "prefs.country.GB": "Royaume-Uni",
-  "prefs.country.DE": "Allemagne",
-  "prefs.country.ES": "Espagne",
-  "prefs.country.IT": "Italie",
-  "prefs.country.PT": "Portugal",
-  "prefs.country.AU": "Australie",
-  "prefs.country.NZ": "Nouvelle-Zélande",
-  "prefs.country.CH": "Suisse",
-  "prefs.country.ALL": "Tous les pays",
-  "prefs.country.MX": "Mexique"
+  "prefs.invalid": "Ces préférences ne sont pas valides."
 }

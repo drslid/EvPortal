@@ -248,8 +248,14 @@ const errors = [];
     for (const name of ['Mes recharges', 'Voyages', 'Famille']) {
         await custom.locator('#catalogButton').click();
         await custom.locator('#catalogCategoryButton').click();
+        assert.equal(await custom.locator('#categoryIconPicker input[name="categoryIcon"]').count(), 25);
+        assert.equal(await custom.locator('#categoryIconPicker > .category-icon-options .category-icon-option').count(), 8);
+        assert.equal(await custom.locator('#moreCategoryIcons').evaluate(details => details.open), false);
         await custom.locator('#newPageName').fill(name);
-        await custom.locator('input[name="categoryIcon"][value="charging"]').check();
+        if (name === 'Famille') {
+            await custom.locator('#moreCategoryIcons > summary').click();
+            await custom.locator('input[name="categoryIcon"][value="coffee"]').check();
+        } else await custom.locator('input[name="categoryIcon"][value="charging"]').check();
         await custom.locator('#addPageForm [type="submit"]').click();
         assert.equal(await custom.locator('#pageDialog').evaluate(dialog => dialog.open), false);
     }
@@ -267,6 +273,12 @@ const errors = [];
     await custom.locator('input[name="categoryIcon"][value="music"]').check();
     assert.equal(await custom.locator('#addPageForm [type="submit"]').isEnabled(), true);
     await custom.locator('#addPageForm [type="submit"]').click();
+    await custom.getByRole('button', { name: 'Modifier la catégorie Famille', exact: true }).click();
+    assert.equal(await custom.locator('#categoryIconPicker > .category-icon-options .category-icon-option').count(), 9, 'The currently selected extra icon stays visible while editing');
+    assert.equal(await custom.locator('#categoryIconPicker > .category-icon-options input[value="coffee"]').isChecked(), true);
+    assert.equal(await custom.locator('#moreCategoryIcons').evaluate(details => details.open), false);
+    assert.equal(await custom.locator('#categoryIconPicker input[name="categoryIcon"]').count(), 25, 'Editing does not duplicate the selected icon');
+    await custom.locator('#pageDialog [data-close-dialog]').first().click();
     await custom.reload({ waitUntil: 'networkidle' });
     const renamed = (await saved(custom)).categories.find(item => item.id === category.id);
     assert.equal(renamed.label, 'Mes pauses');
@@ -282,7 +294,26 @@ const errors = [];
     assert.equal((await saved(custom)).theme, 'dark');
     assert.equal(await custom.locator('#themeToggle use').getAttribute('href'), '#icon-sun');
     assert.equal(await custom.locator('#themeToggle svg').count(), 1);
-    console.log('✓ Add creates custom tiles; five custom categories have editable matching icons; visible theme control preserves its icon');
+    console.log('✓ Add creates shortcuts and categories; 25 icons reveal 8 common choices first and keep extra selected icons visible when editing');
+
+    const lightSystem = await pageFor({ colorScheme: 'light' });
+    await lightSystem.evaluate(() => localStorage.removeItem(EVState.STORAGE_KEY));
+    await lightSystem.reload({ waitUntil: 'networkidle' });
+    assert.equal((await saved(lightSystem)).theme, 'dark', 'A fresh portal defaults to dark even on a light operating system');
+    await lightSystem.evaluate(() => {
+        const state = JSON.parse(localStorage.getItem(EVState.STORAGE_KEY)); state.theme = 'auto';
+        localStorage.setItem(EVState.STORAGE_KEY, JSON.stringify(state));
+    });
+    await lightSystem.reload({ waitUntil: 'networkidle' });
+    assert.equal((await saved(lightSystem)).theme, 'dark', 'Legacy automatic theme resolves to the explicit dark default');
+    await lightSystem.locator('#themeToggle').click();
+    await lightSystem.reload({ waitUntil: 'networkidle' });
+    assert.equal((await saved(lightSystem)).theme, 'light', 'An explicit light choice survives reload');
+    await lightSystem.addInitScript(() => Object.defineProperty(document, 'fullscreenEnabled', { value: false, configurable: true }));
+    await lightSystem.reload({ waitUntil: 'networkidle' });
+    assert.equal(await lightSystem.locator('#fullscreenButton').isVisible(), false);
+    assert.equal(await lightSystem.locator('#fullscreenDock').isVisible(), false, 'Unavailable fullscreen leaves no floating dock');
+    console.log('✓ Dark is the default independently of the system; explicit light persists and unavailable fullscreen hides its dock');
 
     const multilingual = await pageFor();
     const originalSettings = await saved(multilingual);
@@ -327,6 +358,8 @@ const errors = [];
     await tesla.addInitScript(() => Object.defineProperty(document, 'fullscreenEnabled', { value: false, configurable: true }));
     await tesla.reload({ waitUntil: 'networkidle' });
     assert.equal(await tesla.locator('#fullscreenButton').isVisible(), true);
+    assert.equal(await tesla.locator('#fullscreenDock').isVisible(), true);
+    assert.equal(await tesla.locator('#header #fullscreenButton').count(), 0);
     let redirect;
     await tesla.route('https://www.youtube.com/redirect?*', route => { redirect = route.request().url(); return route.fulfill({ contentType: 'text/html', body: 'Mock Theater transition' }); });
     await tesla.locator('#fullscreenButton').click();
