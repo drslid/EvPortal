@@ -1,87 +1,74 @@
 # EvPortal
 
-A simple shortcut dashboard for the Tesla browser. Keep charging, maps, music and entertainment a tap away, and personalize your shortcuts from your phone or computer.
+Your shortcuts for Tesla. Find charging, maps, music and entertainment on a clean screen, and organize everything from your phone.
 
-## [Open EvPortal →](https://drslid.github.io/EvPortal/en/)
+## [Open EvPortal →](https://drslid.github.io/EvPortal/)
 
-[User guide](https://drslid.github.io/EvPortal/en/aide.html) · [Guide français](https://drslid.github.io/EvPortal/fr/aide.html) · [Report an issue](https://github.com/drslid/EvPortal/issues)
+**Open the link in your car or phone browser and save it as a favorite. Nothing to install. No EvPortal account required.**
 
-[![EvPortal project illustration](img/evportal-social.png)](https://drslid.github.io/EvPortal/en/)
+[User guide](https://drslid.github.io/EvPortal/en/aide.html) · [Guide français](https://drslid.github.io/EvPortal/fr/aide.html) · [What's new in version 2](https://github.com/drslid/EvPortal/releases/tag/v2.0.0)
 
-*Project illustration.*
+[![EvPortal project illustration](img/evportal-social.png)](https://drslid.github.io/EvPortal/)
 
-Free, open source and usable without an EvPortal account. The dashboard runs on HTML, CSS and JavaScript, with its fonts, icons and interface libraries served locally.
+## Your phone makes it easier
 
-## What you can do
+Keep a backup of your car's shortcuts on your phone, edit them comfortably, then send them back by QR. **No backup code or link to type.**
 
-| Feature | How it works |
-| --- | --- |
-| Common catalogue | 147 services: 112 in the initial selection and 35 optional additions. The same catalogue is available to everyone. |
-| Direct controls | Open **+** to add or remove services, create a shortcut or create a category. |
-| Personal organization | Drag shortcuts in categories or Favorites. A service can belong to several categories while keeping one favorite status and one usage counter. |
-| Custom categories | Create up to five personal categories and choose from 25 icons. Existing configurations remain supported. |
-| Quick access | Search across shortcuts, open on Favorites, hide category tabs and use **All** to see your most-opened services first. |
-| Display choices | Dark by default, an optional light theme, **Standard / Small** shortcuts and optional shortcut names. |
-| Backups | Save JSON files or public Telegra.ph links, keep a local backup library, restore explicitly and undo the last restoration. |
-| Phone transfers | Send or receive an encrypted backup by QR. Sessions last five minutes and use a separate temporary relay. |
+### Save your car's shortcuts on your phone
 
-![EvPortal dashboard running in a desktop browser](img/evportal-dashboard.png)
+1. **Car:** open **Settings → Backups → Phone → Send**.
+2. **Phone:** scan the QR code and open it in your usual browser.
+3. **Phone:** tap **Add**. The backup is saved on your phone and your backup library opens.
+4. To use or edit those shortcuts on your phone, tap **Restore** for the received backup. You can now add services, organize categories and arrange your favorites.
 
-*Actual web interface captured in a desktop browser.*
+### Send your shortcuts back to the car
+
+1. Prepare your shortcuts in EvPortal on your phone.
+2. **Car:** open **Settings → Backups → Phone → Receive**.
+3. **Phone:** scan the QR with the same browser you used to prepare your shortcuts, then tap **Send my shortcuts**.
+4. **Car:** tap **Add**, then **Restore** for the received backup to use it on the screen.
+
+You can also use **Choose a backup** to send a saved copy instead of your current shortcuts.
+
+**Add saves a backup. Restore applies it.** Receiving a backup alone leaves the current shortcuts unchanged. This is a transfer you choose to make, not automatic synchronization. Keep the QR open until the transfer finishes; it expires after five minutes. Both devices need Internet access, but they do not need the same Wi-Fi network.
 
 ## Make the screen yours
 
-In **Settings → Appearance**, choose **Standard** or **Small** shortcuts and switch **Show names** on or off. Standard size and visible names are the defaults. These settings stay on the device, alongside your home-screen and category-visibility choices; backups do not replace them. [Preview the compact view without names](img/evportal-compact.png).
+![EvPortal interface with example favorites](img/evportal-dashboard.png)
 
-The theme button is always available in the header. A saved light-theme choice is respected.
+*Actual interface captured in a desktop browser, with example favorites.*
 
-## Back up, then restore when ready
+| Want to… | Where to go |
+| --- | --- |
+| Add or remove a service | Open **+**, browse or search the catalogue, then tap **Add** or **Remove**. |
+| Create your own shortcut | Open **+ → Create a shortcut** and enter its name and address. |
+| Arrange shortcuts | Open a category or **Favorites**, tap **Edit**, drag the shortcuts, then tap **Done**. |
+| Organize categories | Create up to five personal categories from **+**, and choose their icons. |
+| Start with your favorites | Enable **Settings → Home → Open on my favorites**. |
+| Adjust the display | In **Settings → Appearance**, choose **Standard / Small** and turn **Show names** on or off. |
+| Switch dark or light | Use the theme button at the top of the screen. |
 
-**Add saves a backup. Restore applies it.** Importing a code, a link, a JSON file or a phone transfer leaves the current dashboard unchanged. Open **My backups → Restore** to select and apply a saved configuration.
+**All** puts your most-opened shortcuts first. [See the compact view without names](img/evportal-compact.png). Display size, shortcut names and home-screen choices stay specific to each device, even after restoring a backup.
 
-For a phone transfer, choose **Send** or **Receive**, scan the QR and follow the prompts. QR transfer requires the configured relay and a supported secure browser connection. Creating a Telegra.ph code or link is a separate action; those pages are public and unencrypted. [Transfer details](docs/APPAIRAGE-TELEPHONE-TESLA.md) · [Detailed usage, in French](docs/UTILISATION.md)
+## Find and manage your backups
 
-## Guides in eight languages
+Open **Settings → Backups → My backups → Restore** to choose a saved configuration. The bin removes a backup from your list without changing your current shortcuts. **Settings → More options → Undo the last restore** lets you return to your previous configuration.
+
+Prefer a code or link? Use **Settings → Backups → Code or link → Create**, then **Add** on the receiving device. You can also save or add a JSON backup file through the backup options. Link backups are hosted on Telegra.ph and are public to anyone who has the address; QR transfers are encrypted.
+
+Your shortcuts and saved copies stay in the browser where you use them. Keep a backup file before clearing browser data or changing devices. [Read the user guide](https://drslid.github.io/EvPortal/en/aide.html).
+
+## Available in eight languages
+
+Choose your language in **Settings**, or open a guide:
 
 [🇬🇧 English](https://drslid.github.io/EvPortal/en/aide.html) · [🇫🇷 Français](https://drslid.github.io/EvPortal/fr/aide.html) · [🇪🇸 Español](https://drslid.github.io/EvPortal/es/aide.html) · [🇩🇪 Deutsch](https://drslid.github.io/EvPortal/de/aide.html)<br>
 [🇮🇹 Italiano](https://drslid.github.io/EvPortal/it/aide.html) · [🇷🇺 Русский](https://drslid.github.io/EvPortal/ru/aide.html) · [🇸🇦 العربية](https://drslid.github.io/EvPortal/ar/aide.html) · [🇵🇹 Português](https://drslid.github.io/EvPortal/pt/aide.html)
 
-The Arabic interface supports right-to-left layout. Personal shortcut and category names stay as you wrote them.
+Use entertainment while parked. Fullscreen, sign-in and playback depend on your vehicle's software and the service you open. EvPortal is free and independent; it is not affiliated with Tesla or the listed services.
 
-## Run locally
+## Help improve EvPortal
 
-**Node.js 24 is recommended; Node.js 22 or newer is required.** From the repository root:
+[Report a broken link, suggest an improvement or help with translations](https://github.com/drslid/EvPortal/issues). Code contributions are welcome too: see the [contributor guide](docs/DEVELOPMENT.md).
 
-```bash
-npm ci
-npm ci --prefix relay
-npm run dev
-```
-
-Open **http://127.0.0.1:4187/**. This starts the portal with a real local relay on port 8787. A phone cannot reach your computer through a `localhost` QR: testing across devices requires HTTPS addresses accessible to both.
-
-For browser checks, install Chromium, then build and verify:
-
-```bash
-npx playwright install chromium
-npm run build:seo
-npm run check:seo
-npm test
-npm run test:browser
-```
-
-[Development and test commands](docs/DEVELOPMENT.md) · [SEO and deployment](docs/SEO-MULTILINGUE.md) · [Relay documentation](relay/README.md)
-
-## Browser support and privacy
-
-Use entertainment while parked. Tesla fullscreen follows the YouTube return-to-site route; other browsers use the standard Fullscreen API. Vehicle software and external services can affect availability, sign-in and playback. The web screenshots above are not a physical Tesla test.
-
-Shortcuts, usage counts and preferences stay in browser storage. EvPortal includes no audience analytics. Telegra.ph is contacted for explicit backup actions; QR transfers use the configured relay. External services apply their own policies. Keep a JSON copy before clearing site data. There is no offline mode.
-
-## Contribute
-
-[Report a broken link or suggest an improvement](https://github.com/drslid/EvPortal/issues), or open a pull request with the change and its validation. For browser problems, include the device, browser or Tesla software version and steps to reproduce.
-
-[Catalogue maintenance](docs/LIENS.md) · [Local icon provenance](img/services/README.md) · [Development guide](docs/DEVELOPMENT.md)
-
-Code is released under the [MIT licence](LICENSE). EvPortal is independent and is not affiliated with Tesla or the listed services. Bundled third-party assets retain their respective licences.
+Source code is available under the [MIT licence](LICENSE). Third-party assets retain their respective licences.

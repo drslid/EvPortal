@@ -1,86 +1,95 @@
 # Utiliser EvPortal
 
-[Présentation du projet](../README.md) · [Guide français en ligne](https://drslid.github.io/EvPortal/fr/aide.html) · [Développement](DEVELOPMENT.md)
+**[Ouvrir EvPortal](https://drslid.github.io/EvPortal/)** · [Aide en français](https://drslid.github.io/EvPortal/fr/aide.html)
 
-EvPortal regroupe des raccourcis vers des sites web sur une interface tactile. Ouvrez le portail dans le navigateur du véhicule, du téléphone ou de l’ordinateur. Un raccourci demande l’ouverture du service dans un nouvel onglet ; le comportement final dépend du navigateur.
+EvPortal rassemble vos sites préférés sous forme de raccourcis. Ouvrez le portail dans le navigateur de votre Tesla ou de votre téléphone. Sur la Tesla, effectuez vos réglages à l’arrêt. Enregistrez l’adresse dans les favoris du navigateur pour la retrouver facilement.
 
-## Organiser l’écran
+## Préparer ses raccourcis sur le téléphone
 
-La vue **Tous** classe les raccourcis du plus ouvert au moins ouvert. À égalité, elle conserve l’ordre manuel. Chaque raccourci possède son propre compteur, enregistré avec la configuration ; le classement ne nécessite aucun outil d’analyse d’audience.
+Vous pouvez récupérer l’écran de la Tesla, le personnaliser sur votre téléphone, puis le renvoyer à la voiture. Aucun code à saisir : le téléphone scanne le QR affiché sur la Tesla.
 
-Pour déplacer des raccourcis, ouvrez une catégorie ou **Favoris**, touchez **Modifier**, utilisez les poignées puis touchez **Terminer**. La vue Tous conserve son classement automatique. Au clavier, sélectionnez une poignée avec Espace, déplacez-la avec les flèches, validez avec Entrée ou annulez avec Échap.
+**Ajouter** conserve une copie dans vos sauvegardes. **Restaurer** remplace les raccourcis affichés sur l’appareil. Après Ajouter, vous pouvez fermer la fenêtre et garder la copie pour plus tard.
 
-Le bouton **+** ouvre le catalogue commun : 147 services, dont 112 dans la sélection initiale et 35 facultatifs. Ouvrez une catégorie repliable, puis utilisez **Ajouter** ou **Supprimer**. Les actions **Créer un raccourci** et **Créer une catégorie** figurent en haut. Le catalogue est identique pour tous ; les sites externes conservent leurs propres restrictions d’accès.
+### Récupérer les raccourcis de la Tesla
 
-Vous pouvez créer jusqu’à cinq catégories personnelles, avec un nom de 16 caractères maximum et une icône parmi 25. **Plus d’icônes** affiche les choix supplémentaires. Le crayon d’une catégorie permet de modifier son nom et son icône.
+1. Sur la **Tesla**, ouvrez **Paramètres → Sauvegardes → Téléphone → Envoyer**. Un QR apparaît.
+2. Sur le **téléphone**, scannez ce QR avec l’appareil photo et ouvrez le lien dans votre navigateur habituel.
+3. Sur le **téléphone**, vérifiez le résumé reçu, puis touchez **Ajouter**. La fenêtre **Restaurer une sauvegarde** s’ouvre avec **Raccourcis reçus** déjà sélectionné.
+4. Touchez **Restaurer** pour utiliser cette configuration sur le téléphone. Vous pouvez maintenant y ajouter des sites, organiser les catégories et choisir vos favoris.
 
-Lors de l’édition d’un raccourci, choisissez sa catégorie principale et, si nécessaire, **Autres catégories**. Un service partagé garde un seul nom, lien, favori et compteur. Il apparaît une seule fois dans Tous et Favoris. Supprimer une catégorie conserve les services appartenant aussi à une autre ; les services qui lui appartiennent exclusivement sont retirés.
+Les raccourcis de la Tesla restent inchangés pendant vos modifications sur le téléphone.
 
-La suppression d’un raccourci ou d’une catégorie est immédiate. La réinitialisation complète demande confirmation. Elle ne supprime pas le stockage des autres applications de la même origine, ni les pages Telegra.ph publiées.
+### Renvoyer les raccourcis vers la Tesla
 
-## Apparence et accueil
+1. Sur la **Tesla**, ouvrez **Paramètres → Sauvegardes → Téléphone → Recevoir**. Un nouveau QR apparaît.
+2. Sur le **téléphone**, scannez ce QR et ouvrez le lien dans **le même navigateur que celui où vous avez préparé vos raccourcis**.
+3. Sur le **téléphone**, vérifiez le résumé et touchez **Envoyer mes raccourcis**.
+4. Sur la **Tesla**, vérifiez la réception, puis touchez **Ajouter**. Dans la fenêtre qui s’ouvre, touchez **Restaurer** pour remplacer les raccourcis de la Tesla.
 
-Dans **Paramètres → Apparence**, choisissez la taille **Standard** ou **Petite** et activez ou désactivez **Afficher les noms**. Standard et les noms visibles sont les réglages initiaux. La petite taille réduit les cartes et leurs icônes pour afficher davantage de raccourcis.
+Les deux appareils doivent être connectés à Internet. Gardez la fenêtre du QR ouverte pendant le transfert. Le QR est valable **5 minutes** ; s’il expire, utilisez **Nouveau QR code**, puis scannez le nouveau code. Le transfert est chiffré.
 
-Le thème sombre est utilisé par défaut. Le bouton de thème dans l’en-tête permet de passer au clair ; un choix clair déjà enregistré reste respecté.
+Pour envoyer une copie déjà enregistrée, utilisez **Choisir une sauvegarde** dans la fenêtre d’envoi, sélectionnez-la et validez avec **Choisir**. Cela permet de transférer cette copie sans changer les raccourcis de l’appareil qui l’envoie.
 
-Dans **Paramètres → Accueil**, choisissez les catégories visibles et **Ouvrir sur mes favoris**. Masquer une catégorie retire son onglet sans supprimer les raccourcis disponibles dans Tous et Favoris.
+Il n’y a **pas de synchronisation automatique** : après de nouvelles modifications, recommencez le transfert pour mettre à jour l’autre appareil.
 
-Taille, affichage des noms, accueil et catégories visibles sont des préférences propres à l’appareil. Elles persistent après rechargement et sont partagées entre les onglets du même navigateur, mais ne sont pas transmises dans les sauvegardes. La langue est également enregistrée séparément. Une adresse traduite impose sa langue au chargement ; les noms personnalisés restent conservés.
+## Organiser les raccourcis et les favoris
 
-## Code ou lien
+- **Ouvrir un site** : touchez son raccourci. Le lien demande un nouvel onglet ; l’affichage final dépend du navigateur du véhicule.
+- **Choisir ses favoris** : touchez l’étoile d’un raccourci. Retrouvez votre sélection dans **Favoris** ; touchez à nouveau l’étoile pour l’en retirer.
+- **Déplacer les raccourcis** : ouvrez une catégorie ou **Favoris**, touchez **Modifier**, puis faites glisser les raccourcis à l’aide des poignées. Validez avec **Terminer**.
+- **Retrouver les sites les plus utilisés** : la vue **Tous** les classe selon le nombre d’ouvertures. Elle conserve ce classement pendant la modification.
+- **Ajouter ou retirer un service** : touchez **+**, ouvrez une catégorie du catalogue, puis **Ajouter** ou **Supprimer**. Le catalogue est le même pour tous.
+- **Créer son propre lien** : dans **+**, choisissez **Créer un raccourci**, renseignez son nom, son adresse et sa catégorie, puis **Ajouter**.
 
-**Créer** publie une sauvegarde sur Telegra.ph et fournit un code et un lien EvPortal à copier, avec un nom facultatif. Ce parcours n’affiche pas de QR. La page apparaît dans **Mes sauvegardes → En ligne** ; elle n’est pas dupliquée automatiquement dans la liste locale.
+Pour créer une catégorie, ouvrez **+ → Créer une catégorie**. Choisissez un nom de 16 caractères maximum et une icône ; **Plus d’icônes** donne accès aux 25 choix. Vous pouvez créer jusqu’à **5 catégories personnelles**. Le crayon d’une catégorie permet ensuite de changer son nom ou son icône.
 
-**Ajouter** accepte un code, un lien EvPortal ou une ancienne adresse Telegra.ph. Après validation et lecture, la sauvegarde est enregistrée dans **Sur cet appareil**. Elle ne remplace pas les raccourcis actifs. Choisir un fichier JSON dans les options produit le même résultat.
+Un raccourci peut apparaître dans plusieurs catégories : lors de sa modification, choisissez sa catégorie principale, puis ouvrez **Autres catégories**. Il reste unique dans Tous et Favoris. Supprimer une catégorie retire les raccourcis présents uniquement dans celle-ci ; ceux partagés avec une autre catégorie sont conservés.
 
-Une adresse EvPortal contenant `?code=...` ou `?config=...` prépare seulement le formulaire. Aucun téléchargement ni remplacement de configuration n’a lieu automatiquement.
+## Régler l’apparence et l’accueil
 
-Les nouvelles adresses Telegra.ph utilisent un identifiant aléatoire, mais leur contenu reste **public et non chiffré** : toute personne ayant l’adresse peut le lire. Le jeton du compte et les préférences de l’appareil ne sont pas publiés. Une configuration trop grande pour la limite de contenu Telegra.ph de 64 Kio peut être conservée dans un fichier JSON.
+Dans **Paramètres → Apparence**, choisissez **Taille des raccourcis → Standard** ou **Petite**. Désactivez **Afficher les noms** si vous préférez ne garder que les icônes. Les noms sont visibles au départ.
 
-## Envoyer ou recevoir avec le téléphone
+Le thème est **sombre par défaut**. Le bouton de thème en haut de l’écran permet de passer au clair et de revenir au sombre.
 
-Dans **Paramètres → Sauvegardes → Téléphone** :
+Dans **Paramètres → Accueil**, activez **Ouvrir sur mes favoris** pour retrouver votre sélection au démarrage. **Catégories affichées** permet de masquer des onglets sans supprimer leurs raccourcis : ils restent accessibles dans Tous et Favoris.
 
-- **Envoyer** affiche un QR que le téléphone scanne pour récupérer les raccourcis de cet écran ou une sauvegarde choisie.
-- **Recevoir** affiche un QR permettant au téléphone d’envoyer ses propres raccourcis ou une sauvegarde choisie.
+La taille, les noms visibles et les réglages d’accueil restent propres à chaque appareil ; ils ne sont pas transmis avec les sauvegardes. Vous pouvez garder des raccourcis de taille standard dans la voiture et des raccourcis plus petits sur le téléphone. La langue se choisit dans **Paramètres → Langue**.
 
-Le destinataire touche **Ajouter** pour conserver la sauvegarde localement. Le transfert ne remplace jamais directement son écran. Il est chiffré, valable cinq minutes et ne constitue pas une synchronisation automatique.
+## Utiliser un code ou un lien
 
-Ce parcours dépend du relais configuré et de sa disponibilité. Les deux appareils doivent pouvoir joindre le portail et le relais dans un contexte sécurisé compatible avec Web Crypto. Les détails, limites et conditions des essais locaux figurent dans [la documentation du transfert](APPAIRAGE-TELEPHONE-TESLA.md). Au-delà de la limite de 64 Kio du transfert, utilisez un fichier JSON.
+Ce parcours permet de conserver une sauvegarde sur Telegra.ph ou de récupérer une ancienne sauvegarde.
 
-## Restaurer et gérer les sauvegardes
+1. Sur l’appareil à sauvegarder, ouvrez **Paramètres → Sauvegardes → Code ou lien → Créer**.
+2. Si vous le souhaitez, ouvrez **Nommer la sauvegarde**, puis touchez **Créer ma sauvegarde**.
+3. Copiez le **Code** ou le **Lien EvPortal** affiché et conservez-le.
+4. Sur l’autre appareil, ouvrez **Paramètres → Sauvegardes → Code ou lien → Ajouter**. Collez le code, le lien EvPortal ou votre ancienne adresse Telegra.ph, puis touchez **Ajouter**.
+5. Vérifiez la sauvegarde proposée, puis touchez **Restaurer** pour l’utiliser sur cet appareil.
 
-Ouvrez **Mes sauvegardes → Restaurer**, sélectionnez une entrée, vérifiez le nom et le résumé, puis touchez **Restaurer**. Seule cette dernière action remplace les raccourcis actifs. **Annuler la dernière restauration**, dans les options des paramètres, permet de revenir à la configuration précédente.
+Vous pouvez aussi ouvrir directement le lien EvPortal : il prépare l’ajout, que vous devez valider. Il ne remplace pas automatiquement vos raccourcis.
 
-**Sur cet appareil** contient les instantanés ajoutés dans ce navigateur. **En ligne** affiche les pages du compte Telegra.ph disponible dans ce navigateur. Une copie locale reste indépendante de sa page d’origine : supprimer la page ne supprime pas cette copie.
+**Les sauvegardes Telegra.ph sont publiques** : toute personne disposant de l’adresse peut lire les noms et liens qu’elles contiennent. Le transfert par QR, dans **Téléphone**, est chiffré et temporaire.
 
-La liste locale accepte jusqu’à 50 sauvegardes, dans la limite de 2 Mio par entrée et de l’espace disponible. La corbeille retire une sauvegarde sans modifier les raccourcis actifs. Pour une page en ligne, EvPortal remplace le contenu par un message neutre, efface l’auteur et remplace le titre avant de masquer l’entrée. L’API Telegra.ph ne supprime pas définitivement l’adresse. Un échec laisse la ligne disponible pour réessayer.
+## Gérer et conserver ses sauvegardes
 
-Conservez un export JSON en dehors du navigateur avant d’effacer les données du site ou de changer d’appareil. EvPortal n’offre pas de mode hors connexion ; les services ouverts nécessitent leur propre connexion.
+Ouvrez **Paramètres → Sauvegardes → Mes sauvegardes → Restaurer** pour consulter vos copies :
 
-## Reprendre une ancienne configuration
+- **Sur cet appareil** contient les sauvegardes ajoutées dans ce navigateur, notamment celles reçues par QR. Vous pouvez en conserver jusqu’à 50, selon l’espace disponible.
+- **En ligne** présente les sauvegardes Telegra.ph créées depuis ce navigateur. Pour retrouver ailleurs une sauvegarde, utilisez son code ou son lien.
 
-Les anciennes clés `pages` et leurs catégories sont reprises lorsqu’aucun état récent n’existe. Elles sont conservées ; les nouvelles modifications utilisent `evportal.state.v2`. Les anciennes adresses connues sont actualisées sans remplacer les noms et destinations personnalisés. Les services partagés sont regroupés sans perdre leurs favoris et compteurs.
+Sélectionnez une copie, vérifiez son nom et son résumé, puis touchez **Restaurer**. Pour revenir en arrière, utilisez **Paramètres → Plus d’options → Annuler la dernière restauration**.
 
-Les catégories anciennes dépassant la limite de création de cinq, ou ayant un nom plus long, sont conservées. Les sauvegardes valides restent limitées à 50 catégories et 5 000 raccourcis. Les compteurs absents sont initialisés à zéro. Un thème absent devient sombre ; les choix clair et sombre sont conservés. L’ancien choix de pays n’a plus d’effet et ne supprime aucun raccourci.
+La corbeille retire une sauvegarde sans modifier les raccourcis affichés. Une copie enregistrée **Sur cet appareil** reste indépendante de sa sauvegarde **En ligne**.
 
-Les fichiers historiques `{ "pages": ["cinema"], "cinema": [...] }` et les dictionnaires de catégories restent importables. Le format actuel exporté utilise `version: 2`, les catégories, leurs icônes, les raccourcis, les appartenances `categoryIds`, l’ordre manuel, les favoris, les compteurs et le thème. Les URL importées doivent être HTTP ou HTTPS, sans identifiants dans l’adresse. La validation précède l’enregistrement et la restauration.
+Pour garder un fichier sur votre téléphone ou ordinateur, ouvrez **Code ou lien → Créer → Plus d’options → Sauvegarder un fichier JSON**. Pour le récupérer, choisissez **Code ou lien → Ajouter → Importer un fichier JSON**, sélectionnez le fichier, puis restaurez la copie ajoutée. Le fichier convient aussi aux configurations trop volumineuses pour le QR ou Telegra.ph.
 
-## Plein écran et données
+**Avant d’effacer les données du navigateur ou de changer d’appareil, conservez un fichier de sauvegarde ou un code/lien.** L’effacement des données du site peut supprimer vos raccourcis, réglages et copies enregistrées sur cet appareil.
 
-À l’arrêt, le plein écran Tesla utilise la redirection YouTube historique : choisissez **Accéder au site** ou **Go to site** pour revenir au portail en mode Théâtre. Si la Tesla n’est pas reconnue, utilisez **Ouvrir le mode Théâtre Tesla** dans Paramètres. Sur un autre navigateur, EvPortal utilise l’API Fullscreen lorsqu’elle est disponible.
+## Passer en plein écran sur la Tesla
 
-Ce mécanisme dépend du logiciel du véhicule et de YouTube ; il ne constitue pas une API officielle Tesla. Les captures du projet montrent l’interface web, sans certifier un essai sur un véhicule. Un lien accessible ne garantit pas la connexion au compte ni la lecture multimédia. Consultez le [manuel Tesla](https://www.tesla.com/ownersmanual/modely/fr_fr/GUID-79A49D40-A028-435B-A7F6-8E48846AB9E9.html) correspondant à votre véhicule.
+À l’arrêt, touchez **Plein écran**. Si une page YouTube apparaît, choisissez **Accéder au site** ou **Go to site** pour revenir à EvPortal en mode Théâtre.
 
-Les données sont séparées dans le stockage du navigateur :
+Si le bouton ne propose pas le mode Tesla, ouvrez **Paramètres → Ouvrir le mode Théâtre Tesla**. Sur un ordinateur, le bouton utilise le plein écran classique du navigateur.
 
-| Clé | Contenu |
-| --- | --- |
-| `evportal.state.v2` | Configuration active : raccourcis, catégories, ordre, favoris, compteurs et thème |
-| `evportal.preferences.v1` | Réglages d’affichage, accueil et catégories visibles |
-| `evportal.language.v1` | Préférence de langue |
-| `evportal.backups.v1` | Instantanés de la bibliothèque locale |
-| `evportal.telegraph.v1` | Informations du compte Telegra.ph, séparées des sauvegardes |
+Le comportement peut changer avec les mises à jour de la voiture ou de YouTube. En cas d’échec, revenez à l’[adresse du portail](https://drslid.github.io/EvPortal/) dans le navigateur et utilisez l’affichage normal. Les services ouverts peuvent demander leur propre connexion ou abonnement.
 
-EvPortal n’intègre pas d’analyse d’audience. Les logos et polices sont servis avec le portail. Telegra.ph est contacté lors d’actions explicites ; le relais traite les transferts QR chiffrés. Les services visités et l’hébergeur appliquent leurs propres politiques. Un stockage bloqué ou illisible reste préservé et l’application indique lorsque les modifications ne peuvent être conservées.
+Si un transfert échoue, vérifiez la connexion des deux appareils et créez un nouveau QR. Le parcours **Code ou lien** reste une alternative. Retrouvez l’aide depuis **Paramètres → Aide & à propos** ou dans l’[aide publique en français](https://drslid.github.io/EvPortal/fr/aide.html).
