@@ -141,3 +141,11 @@ npm run test:production
 Neither production check creates Telegra.ph pages. Run them against a deployment you intend to validate. Search Console verification, Bing verification and sitemap submission are separate actions; generating metadata does not perform them.
 
 For a contribution, describe the user-visible change, compatibility considerations and checks run. Keep production credentials out of the repository and keep generated screenshots out of commits unless they are deliberately selected project assets.
+
+## Versioned releases
+
+EvPortal releases use annotated Git tags in the form `vMAJOR.MINOR.PATCH`, starting with `v2.0.0`, and a matching GitHub release with user-facing notes. Keep the root `package.json` and `package-lock.json` versions aligned. The relay package and the backup data format have independent versions; a site release does not automatically change them.
+
+After checks pass and Pages publishes the intended commit, create the annotated tag on that exact commit and publish the stable release from the existing tag. Record the changes in [CHANGELOG.md](../CHANGELOG.md). Keep published tags fixed: compatible fixes become `v2.0.1`, compatible additions become `v2.1.0`, and incompatible changes require a new major version. The live site can continue receiving updates while the tag preserves the source of the released version; it does not freeze external services or browser storage.
+
+References: [Semantic Versioning](https://semver.org/) and [GitHub release management](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository).
