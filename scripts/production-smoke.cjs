@@ -61,7 +61,12 @@ function matchesResponse(response, method, url) {
 
 (async () => {
     check(process.argv.slice(2).every(argument => argument === '--frontend-only'), 'Only --frontend-only is accepted');
-    browser = await chromium.launch({ headless: true, channel: 'chromium' });
+    try {
+        browser = await chromium.launch({ headless: true, channel: process.env.EVPORTAL_TEST_BROWSER_CHANNEL || undefined });
+    } catch (issue) {
+        if (process.platform !== 'win32' || process.env.EVPORTAL_TEST_BROWSER_CHANNEL) throw issue;
+        browser = await chromium.launch({ headless: true, channel: 'msedge' });
+    }
     car = await browser.newContext({ viewport: { width: 1440, height: 900 }, locale: 'fr-FR', reducedMotion: 'reduce' });
     const phone = await browser.newContext({ viewport: { width: 390, height: 844 }, locale: 'fr-FR', isMobile: true, hasTouch: true, reducedMotion: 'reduce' });
     for (const context of [car, phone]) {
