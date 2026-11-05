@@ -1,5 +1,7 @@
 <!DOCTYPE html><html lang="it" dir="ltr" data-page-language="it"><head>
     <meta charset="utf-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://api.telegra.ph https://evportal-pairing-relay.carbonnier-anthony.workers.dev; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'" data-evportal-security="csp">
+    <meta name="referrer" content="no-referrer">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title data-i18n="help.title">Guida EvPortal — Browser Tesla, scorciatoie e backup</title>
     <meta name="theme-color" content="#111213">
@@ -8,7 +10,7 @@
     <link rel="canonical" href="https://drslid.github.io/EvPortal/it/aide.html">
     <link rel="icon" href="../img/favicon.ico">
     <link rel="stylesheet" href="../css/styles.css">
-    <script>try { document.documentElement.dataset.theme = JSON.parse(localStorage.getItem("evportal.state.v2") || "{}").theme === "light" ? "light" : "dark"; } catch (_) { document.documentElement.dataset.theme = "dark"; }</script>
+    <script src="../js/help.js"></script>
     <script src="../js/translations.js" defer=""></script>
     <script src="../js/i18n.js" defer=""></script>
     <meta name="description" content="Apri EvPortal nel browser Tesla, organizza i preferiti e trasferisci backup tramite codice, link o QR. Scopri come iniziare e ripristinare le scorciatoie." data-i18n-content="help.description">
@@ -171,17 +173,4 @@
         <p data-i18n="help.license">EvPortal · Licenza MIT</p>
         </div>
     </main>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const i18n = window.EVI18n;
-            const selector = document.getElementById('languageSelect');
-            if (!i18n || !selector) return;
-            selector.value = i18n.language;
-            selector.addEventListener('change', function () {
-                if (window.EVSEO) window.EVSEO.selectLanguage(selector.value);
-                else i18n.setLanguage(selector.value);
-            });
-            window.addEventListener('evportal:languagechange', function () { selector.value = i18n.language; });
-        });
-    </script>
 </body></html>

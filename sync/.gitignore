@@ -1,0 +1,10 @@
+.local-store.json
+.local-store.json.*
+.wrangler/
+.dry-run/
+.dev.vars
+.dev.vars.*
+.env
+.env.*
+!.env.example
+!.env.sample

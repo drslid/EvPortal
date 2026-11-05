@@ -35,7 +35,7 @@ const errors = [];
     await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
     const origin = 'http://127.0.0.1:' + server.address().port;
     const url = origin + '/EvPortal/';
-    browser = await chromium.launch({ headless: true, channel: 'chromium' });
+    browser = await chromium.launch({ headless: true, channel: process.env.EVPORTAL_TEST_BROWSER_CHANNEL || 'chromium' });
     const contexts = [];
     async function pageFor(options = {}) {
         const context = await browser.newContext({ viewport: { width: 1280, height: 900 }, locale: 'fr-FR', reducedMotion: 'reduce', ...options });
@@ -391,15 +391,17 @@ const errors = [];
     await appearancePeer.waitForFunction(() => document.documentElement.dataset.shortcutSize === 'small' && document.getElementById('dashboard').classList.contains('hide-shortcut-names'));
     await appearance.locator('#languageSelect').selectOption('ar');
     await appearance.locator('#settingsDialog [data-close-dialog]').first().click();
-    await appearance.evaluate(() => {
+    await appearance.evaluate(async () => {
         const state = EVState.normalizeState(JSON.parse(localStorage.getItem(EVState.STORAGE_KEY)));
         state.categories[0].shortcuts[0].name = 'Alpha restored';
-        EVBackups.createLibrary(localStorage).add({ title: 'Appearance transfer check', state, source: 'transfer' });
+        const library = EVBackups.createPersistentLibrary({ storage: localStorage });
+        try { await library.ready; await library.add({ title: 'Appearance transfer check', state, source: 'transfer' }); } finally { library.close(); }
     });
     await appearance.locator('#settingsButton').click();
     await appearance.locator('#restoreBackupButton').click();
     await appearance.locator('#localBackupList .backup-select').first().click();
     await appearance.locator('#confirmRestoreButton').click();
+    await appearance.locator('#restoreDialog').waitFor({ state: 'hidden' });
     assert.equal((await saved(appearance)).categories[0].shortcuts[0].name, 'Alpha restored');
     assert.equal(await appearance.locator('html').getAttribute('data-shortcut-size'), 'small');
     assert.equal(await appearance.locator('[data-shortcut-id="a"] .shortcut-name').isVisible(), false);

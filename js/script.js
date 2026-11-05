@@ -1,8 +1,8 @@
 /* EvPortal: touch-first tiles with local state and local interaction libraries. */
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', async function () {
     'use strict';
     const Core = window.EVState;
-    const catalog = window.EV_CATALOG;
+    const catalog = window.EVRegions ? window.EVRegions.enrichCatalog(window.EV_CATALOG, window.EVI18n.language) : window.EV_CATALOG;
     const I18n = window.EVI18n;
     const translatedMessages = new Map();
     const t = function (key, params) {
@@ -23,6 +23,9 @@ document.addEventListener('DOMContentLoaded', function () {
     try { storage = window.localStorage; } catch (_) { storage = null; }
     let preferenceStore = window.EVPreferences.createPreferences(storage);
     let preferences = preferenceStore.read();
+    let regionStore = window.EVRegions.createPreferences(storage);
+    let regionPreferences = regionStore.read();
+    function suggestedCatalog() { return window.EVRegions.applyCatalog(catalog, regionPreferences, I18n.language); }
     const loaded = Core.loadState(storage, catalog);
     let state = loaded.state;
     if (preferences.homeFavorites) state.activeCategory = 'favorites';
@@ -30,6 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let storageLocked = loaded.locked;
     let storageWarningKey = loaded.warning ? 'state.storageWarning' : '';
     let storageWarning = storageWarningKey ? t(storageWarningKey) : '';
+    let backupStorageWarning = '';
     let lastAnnouncement = '';
     let lastAnnouncementIsError = false;
     let isEditMode = false;
@@ -37,7 +41,16 @@ document.addEventListener('DOMContentLoaded', function () {
     let editingShortcut = null;
     let editingCategoryID = null;
     let editingCategoryLabel = '';
-    const backupLibrary = window.EVBackups.createLibrary(storage);
+    const backupLibrary = window.EVBackups.createPersistentLibrary({ storage: storage, onStatus: function (status) {
+        backupStorageWarning = status.warningKey ? t(status.warningKey) : '';
+    } });
+    try { await backupLibrary.ready; }
+    catch (error) {
+        // A damaged backup library must not disable otherwise valid shortcuts.
+        // Keep its original bytes intact and let export/recovery remain usable.
+        backupStorageWarning = t(error.i18nKey || 'backup.storageUnavailable');
+    }
+    let backupRenderAttempt = 0;
     let selectedBackup = null;
     let backupChoice = null;
     let backupAbort = null;
@@ -102,18 +115,18 @@ document.addEventListener('DOMContentLoaded', function () {
         lastAnnouncement = message;
         lastAnnouncementIsError = Boolean(error);
         const status = $('statusMessage');
-        status.textContent = [message, storageWarning].filter(Boolean).join(' ');
+        status.textContent = [message, storageWarning, backupStorageWarning].filter(Boolean).join(' ');
         status.hidden = !status.textContent;
-        status.classList.toggle('is-error', Boolean(error || storageWarning));
+        status.classList.toggle('is-error', Boolean(error || storageWarning || backupStorageWarning));
         window.clearTimeout(announcementTimer);
-        if (message && !error && !storageWarning) announcementTimer = window.setTimeout(function () { status.hidden = true; status.textContent = ''; }, 3500);
+        if (message && !error && !storageWarning && !backupStorageWarning) announcementTimer = window.setTimeout(function () { status.hidden = true; status.textContent = ''; }, 3500);
     }
 
     function persist(message) {
         const success = !storageLocked && Core.saveState(storage, state);
         if (!success && !storageWarning) { storageWarningKey = 'app.storageUnavailable'; storageWarning = t(storageWarningKey); }
         if (success) { storageWarningKey = ''; storageWarning = ''; }
-        if (message || storageWarning) announce(message || '');
+        if (message || storageWarning || backupStorageWarning) announce(message || '');
         return success;
     }
 
@@ -344,7 +357,7 @@ document.addEventListener('DOMContentLoaded', function () {
         card.dataset.shortcutId = shortcut.id;
         card.dataset.categoryId = category.id;
         const link = element('a', 'shortcut-link');
-        link.href = shortcut.url;
+        link.href = window.EVRegions.localizedShortcut(shortcut, regionPreferences, I18n.language).url;
         link.target = '_blank';
         link.rel = 'noopener noreferrer';
         link.draggable = false;
@@ -406,6 +419,16 @@ document.addEventListener('DOMContentLoaded', function () {
             rows = Core.shortcutsForCategory(state, category.id);
             title = categoryLabel(category);
             description = t('app.categoryDescription');
+        }
+        if (!isEditMode && state.activeCategory !== 'favorites') {
+            const suggested = new Set(Core.catalogServices(suggestedCatalog()).map(function (entry) { return entry.shortcut.serviceId; }));
+            const knownServices = new Set(Core.catalogServices(catalog).map(function (entry) { return entry.shortcut.serviceId; }));
+            rows = rows.filter(function (row) {
+                const link = row.shortcut;
+                // A hand-edited destination is personal even if it retained a service ID.
+                const personal = !knownServices.has(link.serviceId) || !window.EVRegions.isKnownURL(link.serviceId, link.url, catalog);
+                return !link.serviceId || link.favorite || personal || suggested.has(link.serviceId);
+            });
         }
         $('sectionTitle').textContent = title;
         if ($('sectionDescription')) $('sectionDescription').textContent = description;
@@ -669,7 +692,8 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         catalogSearchActive = Boolean(search);
         const installed = allShortcuts();
-        const entries = Core.catalogServices(catalog, { includeOptional: true });
+        const regionalCatalog = suggestedCatalog();
+        const entries = Core.catalogServices(regionalCatalog, { includeOptional: true });
         const fragment = document.createDocumentFragment();
         let count = 0;
         catalog.categories.forEach(function (category) {
@@ -807,7 +831,7 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             const candidate = await read(importAbort);
             if (attempt !== importAttempt || !$('importDialog').open) return;
-            finishAdding(backupLibrary.add(candidate));
+            finishAdding(await backupLibrary.add(candidate));
         } catch (error) {
             if (attempt === importAttempt && $('importDialog').open) $('importError').textContent = backupError(error);
         } finally {
@@ -847,7 +871,8 @@ document.addEventListener('DOMContentLoaded', function () {
         $('restoreError').textContent = '';
         try {
             if (kind === 'local') {
-                const current = backupLibrary.get(record.id);
+                const current = await backupLibrary.get(record.id);
+                if (attempt !== backupSelectionAttempt || !$('restoreDialog').open) return;
                 if (!current) throw new Error(t('backup.missing'));
                 previewBackup(current, kind);
             } else {
@@ -883,7 +908,7 @@ document.addEventListener('DOMContentLoaded', function () {
             remove.disabled = true;
             const opening = backupPickerAttempt;
             try {
-                if (kind === 'local') backupLibrary.remove(record.id);
+                if (kind === 'local') await backupLibrary.remove(record.id);
                 else { await sharingClient.removePage(record.path); window.dispatchEvent(new CustomEvent('evportal:backupremoved', { detail: { path: record.path } })); }
                 if (opening !== backupPickerAttempt || !$('restoreDialog').open) return;
                 if (kind === 'online' && pendingBackupPath === record.path) { cancelBackupRead(); $('restoreError').textContent = ''; }
@@ -897,14 +922,17 @@ document.addEventListener('DOMContentLoaded', function () {
         row.append(select, remove);
         return row;
     }
-    function renderLocalBackups() {
+    async function renderLocalBackups() {
         const list = $('localBackupList');
-        list.replaceChildren();
+        const attempt = ++backupRenderAttempt;
+        list.replaceChildren(backupMessage('app.loadingConfig'));
         try {
-            const records = backupLibrary.list();
+            const records = await backupLibrary.list();
+            if (attempt !== backupRenderAttempt) return;
+            list.replaceChildren();
             records.forEach(function (record) { list.append(backupRow(record, 'local')); });
             if (!records.length) list.append(backupMessage('backup.empty'));
-        } catch (error) { list.append(element('p', 'form-error', backupError(error))); }
+        } catch (error) { if (attempt === backupRenderAttempt) list.replaceChildren(element('p', 'form-error', backupError(error))); }
     }
     async function showOnlineBackups(offset, attempt) {
         const list = $('onlineBackupList');
@@ -962,12 +990,15 @@ document.addEventListener('DOMContentLoaded', function () {
         backupChoice = null;
         if (callback) callback(null);
     });
-    $('confirmRestoreButton').addEventListener('click', function () {
+    $('confirmRestoreButton').addEventListener('click', async function () {
         if (!selectedBackup) return;
+        const selection = selectedBackup;
+        $('confirmRestoreButton').disabled = true;
         try {
-            let candidate = selectedBackup.state;
-            if (selectedBackup.kind === 'local') {
-                const current = backupLibrary.get(selectedBackup.id);
+            let candidate = selection.state;
+            if (selection.kind === 'local') {
+                const current = await backupLibrary.get(selection.id);
+                if (selection !== selectedBackup || !$('restoreDialog').open) return;
                 if (!current) throw new Error(t('backup.missing'));
                 candidate = normalizedBackup(current.state);
             }
@@ -981,6 +1012,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 announce(t('backup.restored'));
             }
         } catch (error) { $('restoreError').textContent = backupError(error); }
+        finally { $('confirmRestoreButton').disabled = !selectedBackup; }
     });
 
     function renderTransferredState(next) {
@@ -1149,7 +1181,14 @@ document.addEventListener('DOMContentLoaded', function () {
         if (event.key === '/' && !typing && !event.ctrlKey && !event.metaKey && !event.altKey) { event.preventDefault(); toggleSearch(true); }
         if (event.key === 'Escape' && document.activeElement === $('searchInput')) { toggleSearch(false); }
     });
-    window.addEventListener('storage', function (event) {
+    window.addEventListener('storage', async function (event) {
+        if (event.key === window.EVRegions.STORAGE_KEY || event.key === null) {
+            regionStore = window.EVRegions.createPreferences(storage);
+            regionPreferences = regionStore.read();
+            render();
+            if ($('catalogDialog').open) renderCatalog();
+            window.dispatchEvent(new CustomEvent('evportal:regionschange'));
+        }
         if (event.key === window.EVPreferences.STORAGE_KEY || event.key === null) {
             preferenceStore = window.EVPreferences.createPreferences(storage);
             preferences = preferenceStore.read();
@@ -1162,7 +1201,7 @@ document.addEventListener('DOMContentLoaded', function () {
             renderLocalBackups();
             if (selectedBackup && selectedBackup.kind === 'local') {
                 try {
-                    const current = backupLibrary.get(selectedBackup.id);
+                    const current = await backupLibrary.get(selectedBackup.id);
                     if (current) previewBackup(current, 'local'); else clearBackupSelection();
                 } catch (error) { clearBackupSelection(); $('restoreError').textContent = backupError(error); }
             }
@@ -1245,13 +1284,36 @@ document.addEventListener('DOMContentLoaded', function () {
     if (window.EVPairing) {
         window.EVPairing.init({
             getState: function () { return state; },
-            saveBackup: function (next) { return backupLibrary.add({ title: t('backup.receivedTitle'), state: next, source: 'transfer' }).id; },
+            saveBackup: async function (next) { return (await backupLibrary.add({ title: t('backup.receivedTitle'), state: next, source: 'transfer' })).id; },
             openBackups: openBackupLibrary,
             announce: announce,
             chooseBackup: chooseSavedBackup
         });
     }
+    if (backupLibrary.subscribe) backupLibrary.subscribe(async function () {
+        if (!$('restoreDialog').open) return;
+        renderLocalBackups();
+        const selection = selectedBackup;
+        if (selection && selection.kind === 'local') {
+            try {
+                const current = await backupLibrary.get(selection.id);
+                if (selection !== selectedBackup || !$('restoreDialog').open) return;
+                if (current) previewBackup(current, 'local'); else clearBackupSelection();
+            } catch (error) { clearBackupSelection(); $('restoreError').textContent = backupError(error); }
+        }
+    });
+    if (window.EVEnhancements) window.EVEnhancements.init({
+        storage: storage, backups: backupLibrary, getState: function () { return Core.normalizeState(state); },
+        applyState: applyReceivedState, announce: announce,
+        getRegions: function () { return regionPreferences; },
+        setRegions: function (changes) {
+            regionPreferences = regionStore.patch(changes);
+            render(); if ($('catalogDialog').open) renderCatalog();
+            window.dispatchEvent(new CustomEvent('evportal:regionschange'));
+        }
+    });
     const params = new URLSearchParams(window.location.search);
     const proposal = params.get('code') || params.get('config');
     if (proposal && !incomingPairing) openImport(proposal.slice(0, 300));
+    document.documentElement.dataset.evportalReady = 'true';
 });

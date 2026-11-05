@@ -34,7 +34,7 @@ let browser;
     await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
     const origin = 'http://127.0.0.1:' + server.address().port;
     const appURL = origin + '/EvPortal/';
-    browser = await chromium.launch({ headless: true, channel: 'chromium' });
+    browser = await chromium.launch({ headless: true, channel: process.env.EVPORTAL_TEST_BROWSER_CHANNEL || 'chromium' });
     await fs.mkdir(path.join(root, 'test-results'), { recursive: true });
     const errors = [];
     for (const [language, locale] of Object.entries(locales)) {
@@ -90,7 +90,7 @@ let browser;
             assert.ok(geometry.themeLeft, language + ' theme position at ' + width);
             assert.ok(geometry.centeredLogo && geometry.centeredRows, language + ' centering at ' + width);
             if (['fr', 'ar', 'de'].includes(language) && [390, 1440].includes(width)) {
-                await page.screenshot({ path: path.join(root, 'test-results', 'i18n-' + language + '-' + width + '.png'), fullPage: true });
+                if (!process.env.EVPORTAL_SKIP_SCREENSHOTS) await page.screenshot({ path: path.join(root, 'test-results', 'i18n-' + language + '-' + width + '.png'), fullPage: true });
             }
         }
         await page.setViewportSize({ width: 390, height: 844 });

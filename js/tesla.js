@@ -16,7 +16,15 @@
         if (!['http:', 'https:'].includes(destination.protocol) || destination.username || destination.password) {
             throw new Error(message('state.invalidURL', 'Adresse EvPortal invalide.'));
         }
-        // Keep the actual deployment path and ?code when returning from YouTube.
+        // Public backup IDs and harmless navigation fragments can round-trip;
+        // private pairing/recovery capabilities must never reach a third party.
+        if (/^#(?:receive|download|sync)=/i.test(destination.hash)) destination.hash = '';
+        for (const name of Array.from(destination.searchParams.keys())) {
+            const value = destination.searchParams.get(name) || '';
+            if (/^(?:access_token|token|receiveToken|sendToken|recoveryCode|key)$/i.test(name) || (/^(?:code|config)$/i.test(name) && /^EV1\./.test(value))) {
+                destination.searchParams.delete(name);
+            }
+        }
         return 'https://www.youtube.com/redirect?q=' + encodeURIComponent(destination.href);
     }
 

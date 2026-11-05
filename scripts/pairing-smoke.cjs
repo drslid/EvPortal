@@ -15,7 +15,9 @@ const server = http.createServer(async (request, response) => {
         const filename = path.resolve(root, relative);
         if (!filename.startsWith(root + path.sep)) throw new Error('Invalid path');
         response.writeHead(200, { 'Content-Type': mime[path.extname(filename)] || 'application/octet-stream' });
-        response.end(await fs.readFile(filename));
+        let body = await fs.readFile(filename);
+        if (path.extname(filename) === '.html') body = Buffer.from(body.toString('utf8').replace('https://evportal-pairing-relay.carbonnier-anthony.workers.dev', relay));
+        response.end(body);
     } catch (_) { response.writeHead(404); response.end('Not found'); }
 });
 const fixture = name => Core.normalizeState({ version: 2, theme: 'dark', activeCategory: 'personal', categories: [{ id: 'personal', label: 'Mes pauses', icon: 'charging', shortcuts: [{ id: 'one', name, url: 'https://example.org/' + encodeURIComponent(name), favorite: true, clickCount: 9 }] }] });
@@ -24,6 +26,12 @@ const relay = 'https://relay.evportal.test';
 const sessions = new Map();
 const calls = [], pageErrors = [], unexpected = [];
 let nextTTL = 300000, nextID = 1, dropNextSendResponse = false, nextSendDelay = 0, browser;
+async function readBackups(page) {
+    return page.evaluate(async () => {
+        const library = EVBackups.createPersistentLibrary();
+        try { await library.ready; return await library.list(); } finally { library.close(); }
+    });
+}
 async function readQR(page, id) {
     await page.locator('#' + id).waitFor({ state: 'visible' });
     const pixels = await page.locator('#' + id + ' canvas').evaluate(canvas => ({ width: canvas.width, height: canvas.height,
@@ -36,7 +44,7 @@ async function readQR(page, id) {
     await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
     const origin = 'http://127.0.0.1:' + server.address().port;
     const appURL = origin + '/EvPortal/';
-    browser = await chromium.launch({ headless: true, channel: 'chromium' });
+    browser = await chromium.launch({ headless: true, channel: process.env.EVPORTAL_TEST_BROWSER_CHANNEL || 'chromium' });
     async function context(state, mobile) {
         const context = await browser.newContext({ viewport: mobile ? { width: 390, height: 844 } : { width: 1280, height: 900 }, locale: 'fr-FR', isMobile: Boolean(mobile), hasTouch: Boolean(mobile), reducedMotion: 'reduce' });
         context.on('page', page => page.on('pageerror', error => pageErrors.push(error.message)));
@@ -95,7 +103,9 @@ async function readQR(page, id) {
     await receiver.locator('#pairReceiveButton').click();
     await receiver.locator('#pairReceiveQRCode').waitFor({ state: 'visible' });
     assert.equal(await receiver.locator('#settingsDialog').evaluate(dialog => dialog.open), false);
-    await receiver.addScriptTag({ path: require.resolve('jsqr') });
+    const decoderURL = appURL + 'js/vendor/qr-test-only.js';
+    await receiver.route(decoderURL, route => route.fulfill({ path: require.resolve('jsqr'), contentType: 'text/javascript' }));
+    await receiver.addScriptTag({ url: decoderURL });
     const qrURL = await receiver.evaluate(() => {
         const canvas = document.querySelector('#pairReceiveQRCode canvas');
         const pixels = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height);
@@ -140,22 +150,23 @@ async function readQR(page, id) {
     assert.equal(await receiver.locator('#pairReceiveQRCode').isVisible(), false);
     assert.equal(await receiver.locator('#pairReceiveQRCode').getAttribute('title'), null);
     assert.equal(await receiver.evaluate(() => localStorage.getItem(EVState.STORAGE_KEY)), original, 'Receiving previews without replacing current settings');
-    const libraryBefore = await receiver.evaluate(() => localStorage.getItem(EVBackups.STORAGE_KEY));
+    const libraryBefore = await readBackups(receiver);
     await receiver.evaluate(() => {
-        window.testSetItem = Storage.prototype.setItem;
-        Storage.prototype.setItem = function (key, value) {
-            if (key === EVBackups.STORAGE_KEY) throw new DOMException('Quota exceeded', 'QuotaExceededError');
-            return window.testSetItem.call(this, key, value);
+        window.testTransaction = IDBDatabase.prototype.transaction;
+        IDBDatabase.prototype.transaction = function (stores, mode) {
+            const transaction = window.testTransaction.apply(this, arguments);
+            if (mode === 'readwrite') queueMicrotask(() => { try { transaction.abort(); } catch (_) {} });
+            return transaction;
         };
     });
     await receiver.locator('#pairApplyButton').click();
     await receiver.locator('#pairReceiveError').waitFor({ state: 'visible' });
-    assert.equal(await receiver.evaluate(() => localStorage.getItem(EVBackups.STORAGE_KEY)), libraryBefore);
+    assert.deepEqual(await readBackups(receiver), libraryBefore);
     assert.equal(await receiver.evaluate(() => localStorage.getItem(EVState.STORAGE_KEY)), original);
-    await receiver.evaluate(() => { Storage.prototype.setItem = window.testSetItem; delete window.testSetItem; });
+    await receiver.evaluate(() => { IDBDatabase.prototype.transaction = window.testTransaction; delete window.testTransaction; });
     await receiver.locator('#pairApplyButton').click();
     await receiver.locator('#restoreDialog').waitFor({ state: 'visible' });
-    const added = await receiver.evaluate(() => EVBackups.createLibrary().list());
+    const added = await readBackups(receiver);
     assert.equal(added.length, 1);
     assert.deepEqual(added[0].state.categories, backup.categories);
     assert.deepEqual(added[0].state.shortcutOrder, backup.shortcutOrder);
@@ -190,7 +201,7 @@ async function readQR(page, id) {
     assert.equal(await phone.evaluate(() => localStorage.getItem(EVState.STORAGE_KEY)), phoneOriginal);
     await phone.locator('#pairApplyButton').click();
     await phone.locator('#restoreDialog').waitFor({ state: 'visible' });
-    const phoneLibrary = await phone.evaluate(() => EVBackups.createLibrary().list());
+    const phoneLibrary = await readBackups(phone);
     assert.equal(phoneLibrary.length, 2);
     assert.deepEqual(phoneLibrary.find(item => item.source === 'transfer').state, JSON.parse(original));
     assert.equal(await phone.evaluate(() => localStorage.getItem(EVState.STORAGE_KEY)), phoneOriginal);
@@ -208,7 +219,7 @@ async function readQR(page, id) {
     await phone.locator('#pairApplyButton').waitFor({ state: 'visible' });
     await phone.locator('#pairApplyButton').click();
     await phone.locator('#restoreDialog').waitFor({ state: 'visible' });
-    const withChosen = await phone.evaluate(() => EVBackups.createLibrary().list());
+    const withChosen = await readBackups(phone);
     assert.equal(withChosen.length, 3);
     assert.ok(withChosen.some(item => item.source === 'transfer' && item.state.categories[0].shortcuts[0].name === backup.categories[0].shortcuts[0].name));
     assert.equal(await phone.evaluate(() => localStorage.getItem(EVState.STORAGE_KEY)), phoneOriginal);
@@ -220,7 +231,7 @@ async function readQR(page, id) {
     await phone.goto(chosenURL);
     await phone.locator('#pairReceiveError[data-i18n="pair.downloadExpired"]').waitFor({ state: 'visible' });
     assert.equal(await phone.locator('#pairApplyButton').isHidden(), true);
-    assert.equal((await phone.evaluate(() => EVBackups.createLibrary().list())).length, 3);
+    assert.equal((await readBackups(phone)).length, 3);
     await phone.locator('#pairReceiveDialog [data-close-dialog]').first().click();
     await receiver.locator('#pairOfferDialog [data-close-dialog]').first().click();
     console.log('✓ Offered backup selection preserves the emitter, consumed links cannot be reused, and only library Restore applies a backup');

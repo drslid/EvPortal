@@ -1,0 +1,14 @@
+name = "evportal-config-sync"
+main = "worker.mjs"
+compatibility_date = "2026-10-01"
+workers_dev = true
+
+[vars]
+ALLOWED_ORIGINS = "https://drslid.github.io"
+SYNC_ENABLED = "false"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "evportal-config-sync"
+# Replace only after creating your own D1 database. No existing account is used.
+database_id = "00000000-0000-0000-0000-000000000000"

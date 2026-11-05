@@ -20,5 +20,8 @@ jobs:
           node-version: '24'
           cache: npm
       - run: npm ci
+      - name: Install Chromium for persistent storage tests
+        run: npx playwright install --with-deps chromium
       - run: npm run check:seo
       - run: npm test
+      - run: npm run test:security

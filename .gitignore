@@ -4,3 +4,8 @@ playwright-report/
 .wrangler/
 .dry-run/
 .dev.vars
+.dev.vars.*
+.env
+.env.*
+!.env.example
+!.env.sample

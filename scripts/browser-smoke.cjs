@@ -35,7 +35,7 @@ const file = (data) => ({ name: 'configuration.json', mimeType: 'application/jso
         url = 'http://127.0.0.1:' + server.address().port + '/EvPortal/';
     }
     const origin = new URL(url).origin;
-    browser = await chromium.launch({ headless: true });
+    browser = await chromium.launch({ headless: true, channel: process.env.EVPORTAL_TEST_BROWSER_CHANNEL || undefined });
     async function context(options = {}) {
         const c = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: 'fr-FR', colorScheme: 'light', reducedMotion: 'reduce', ...options });
         c.on('page', page => page.on('pageerror', error => errors.push(error.message)));
@@ -47,6 +47,7 @@ const file = (data) => ({ name: 'configuration.json', mimeType: 'application/jso
     const requests = [];
     page.on('request', req => requests.push(req.url()));
     await page.goto(url, { waitUntil: 'networkidle' });
+    await page.locator('html[data-evportal-ready="true"]').waitFor({ state: 'attached' });
     const total = await page.evaluate(() => EVState.catalogServices(EV_CATALOG, { includeOptional: false }).length);
     assert.equal(Number(await page.locator('#shortcutTotal').textContent()), total);
     assert.equal(await page.locator('h1').count(), 1);
@@ -60,6 +61,7 @@ const file = (data) => ({ name: 'configuration.json', mimeType: 'application/jso
     await page.locator('[data-category="favorites"]').click();
     assert.equal(await page.locator('.shortcut').count(), 1);
     await page.reload();
+    await page.locator('html[data-evportal-ready="true"]').waitFor({ state: 'attached' });
     assert.match(await page.locator('#sectionTitle').textContent(), /favoris/i);
     assert.equal(await page.locator('.shortcut-name').textContent(), 'Netflix');
     await page.locator('#searchToggle').click();
@@ -70,6 +72,7 @@ const file = (data) => ({ name: 'configuration.json', mimeType: 'application/jso
     await page.locator('#clearSearchButton').click();
     await page.locator('#themeToggle').click();
     await page.reload();
+    await page.locator('html[data-evportal-ready="true"]').waitFor({ state: 'attached' });
     assert.equal(await page.locator('html').getAttribute('data-theme'), 'light');
     check('Favoris, dernière catégorie, recherche sans accents, état vide et thème persistants');
 
@@ -118,9 +121,14 @@ const file = (data) => ({ name: 'configuration.json', mimeType: 'application/jso
     await page.locator('#confirmRestoreButton').waitFor({ state: 'visible' });
     assert.equal(await page.evaluate(() => localStorage.getItem('evportal.state.v2')), snapshot);
     await page.locator('#confirmRestoreButton').click();
+    await page.locator('#restoreDialog').waitFor({ state: 'hidden' });
     assert.equal(await page.locator('.shortcut').count(), 2);
     assert.equal(await page.locator('.shortcut-name').first().textContent(), 'Premier lien');
-    assert.equal(await page.evaluate(() => EVBackups.createLibrary(localStorage).list().length), 1);
+    assert.equal(await page.evaluate(async () => {
+        const library = EVBackups.createPersistentLibrary({ storage: localStorage });
+        try { await library.ready; return (await library.list()).length; }
+        finally { library.close(); }
+    }), 1);
     await page.locator('#settingsButton').click();
     await page.locator('#undoTransferButton').evaluate(button => { button.closest('details').open = true; });
     await page.locator('#undoTransferButton').click();
@@ -129,6 +137,7 @@ const file = (data) => ({ name: 'configuration.json', mimeType: 'application/jso
     await page.locator('#restoreBackupButton').click();
     await page.locator('#localBackupList .backup-select').click();
     await page.locator('#confirmRestoreButton').click();
+    await page.locator('#restoreDialog').waitFor({ state: 'hidden' });
     check('Export limité à EvPortal, ajout sans mutation, restauration explicite et annulation durable');
 
     await page.locator('#menu .menu-link').last().click();
@@ -138,6 +147,7 @@ const file = (data) => ({ name: 'configuration.json', mimeType: 'application/jso
     await handle.press('Enter');
     assert.equal(await page.locator('.shortcut-name').first().textContent(), 'Mon lien');
     await page.reload();
+    await page.locator('html[data-evportal-ready="true"]').waitFor({ state: 'attached' });
     assert.equal(await page.locator('.shortcut-name').first().textContent(), 'Mon lien');
     await page.locator('#catalogButton').click();
     await page.locator('#catalogSearch').fill('FIP');
@@ -164,6 +174,7 @@ const file = (data) => ({ name: 'configuration.json', mimeType: 'application/jso
     });
     const oldPage = await oldContext.newPage();
     await oldPage.goto(url);
+    await oldPage.locator('html[data-evportal-ready="true"]').waitFor({ state: 'attached' });
     assert.equal(Number(await oldPage.locator('#shortcutTotal').textContent()), 2);
     assert.equal(await oldPage.locator('a[href="https://www.m6.fr/"]').count(), 1);
     assert.equal(await oldPage.evaluate(() => JSON.parse(localStorage.getItem('tv'))[0].url), 'https://www.6play.fr/');
@@ -174,6 +185,7 @@ const file = (data) => ({ name: 'configuration.json', mimeType: 'application/jso
     await brokenContext.addInitScript(() => { if (location.protocol === 'http:') localStorage.setItem('evportal.state.v2', '{corrupted'); });
     const brokenPage = await brokenContext.newPage();
     await brokenPage.goto(url);
+    await brokenPage.locator('html[data-evportal-ready="true"]').waitFor({ state: 'attached' });
     assert.ok(await brokenPage.locator('.shortcut').count());
     await brokenPage.locator('#themeToggle').click();
     assert.equal(await brokenPage.evaluate(() => localStorage.getItem('evportal.state.v2')), '{corrupted');
@@ -182,6 +194,7 @@ const file = (data) => ({ name: 'configuration.json', mimeType: 'application/jso
     await blockedContext.addInitScript(() => Object.defineProperty(window, 'localStorage', { get() { throw new DOMException('Denied', 'SecurityError'); } }));
     const blockedPage = await blockedContext.newPage();
     await blockedPage.goto(url);
+    await blockedPage.locator('html[data-evportal-ready="true"]').waitFor({ state: 'attached' });
     assert.ok(await blockedPage.locator('.shortcut').count());
     assert.ok(await blockedPage.locator('#statusMessage').isVisible());
     check('Stockage corrompu préservé et navigateur sans stockage utilisable en session temporaire');
@@ -191,6 +204,7 @@ const file = (data) => ({ name: 'configuration.json', mimeType: 'application/jso
     const remoteRequests = [];
     remotePage.on('request', req => { if (req.url().includes('api.telegra.ph')) remoteRequests.push(req.url()); });
     await remotePage.goto(url + '?code=test-09-10');
+    await remotePage.locator('html[data-evportal-ready="true"]').waitFor({ state: 'attached' });
     assert.equal(remoteRequests.length, 0);
     assert.ok(await remotePage.locator('#importDialog').isVisible());
     await remotePage.route('https://api.telegra.ph/**', route => route.fulfill({ json: { ok: true, result: { content: [{ tag: 'pre', children: [JSON.stringify(legacy)] }] } } }));
@@ -199,9 +213,13 @@ const file = (data) => ({ name: 'configuration.json', mimeType: 'application/jso
     assert.equal(remoteRequests.length, 1);
     assert.equal(Number(await remotePage.locator('#shortcutTotal').textContent()), total);
     await remotePage.locator('#confirmRestoreButton').click();
+    await remotePage.locator('#restoreDialog').waitFor({ state: 'hidden' });
     assert.equal(Number(await remotePage.locator('#shortcutTotal').textContent()), 2);
     assert.equal(new URL(remotePage.url()).search, '');
-    assert.equal(await remotePage.evaluate(() => EVBackups.createLibrary(localStorage).list().length), 1);
+    assert.equal(await remotePage.evaluate(async () => {
+        const library = EVBackups.createPersistentLibrary({ storage: localStorage });
+        try { await library.ready; return (await library.list()).length; } finally { library.close(); }
+    }), 1);
     check('Ancien partage sans requête automatique, Ajouter conserve les raccourcis et Restaurer les remplace');
 
     const savedState = await remotePage.evaluate(() => localStorage.getItem(EVState.STORAGE_KEY));
@@ -217,6 +235,7 @@ const file = (data) => ({ name: 'configuration.json', mimeType: 'application/jso
     });
     const recoveryBefore = await remotePage.evaluate(() => localStorage.getItem('evportal.previous-transfer.v1'));
     await remotePage.locator('#confirmRestoreButton').click();
+    await remotePage.waitForFunction(() => Boolean(document.getElementById('restoreError').textContent));
     assert.ok(await remotePage.locator('#restoreError').textContent());
     assert.equal(await remotePage.evaluate(() => localStorage.getItem(EVState.STORAGE_KEY)), savedState);
     assert.equal(await remotePage.evaluate(() => localStorage.getItem('evportal.previous-transfer.v1')), recoveryBefore);
@@ -238,7 +257,10 @@ const file = (data) => ({ name: 'configuration.json', mimeType: 'application/jso
     await remotePage.locator('#importDialog [data-close-dialog]').click();
     releaseRequest();
     await remotePage.waitForTimeout(150);
-    assert.equal(await remotePage.evaluate(() => EVBackups.createLibrary(localStorage).list().length), 1);
+    assert.equal(await remotePage.evaluate(async () => {
+        const library = EVBackups.createPersistentLibrary({ storage: localStorage });
+        try { await library.ready; return (await library.list()).length; } finally { library.close(); }
+    }), 1);
     assert.equal(await remotePage.evaluate(() => localStorage.getItem(EVState.STORAGE_KEY)), savedState);
     check('Échec stockage restauration et ajout annulé ne modifient ni raccourcis ni récupération');
 
@@ -247,9 +269,10 @@ const file = (data) => ({ name: 'configuration.json', mimeType: 'application/jso
     await remotePage.locator('#localBackupList .backup-select').click();
     const secondTab = await remoteContext.newPage();
     await secondTab.goto(url);
-    await secondTab.evaluate(() => {
-        const library = EVBackups.createLibrary(localStorage);
-        library.remove(library.list()[0].id);
+    await secondTab.locator('html[data-evportal-ready="true"]').waitFor({ state: 'attached' });
+    await secondTab.evaluate(async () => {
+        const library = EVBackups.createPersistentLibrary({ storage: localStorage });
+        try { await library.ready; await library.remove((await library.list())[0].id); } finally { library.close(); }
     });
     await remotePage.locator('#restorePreview').waitFor({ state: 'hidden' });
     assert.equal(await remotePage.locator('#localBackupList .backup-select').count(), 0);
@@ -264,6 +287,7 @@ const file = (data) => ({ name: 'configuration.json', mimeType: 'application/jso
     });
     const preferencesPage = await preferencesContext.newPage();
     await preferencesPage.goto(url, { waitUntil: 'networkidle' });
+    await preferencesPage.locator('html[data-evportal-ready="true"]').waitFor({ state: 'attached' });
     const installedIDs = () => preferencesPage.evaluate(() => JSON.parse(localStorage.getItem(EVState.STORAGE_KEY)).categories.flatMap(category => category.shortcuts).map(shortcut => shortcut.serviceId));
     assert.equal((await installedIDs()).includes('github'), false, 'GitHub is available on demand, not installed by default');
     assert.equal((await installedIDs()).includes('crave'), true, 'Crave is initially present even with a saved French country preference');
@@ -288,6 +312,7 @@ const file = (data) => ({ name: 'configuration.json', mimeType: 'application/jso
     assert.equal(await preferencesPage.locator('#content .shortcut-name').textContent(), 'Netflix');
     await preferencesPage.locator('[data-category="all"]').click();
     await preferencesPage.reload({ waitUntil: 'networkidle' });
+    await preferencesPage.locator('html[data-evportal-ready="true"]').waitFor({ state: 'attached' });
     assert.equal(await preferencesPage.locator('#sectionTitle').textContent(), 'Mes favoris');
     assert.equal(await preferencesPage.locator('#menu [data-category="cinema"]').count(), 0);
     await preferencesPage.locator('#catalogButton').click();
@@ -325,7 +350,9 @@ const file = (data) => ({ name: 'configuration.json', mimeType: 'application/jso
     const visualContext = await context();
     const visualPage = await visualContext.newPage();
     await visualPage.goto(url, { waitUntil: 'networkidle' });
-    const axePath = require.resolve('axe-core/axe.min.js');
+    await visualPage.locator('html[data-evportal-ready="true"]').waitFor({ state: 'attached' });
+    const axeURL = new URL('js/vendor/axe-test-only.js', url).href;
+    await visualPage.route(axeURL, route => route.fulfill({ path: require.resolve('axe-core/axe.min.js'), contentType: 'text/javascript' }));
     const audits = [];
     for (const width of [320, 390, 768, 1024, 1440, 1920]) {
         await visualPage.setViewportSize({ width, height: 1000 });
@@ -335,10 +362,10 @@ const file = (data) => ({ name: 'configuration.json', mimeType: 'application/jso
         for (const width of [390, 1440]) {
             await visualPage.setViewportSize({ width, height: 1000 });
             await visualPage.evaluate(theme => document.documentElement.dataset.theme = theme, theme);
-            await visualPage.addScriptTag({ path: axePath });
+            await visualPage.addScriptTag({ url: axeURL });
             const audit = await visualPage.evaluate(() => axe.run(document, { runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21aa'] } }));
             audits.push({ theme, width, violations: audit.violations });
-            await visualPage.screenshot({ path: path.join(output, theme + '-' + width + '.png'), fullPage: true });
+            if (!process.env.EVPORTAL_SKIP_SCREENSHOTS) await visualPage.screenshot({ path: path.join(output, theme + '-' + width + '.png'), fullPage: true });
         }
     }
     await fs.writeFile(path.join(output, 'accessibility.json'), JSON.stringify(audits, null, 2));

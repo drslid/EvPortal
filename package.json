@@ -1,6 +1,6 @@
 {
   "name": "evportal",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "private": true,
   "description": "Portail de raccourcis personnalisables pour Tesla et véhicules électriques.",
   "scripts": {
@@ -10,6 +10,7 @@
     "test:catalog": "node scripts/catalog-smoke.cjs",
     "check:links": "node scripts/check-links.mjs",
     "test:interactions": "node scripts/interaction-smoke.cjs",
+    "test:security": "node scripts/security-smoke.cjs",
     "test:share": "node scripts/telegraph-smoke.cjs",
     "test:pairing": "node scripts/pairing-smoke.cjs",
     "test:pairing:live": "node scripts/pairing-live-smoke.cjs",

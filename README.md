@@ -6,7 +6,7 @@ Your shortcuts for Tesla. Find charging, maps, music and entertainment on a clea
 
 **Open the link in your car or phone browser and save it as a favorite. Nothing to install. No EvPortal account required.**
 
-[User guide](https://drslid.github.io/EvPortal/en/aide.html) · [Guide français](https://drslid.github.io/EvPortal/fr/aide.html) · [What's new in version 2](https://github.com/drslid/EvPortal/releases/tag/v2.0.0)
+[User guide](https://drslid.github.io/EvPortal/en/aide.html) · [Guide français](https://drslid.github.io/EvPortal/fr/aide.html) · [What's new](CHANGELOG.md) · [Discover EvPortal](https://drslid.github.io/EvPortal/decouvrir.html?lang=en)
 
 [![EvPortal project illustration](img/evportal-social.png)](https://drslid.github.io/EvPortal/)
 
@@ -46,6 +46,8 @@ You can also use **Choose a backup** to send a saved copy instead of your curren
 | Organize categories | Create up to five personal categories from **+**, and choose their icons. |
 | Start with your favorites | Enable **Settings → Home → Open on my favorites**. |
 | Adjust the display | In **Settings → Appearance**, choose **Standard / Small** and turn **Show names** on or off. |
+| Adapt services to your country and languages | Open **Settings → Adapt my catalogue**. Content languages and country are independent from the interface language. |
+| Check this browser | Open **Settings → Check this browser**. Capability checks do not certify a service's playback in a Tesla. |
 | Switch dark or light | Use the theme button at the top of the screen. |
 
 **All** puts your most-opened shortcuts first. [See the compact view without names](img/evportal-compact.png). Display size, shortcut names and home-screen choices stay specific to each device, even after restoring a backup.
@@ -57,6 +59,10 @@ Open **Settings → Backups → My backups → Restore** to choose a saved confi
 Prefer a code or link? Use **Settings → Backups → Code or link → Create**, then **Add** on the receiving device. You can also save or add a JSON backup file through the backup options. Link backups are hosted on Telegra.ph and are public to anyone who has the address; QR transfers are encrypted.
 
 Your shortcuts and saved copies stay in the browser where you use them. Keep a backup file before clearing browser data or changing devices. [Read the user guide](https://drslid.github.io/EvPortal/en/aide.html).
+
+Local backup libraries now use IndexedDB transactions. Historical recovery data stays intact during migration. **Settings → Backups → Create a copy on this device** saves a snapshot without publishing it.
+
+An optional encrypted synchronization service is prepared for local testing. It is **not enabled on the public site**. Existing QR transfers and JSON exports remain available. Development details and activation requirements are in the [sync guide](docs/SYNC.md) and [security notes](docs/SECURITE.md).
 
 ## Available in eight languages
 

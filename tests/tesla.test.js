@@ -13,6 +13,17 @@ test('theater redirect preserves deployment, shared configuration, and fragment'
     }
 });
 
+test('theater never discloses private pairing or recovery capabilities to YouTube', () => {
+    for (const hash of ['receive=private-pairing-capability', 'download=private-read-capability', 'sync=EV1.private-recovery-capability']) {
+        const forwarded = new URL(new URL(Tesla.theaterURL('https://example.org/EvPortal/?lang=fr#' + hash)).searchParams.get('q'));
+        assert.equal(forwarded.hash, '');
+        assert.equal(forwarded.searchParams.get('lang'), 'fr');
+    }
+    const forwarded = new URL(new URL(Tesla.theaterURL('https://example.org/EvPortal/?code=EV1.private&token=private&key=private&lang=en#favorites')).searchParams.get('q'));
+    assert.equal(forwarded.search, '?lang=en');
+    assert.equal(forwarded.hash, '#favorites');
+});
+
 test('Tesla uses the Theater redirect even when the standard Fullscreen API is disabled', async () => {
     let redirected;
     const environment = {
